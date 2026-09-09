@@ -1,0 +1,655 @@
+<!-- generator: _lib/school_deck_scaffold.py -->
+<!DOCTYPE html>
+<!--
+  ESL reveal.js DECK TEMPLATE — copy this file, rename to
+  YYYY-MM-DD_Title_Case_Topic_L<level>_ccode.html in the School Stuff root,
+  and fill the Edit.
+
+  LEVEL SWAP: this template ships L2 colors (green). For L4, change the
+  three lines in :root marked  /* L4: ... */  and swap theme to white
+  (already white). L2 accent 2E6B3A / light D9E9D3.  L4 accent 1F4E79 /
+  light D6E4F2.
+
+  All canonical contracts (invisible scrollbar, 80vh bottom spacer per
+  section, no font-size on .reveal, table.compare last-child border,
+  reveal init config) are baked in. Run the linter after editing:
+      node _lib/verify_html_deck.mjs <deck.html>            # rendered check
+      python3 _lib/verify_html_deck_static.py <deck.html>   # fast source lint
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Stative Verbs With Action Meanings — Level 3</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/theme/white.css">
+<style>
+  :root { --accent: #1F6B6B; --accent-light: #D6E8E8; --gray: #555555;
+          /* L4: --accent: #1F4E79; --accent-light: #D6E4F2; */
+          --good: #15803D; --bad: #B91C1C; --muted: #777; }
+
+  /* TYPOGRAPHY CANON — never put font-size on .reveal itself */
+  .reveal { font-family: Arial, sans-serif; }
+  .reveal h1, .reveal h2, .reveal h3 { color: var(--accent); font-family: Arial, sans-serif; text-transform: none; letter-spacing: 0; }
+  .reveal h1 { font-size: 2.2em; }
+  .reveal h2 { font-size: 1.6em; }
+  .reveal h3 { font-size: 1.15em; }
+  .reveal h4 { font-size: 1.05em; }
+  .reveal p, .reveal li { font-size: 0.85em; line-height: 1.5; }
+
+  /* SCROLLABLE SLIDES WITH INVISIBLE SCROLLBAR */
+  .reveal .slides section {
+    overflow-y: auto !important;
+    max-height: 92vh !important;
+    text-align: left;
+    padding: 20px 40px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .reveal .slides section::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* Title slide */
+  .title-slide { text-align: center !important; }
+  .title-slide h1 { font-size: 2.6em; margin-bottom: 0.3em; }
+  .title-slide .subtitle { font-size: 1.2em; color: var(--gray); }
+
+  /* Pattern / example / note / tip */
+  .pattern-box {
+    background: var(--accent-light);
+    border-left: 6px solid var(--accent);
+    padding: 14px 20px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+  .pattern-box code {
+    background: white; padding: 2px 8px; border-radius: 3px;
+    color: var(--accent); font-weight: bold;
+  }
+  .example {
+    background: #FAFAFA; border: 1px solid #DDD;
+    padding: 10px 16px; margin: 8px 0; border-radius: 3px; font-size: 0.9em;
+  }
+  .example .key { color: var(--accent); font-weight: bold; }
+  .note { font-style: italic; color: var(--gray); font-size: 0.85em; margin-top: 10px; }
+  .check-tip {
+    background: #FFF8E1; border-left: 6px solid #F5A623;
+    padding: 12px 18px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+
+  /* Comparison tables — borders need !important (reveal theme strips them) */
+  table.compare {
+    border-collapse: collapse !important; margin: 14px 0;
+    font-size: 0.82em; width: 100%; border: 1px solid var(--accent) !important;
+  }
+  table.compare th, table.compare td {
+    border: 1px solid var(--accent) !important; padding: 8px 12px; text-align: left;
+  }
+  table.compare tr:last-child td { border-bottom: 1px solid var(--accent) !important; }
+  table.compare th { background: var(--accent); color: white; }
+  table.compare td:first-child { font-weight: bold; color: var(--accent); }
+
+  /* Click-to-reveal exercise (single-answer reveal) */
+  .exercise {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .exercise .question { font-size: 0.9em; margin: 0 0 10px 0; }
+  .exercise .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .exercise button.reveal-btn {
+    background: var(--accent); color: white; border: none; padding: 6px 14px;
+    border-radius: 4px; font-family: Arial; font-size: 0.8em; cursor: pointer;
+  }
+  .exercise button.reveal-btn:hover { filter: brightness(0.85); }
+  .exercise .answer {
+    display: none; margin-top: 10px; padding: 10px 14px;
+    background: var(--accent-light); border-left: 4px solid var(--accent); font-size: 0.9em;
+  }
+  .exercise .answer .key { color: var(--accent); font-weight: bold; }
+  .exercise .answer.shown { display: block; }
+
+  /* Clickable multiple choice */
+  .mc-q {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .mc-q .stem { font-size: 0.9em; margin: 0 0 10px 0; }
+  .mc-q .stem .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .mc { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .mc button.opt {
+    font-family: inherit; font-size: 0.8em; padding: 10px 12px;
+    border: 2px solid #d0d8e4; background: white; border-radius: 8px;
+    cursor: pointer; transition: all .15s; font-weight: 600;
+  }
+  .mc button.opt:hover { border-color: var(--accent); background: var(--accent-light); }
+  .mc button.opt.correct { background: #DCFCE7; border-color: var(--good); color: var(--good); }
+  .mc button.opt.wrong   { background: #FEE2E2; border-color: var(--bad);  color: var(--bad); }
+  .explain { margin-top: 10px; font-size: 0.78em; color: var(--muted); font-style: italic; min-height: 1.2em; }
+  .explain.good { color: var(--good); font-style: normal; }
+  .explain.bad  { color: var(--bad); }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1: TITLE -->
+<section class="title-slide">
+  <h1>Stative Verbs With Action Meanings</h1>
+  <p class="subtitle">Why "I think it is a good idea" but "I am thinking about dinner"</p>
+  <p class="subtitle" style="margin-top: 1.5em;">Level 3 — Grammar</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 2: CORE IDEA -->
+<section>
+  <h2>State or Action?</h2>
+  <div class="pattern-box">
+    <strong>A STATE</strong> is something that is true: an opinion, a feeling, a fact, or what you own. You do not "do" a state. It has no start and no finish.<br>
+    STATE = <code>simple present</code>, even with <em>now</em> or <em>at the moment</em>.
+  </div>
+  <div class="pattern-box">
+    <strong>An ACTION</strong> is something you do. It starts, it happens step by step, and it ends.<br>
+    ACTION happening now = <code>am / is / are + verb-ing</code>.
+  </div>
+  <div class="example"><span class="key">I think</span> it is a good idea. <em>(my opinion = a state)</em></div>
+  <div class="example"><span class="key">I am thinking</span> about dinner. <em>(my mind is working right now = an action)</em></div>
+  <div class="example">We <span class="key">have</span> a car. <em>(we own it = a state)</em></div>
+  <div class="example">We <span class="key">are having</span> a break at the moment. <em>(have = take, do; a break starts and ends = an action)</em></div>
+  <p class="note">Same word, two jobs. The meaning decides the form, not the word.</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 3: THE SWAP TEST -->
+<section>
+  <h2>The Swap Test</h2>
+  <div class="check-tip"><strong>Quick check:</strong> Try to swap the verb for a state word such as <em>believe</em> or <em>own</em>. If the swap works, it is a state: use the simple present. If the swap does not work, it is probably an action happening now: use the present continuous.</div>
+  <div class="example">I think the movie starts at eight. → I <span class="key">believe</span> the movie starts at eight. ✓ State</div>
+  <div class="example">I am thinking about my answer. → I <span class="key">believe</span> about my answer. ✗ Action</div>
+  <div class="example">They have a big garden. → They <span class="key">own</span> a big garden. ✓ State</div>
+  <div class="example">They are having a picnic. → They <span class="key">own</span> a picnic. ✗ Action</div>
+  <div class="pattern-box">Verbs that are almost always states: <code>know</code> <code>believe</code> <code>want</code> <code>need</code> <code>prefer</code> <code>own</code> <code>belong</code> <code>understand</code> <code>mean</code></div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 4: THINK AND HAVE -->
+<section>
+  <h2>think and have</h2>
+  <table class="compare">
+    <tr><th>Verb</th><th>STATE (simple present)</th><th>ACTION (present continuous)</th></tr>
+    <tr><td>think</td><td>believe, have an opinion<br>I think this street is dangerous.</td><td>use your mind, consider<br>Be quiet. I am thinking!</td></tr>
+    <tr><td>have</td><td>own, possess<br>Our school has a small library.</td><td>do an activity: have lunch, a shower, a party, a good time<br>The kids are having a good time at the pool.</td></tr>
+  </table>
+  <p class="note">"I am having a car" is impossible: you cannot "do" owning. "I have lunch at the moment" is wrong too: eating is an action that starts and ends.</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 5: EXERCISE 1 MC -->
+<section>
+  <h2>Exercise 1 — think or have?</h2>
+  <p>Click a, b, c, or d. The correct button turns green; a wrong button turns red and the correct one is highlighted.</p>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> Can you be quiet for a second? I ____ hard about a math problem.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. think</button>
+      <button class="opt">b. thinks</button>
+      <button class="opt">c. am thinking</button>
+      <button class="opt">d. thinking</button>
+    </div>
+    <div class="explain" data-explain="Use your mind right now = an action, so present continuous."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> My uncle ____ a small boat on the lake.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. has</button>
+      <button class="opt">b. is having</button>
+      <button class="opt">c. have</button>
+      <button class="opt">d. having</button>
+    </div>
+    <div class="explain" data-explain="Own = a state, so simple present."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> Sorry, I can't hear you. We ____ a party, and the music is loud.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. have</button>
+      <button class="opt">b. has</button>
+      <button class="opt">c. having</button>
+      <button class="opt">d. are having</button>
+    </div>
+    <div class="explain" data-explain="Have a party = do an activity happening now."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> Nobody ____ the meeting will finish on time.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. is thinking</button>
+      <button class="opt">b. thinks</button>
+      <button class="opt">c. think</button>
+      <button class="opt">d. thinking</button>
+    </div>
+    <div class="explain" data-explain="An opinion = a state, so simple present; nobody is singular."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> Tom ____ a shower at the moment, so he can't answer.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. is having</button>
+      <button class="opt">b. has</button>
+      <button class="opt">c. have</button>
+      <button class="opt">d. having</button>
+    </div>
+    <div class="explain" data-explain="Have a shower = an activity happening now."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> My parents ____ that the train is faster than the bus.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. are thinking</button>
+      <button class="opt">b. thinks</button>
+      <button class="opt">c. think</button>
+      <button class="opt">d. thinking</button>
+    </div>
+    <div class="explain" data-explain="An opinion = a state; plural subject takes think."></div>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 6: SENSE VERBS -->
+<section>
+  <h2>see, look, taste, smell, feel</h2>
+  <table class="compare">
+    <tr><th>Verb</th><th>STATE (simple present)</th><th>ACTION (present continuous)</th></tr>
+    <tr><td>see</td><td>understand, notice<br>I see two birds on the roof.</td><td>meet, visit<br>I am seeing my dentist on Friday.</td></tr>
+    <tr><td>look</td><td>seem, appear<br>She looks happy today.</td><td>point your eyes at<br>She is looking at the old photos.</td></tr>
+    <tr><td>taste</td><td>have a flavor<br>The coffee tastes bitter.</td><td>test the flavor<br>Ali is tasting the coffee.</td></tr>
+    <tr><td>smell</td><td>give off a smell<br>The pizza smells delicious.</td><td>sniff on purpose<br>The baker is smelling the flour.</td></tr>
+    <tr><td>feel</td><td>have a texture, seem<br>Your hands feel cold.</td><td>touch on purpose<br>The doctor is feeling my neck.</td></tr>
+  </table>
+  <p class="note">State meaning: the thing HAS a quality (it smells, it tastes, it feels). Action meaning: a person DOES something with a body part (a nose, a tongue, a hand, the eyes).</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 7: EXERCISE 2 REVEAL -->
+<section>
+  <h2>Exercise 2 — Sense Verbs</h2>
+  <p>Say the simple present or present continuous form, then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> This blanket ____ (feel) very warm.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">feels</span> — the blanket has a quality = a state.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> The vet ____ (feel) the dog's leg to find the injury right now.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">is feeling</span> — touching on purpose = an action happening now.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> Mmm, dinner ____ (smell) great! What is it?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">smells</span> — the food gives off a smell = a state.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> Sara ____ (look) for her glasses at the moment.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">is looking</span> — look for = search = an action happening now.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> The kids ____ (taste) the ice cream samples right now.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">are tasting</span> — testing the flavor = an action happening now.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> Do you ____ (see) the difference between the two photos?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">see</span> — see = notice, understand = a state.</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 8: BE AND WEIGH -->
+<section>
+  <h2>be and weigh</h2>
+  <table class="compare">
+    <tr><th>Verb</th><th>STATE (simple present)</th><th>ACTION (present continuous)</th></tr>
+    <tr><td>be</td><td>character, a fact<br>Tom is a quiet boy.</td><td>behavior only right now<br>Tom is being very loud today.</td></tr>
+    <tr><td>weigh</td><td>have a weight<br>The box weighs three kilos.</td><td>measure the weight<br>The post office worker is weighing my package.</td></tr>
+  </table>
+  <div class="check-tip"><strong>Watch out:</strong> "is being" only works for BEHAVIOR (rude, loud, silly, helpful). Age, job, size, and nationality are facts: <em>He is a nurse.</em> Never <em>He is being a nurse.</em></div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 9: EXERCISE 3 REVEAL -->
+<section>
+  <h2>Exercise 3 — Correct the Verb</h2>
+  <p>The CAPITALIZED verb is in the wrong form. Say the correct form, then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> My neighbor IS BEING a nurse.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">is</span> — a job is a fact, not a behavior.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> Hold still. The nurse WEIGHS the baby now.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">is weighing</span> — measuring the weight = an action happening now.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> This watermelon IS WEIGHING five kilos.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">weighs</span> — having a weight = a state.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> I AM KNOWING the answer to this puzzle.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">know</span> — know is always a state.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> Look! The kids TASTE the cake mix.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">are tasting</span> — Look! = happening now; testing the flavor = an action.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> We ARE HAVING a garage with two doors.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">have</span> — own = a state.</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 10: EXERCISE 4 MIXED MC -->
+<section>
+  <h2>Exercise 4 — Mixed Practice</h2>
+  <p>State or action? Click the correct form.</p>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> The manager ____ at my report right now.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. looks</button>
+      <button class="opt">b. is looking</button>
+      <button class="opt">c. look</button>
+      <button class="opt">d. looking</button>
+    </div>
+    <div class="explain" data-explain="Look at = point your eyes = an action happening now."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> These shoes ____ too tight.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. are feeling</button>
+      <button class="opt">b. feels</button>
+      <button class="opt">c. feeling</button>
+      <button class="opt">d. feel</button>
+    </div>
+    <div class="explain" data-explain="The shoes have a quality = a state; plural subject takes feel."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> Let me call you back. I ____ a bath.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. am having</button>
+      <button class="opt">b. have</button>
+      <button class="opt">c. has</button>
+      <button class="opt">d. having</button>
+    </div>
+    <div class="explain" data-explain="Have a bath = an activity happening now."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> Do you ____ what the teacher means?</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. seeing</button>
+      <button class="opt">b. sees</button>
+      <button class="opt">c. see</button>
+      <button class="opt">d. are seeing</button>
+    </div>
+    <div class="explain" data-explain="See = understand = a state; after Do you, use the base form."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> My aunt ____ a new coffee shop downtown.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. is having</button>
+      <button class="opt">b. have</button>
+      <button class="opt">c. having</button>
+      <button class="opt">d. has</button>
+    </div>
+    <div class="explain" data-explain="Own = a state; singular subject takes has."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> Elena ____ about a new apartment at the moment. She hasn't decided yet.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. thinks</button>
+      <button class="opt">b. is thinking</button>
+      <button class="opt">c. think</button>
+      <button class="opt">d. thinking</button>
+    </div>
+    <div class="explain" data-explain="Considering = an action happening now."></div>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 11: SUMMARY -->
+<section>
+  <h2>Summary</h2>
+  <table class="compare">
+    <tr><th>Question</th><th>STATE</th><th>ACTION</th></tr>
+    <tr><td>What is it?</td><td>an opinion, a feeling, a fact, what you own</td><td>something you do, step by step, with a start and an end</td></tr>
+    <tr><td>Which form?</td><td>simple present, even with <em>now</em></td><td>am / is / are + verb-ing</td></tr>
+    <tr><td>Swap test</td><td><em>believe</em> or <em>own</em> fits</td><td>the swap does not work</td></tr>
+    <tr><td>think</td><td>believe</td><td>use your mind</td></tr>
+    <tr><td>have</td><td>own</td><td>do an activity (lunch, a shower, a party)</td></tr>
+    <tr><td>see / look / taste / smell / feel</td><td>the thing has a quality</td><td>a person uses a body part on purpose</td></tr>
+    <tr><td>be</td><td>character, a fact</td><td>behavior only right now</td></tr>
+    <tr><td>weigh</td><td>has a weight</td><td>measures the weight</td></tr>
+  </table>
+  <p style="text-align:center; margin-top:30px; font-size:0.95em; color:var(--accent);"><strong>End of Deck — Great work!</strong></p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    controls: true,
+    progress: true,
+    center: false,
+    transition: 'slide',
+    width: 1100,
+    height: 720,
+    margin: 0.04
+  });
+
+  // Clickable multiple-choice wiring (data-correct = 0-indexed button)
+  document.querySelectorAll('.mc').forEach(mc => {
+    const correct = parseInt(mc.dataset.correct, 10);
+    const buttons = mc.querySelectorAll('button.opt');
+    const explain = mc.nextElementSibling && mc.nextElementSibling.classList.contains('explain')
+      ? mc.nextElementSibling : null;
+    const explainText = explain ? explain.dataset.explain || '' : '';
+    buttons.forEach((b, i) => {
+      b.addEventListener('click', () => {
+        // `sel` marks the clicked button so its class always changes on every
+        // click — keeps verify_html_deck.mjs from false-failing when the correct
+        // answer isn't option (a). Do not remove.
+        buttons.forEach(x => x.classList.remove('correct', 'wrong', 'sel'));
+        b.classList.add('sel');
+        if (i === correct) {
+          b.classList.add('correct');
+          if (explain) {
+            explain.textContent = '✓ Correct. ' + explainText;
+            explain.classList.remove('bad'); explain.classList.add('good');
+          }
+        } else {
+          b.classList.add('wrong');
+          buttons[correct].classList.add('correct');
+          if (explain) {
+            const answerText = buttons[correct].textContent;
+            explain.innerHTML = '✗ The answer is <strong>' + answerText + '</strong>. ' + explainText;
+            explain.classList.remove('good'); explain.classList.add('bad');
+          }
+        }
+      });
+    });
+  });
+</script>
+<!-- PENCIL DRAW OVERLAY — iPad annotation layer (additive; safe to delete this whole block) -->
+<style>
+  #drawCanvas {
+    position: fixed; inset: 0; z-index: 50; pointer-events: none; touch-action: none;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  }
+  html.draw-armed, html.draw-armed body, html.draw-armed .reveal {
+    -webkit-user-select: none !important; user-select: none !important;
+    -webkit-touch-callout: none !important;
+  }
+  html.presentation-mode, html.presentation-mode body {
+    width: 100%; height: 100%; overflow: hidden !important; overscroll-behavior: none;
+  }
+  html.presentation-mode body { position: fixed; inset: 0; }
+  html.presentation-mode .reveal { width: 100vw !important; height: 100vh !important; height: 100dvh !important; }
+  html.presentation-mode .reveal .slides section { overscroll-behavior-y: contain; }
+  #drawToggle {
+    position: fixed; top: 10px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 20px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle.armed { opacity: 1; background: #fde9c8; border-color: #e8a013; }
+  #fsToggle {
+    position: fixed; top: 62px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 19px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle, #fsToggle { transition: opacity 0.3s; }
+  html.presentation-mode #drawToggle:not(.armed), html.presentation-mode #fsToggle { opacity: 0.15; }
+  #drawBar {
+    position: fixed; top: 10px; right: 62px; z-index: 60; display: flex; gap: 8px;
+    background: #fff; border: 1px solid #bbb; border-radius: 22px; padding: 6px 10px;
+    align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  #drawBar button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ccc; background: #fff; cursor: pointer; font-size: 15px; padding: 0; }
+  #drawBar .swatch { border-width: 2px; }
+  #drawBar .swatch.on { outline: 3px solid #e8a013; }
+</style>
+<canvas id="drawCanvas"></canvas>
+<div id="drawBar" hidden>
+  <button class="swatch on" data-color="#d33333" style="background:#d33333"></button>
+  <button class="swatch" data-color="#2266cc" style="background:#2266cc"></button>
+  <button class="swatch" data-color="#1a1a1a" style="background:#1a1a1a"></button>
+  <button id="drawUndo" title="Undo">↩</button>
+  <button id="drawClear" title="Clear slide">✕</button>
+</div>
+<button id="drawToggle" title="Pencil mode (pen only; finger locked)" aria-pressed="false">✏️</button>
+<button id="fsToggle" title="Presentation mode" aria-label="Presentation mode" aria-pressed="false">⛶</button>
+<script>
+(() => {
+  const cv = document.getElementById('drawCanvas');
+  const ctx = cv.getContext('2d');
+  const bar = document.getElementById('drawBar');
+  const toggle = document.getElementById('drawToggle');
+  let armed = false, color = '#d33333', cur = null, drawPointerId = null;
+  const strokes = new Map(); // slide "h-v" -> stroke list; ink persists per slide
+  const key = () => { const i = Reveal.getIndices(); return i.h + '-' + (i.v || 0); };
+  const list = () => { const k = key(); if (!strokes.has(k)) strokes.set(k, []); return strokes.get(k); };
+
+  function size() {
+    const d = window.devicePixelRatio || 1;
+    cv.width = innerWidth * d; cv.height = innerHeight * d;
+    cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    render();
+  }
+  function seg(a, b, c, w) {
+    ctx.strokeStyle = c; ctx.lineWidth = Math.max(0.75, w * innerWidth);
+    ctx.beginPath(); ctx.moveTo(a.x * innerWidth, a.y * innerHeight);
+    ctx.lineTo(b.x * innerWidth, b.y * innerHeight); ctx.stroke();
+  }
+  function render() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const s of list())
+      for (let i = 1; i < s.pts.length; i++) seg(s.pts[i - 1], s.pts[i], s.color, s.pts[i].w);
+  }
+  const pt = (e) => ({ x: e.clientX / innerWidth, y: e.clientY / innerHeight,
+    w: (e.pointerType === 'pen' ? 1.5 + 4 * (e.pressure || 0.5) : 3) / innerWidth });
+
+  const cancel = (e) => { if (e.cancelable) e.preventDefault(); };
+  cv.addEventListener('pointerdown', (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerType === 'touch') {
+      cv.setPointerCapture(e.pointerId); // swallow the palm/finger for its full contact
+      return;
+    }
+    if ((e.pointerType !== 'pen' && e.pointerType !== 'mouse') || drawPointerId !== null) return;
+    drawPointerId = e.pointerId;
+    cur = { color, pts: [pt(e)] };
+    list().push(cur);
+    cv.setPointerCapture(e.pointerId);
+  }, { passive: false });
+  cv.addEventListener('pointermove', (e) => {
+    if (!armed) return;
+    if (e.pointerType === 'touch') { cancel(e); return; }
+    if (!cur || e.pointerId !== drawPointerId) return;
+    cancel(e);
+    const coalesced = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+    const events = coalesced && coalesced.length ? coalesced : [e];
+    for (const ev of events) {
+      const p = pt(ev);
+      seg(cur.pts[cur.pts.length - 1], p, cur.color, p.w);
+      cur.pts.push(p);
+    }
+  }, { passive: false });
+  const end = (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerId === drawPointerId) { cur = null; drawPointerId = null; }
+  };
+  cv.addEventListener('pointerup', end, { passive: false });
+  cv.addEventListener('pointercancel', end, { passive: false });
+  for (const eventName of ['touchstart', 'touchmove', 'touchend', 'touchcancel'])
+    cv.addEventListener(eventName, (e) => { if (armed) cancel(e); }, { passive: false });
+  document.addEventListener('selectstart', (e) => { if (armed) cancel(e); });
+
+  toggle.addEventListener('click', () => {
+    armed = !armed;
+    cv.style.pointerEvents = armed ? 'auto' : 'none'; // disarmed = taps/swipes reach the slides
+    bar.hidden = !armed;
+    toggle.classList.toggle('armed', armed);
+    toggle.setAttribute('aria-pressed', String(armed));
+    document.documentElement.classList.toggle('draw-armed', armed);
+    if (!armed) { cur = null; drawPointerId = null; }
+  });
+  bar.querySelectorAll('.swatch').forEach((b) => b.addEventListener('click', () => {
+    color = b.dataset.color;
+    bar.querySelectorAll('.swatch').forEach((x) => x.classList.toggle('on', x === b));
+  }));
+  document.getElementById('drawUndo').addEventListener('click', () => { list().pop(); render(); });
+  document.getElementById('drawClear').addEventListener('click', () => { strokes.set(key(), []); render(); });
+
+  Reveal.on('slidechanged', render);
+  addEventListener('resize', size);
+  size();
+
+  // Fixed presentation mode avoids iPadOS's native-fullscreen pull-down exit gesture.
+  const fsT = document.getElementById('fsToggle');
+  let presenting = false;
+  const toast = (message) => {
+    const t = document.createElement('div');
+    t.textContent = message;
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:10px;font:14px system-ui;z-index:99;max-width:46ch;text-align:center';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  };
+  fsT.addEventListener('click', () => {
+    presenting = !presenting;
+    document.documentElement.classList.toggle('presentation-mode', presenting);
+    fsT.textContent = presenting ? '\u2921' : '\u26f6';
+    fsT.setAttribute('aria-pressed', String(presenting));
+    fsT.title = presenting ? 'Exit presentation mode' : 'Presentation mode';
+    requestAnimationFrame(() => {
+      if (Reveal.layout) Reveal.layout();
+      size();
+    });
+    if (presenting) toast('Presentation mode on. For more space in Safari, tap AA, then Hide Toolbar.');
+  });
+})();
+</script>
+<!-- END PENCIL DRAW OVERLAY -->
+
+</body>
+</html>
