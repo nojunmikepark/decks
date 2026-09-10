@@ -1,0 +1,742 @@
+<!-- generator: _lib/school_deck_scaffold.py -->
+<!DOCTYPE html>
+<!--
+  ESL reveal.js DECK TEMPLATE — copy this file, rename to
+  YYYY-MM-DD_Title_Case_Topic_L<level>_ccode.html in the School Stuff root,
+  and fill the Edit.
+
+  LEVEL SWAP: this template ships L2 colors (green). For L4, change the
+  three lines in :root marked  /* L4: ... */  and swap theme to white
+  (already white). L2 accent 2E6B3A / light D9E9D3.  L4 accent 1F4E79 /
+  light D6E4F2.
+
+  All canonical contracts (invisible scrollbar, 80vh bottom spacer per
+  section, no font-size on .reveal, table.compare last-child border,
+  reveal init config) are baked in. Run the linter after editing:
+      node _lib/verify_html_deck.mjs <deck.html>            # rendered check
+      python3 _lib/verify_html_deck_static.py <deck.html>   # fast source lint
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Syllables — Level 2</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/theme/white.css">
+<style>
+  :root { --accent: #2E6B3A; --accent-light: #D9E9D3; --gray: #555555;
+          /* L4: --accent: #1F4E79; --accent-light: #D6E4F2; */
+          --good: #15803D; --bad: #B91C1C; --muted: #777; }
+
+  /* TYPOGRAPHY CANON — never put font-size on .reveal itself */
+  .reveal { font-family: Arial, sans-serif; }
+  .reveal h1, .reveal h2, .reveal h3 { color: var(--accent); font-family: Arial, sans-serif; text-transform: none; letter-spacing: 0; }
+  .reveal h1 { font-size: 2.2em; }
+  .reveal h2 { font-size: 1.6em; }
+  .reveal h3 { font-size: 1.15em; }
+  .reveal h4 { font-size: 1.05em; }
+  .reveal p, .reveal li { font-size: 0.85em; line-height: 1.5; }
+
+  /* SCROLLABLE SLIDES WITH INVISIBLE SCROLLBAR */
+  .reveal .slides section {
+    overflow-y: auto !important;
+    max-height: 92vh !important;
+    text-align: left;
+    padding: 20px 40px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .reveal .slides section::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* Title slide */
+  .title-slide { text-align: center !important; }
+  .title-slide h1 { font-size: 2.6em; margin-bottom: 0.3em; }
+  .title-slide .subtitle { font-size: 1.2em; color: var(--gray); }
+
+  /* Pattern / example / note / tip */
+  .pattern-box {
+    background: var(--accent-light);
+    border-left: 6px solid var(--accent);
+    padding: 14px 20px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+  .pattern-box code {
+    background: white; padding: 2px 8px; border-radius: 3px;
+    color: var(--accent); font-weight: bold;
+  }
+  .example {
+    background: #FAFAFA; border: 1px solid #DDD;
+    padding: 10px 16px; margin: 8px 0; border-radius: 3px; font-size: 0.9em;
+  }
+  .example .key { color: var(--accent); font-weight: bold; }
+  .note { font-style: italic; color: var(--gray); font-size: 0.85em; margin-top: 10px; }
+  .check-tip {
+    background: #FFF8E1; border-left: 6px solid #F5A623;
+    padding: 12px 18px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+
+  /* Comparison tables — borders need !important (reveal theme strips them) */
+  table.compare {
+    border-collapse: collapse !important; margin: 14px 0;
+    font-size: 0.82em; width: 100%; border: 1px solid var(--accent) !important;
+  }
+  table.compare th, table.compare td {
+    border: 1px solid var(--accent) !important; padding: 8px 12px; text-align: left;
+  }
+  table.compare tr:last-child td { border-bottom: 1px solid var(--accent) !important; }
+  table.compare th { background: var(--accent); color: white; }
+  table.compare td:first-child { font-weight: bold; color: var(--accent); }
+
+  /* Click-to-reveal exercise (single-answer reveal) */
+  .exercise {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .exercise .question { font-size: 0.9em; margin: 0 0 10px 0; }
+  .exercise .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .exercise button.reveal-btn {
+    background: var(--accent); color: white; border: none; padding: 6px 14px;
+    border-radius: 4px; font-family: Arial; font-size: 0.8em; cursor: pointer;
+  }
+  .exercise button.reveal-btn:hover { filter: brightness(0.85); }
+  .exercise .answer {
+    display: none; margin-top: 10px; padding: 10px 14px;
+    background: var(--accent-light); border-left: 4px solid var(--accent); font-size: 0.9em;
+  }
+  .exercise .answer .key { color: var(--accent); font-weight: bold; }
+  .exercise .answer.shown { display: block; }
+
+  /* Clickable multiple choice */
+  .mc-q {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .mc-q .stem { font-size: 0.9em; margin: 0 0 10px 0; }
+  .mc-q .stem .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .mc { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .mc button.opt {
+    font-family: inherit; font-size: 0.8em; padding: 10px 12px;
+    border: 2px solid #d0d8e4; background: white; border-radius: 8px;
+    cursor: pointer; transition: all .15s; font-weight: 600;
+  }
+  .mc button.opt:hover { border-color: var(--accent); background: var(--accent-light); }
+  .mc button.opt.correct { background: #DCFCE7; border-color: var(--good); color: var(--good); }
+  .mc button.opt.wrong   { background: #FEE2E2; border-color: var(--bad);  color: var(--bad); }
+  .explain { margin-top: 10px; font-size: 0.78em; color: var(--muted); font-style: italic; min-height: 1.2em; }
+  .explain.good { color: var(--good); font-style: normal; }
+  .explain.bad  { color: var(--bad); }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1: TITLE -->
+<section class="title-slide">
+  <h1>Syllables</h1>
+  <p class="subtitle">Count the beats in a word</p>
+  <p class="subtitle" style="margin-top: 1.5em;">Level 2</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 2: WHAT IS A SYLLABLE -->
+<section>
+  <h2>What is a syllable?</h2>
+  <p>A syllable is <strong>one beat</strong> in a word. Every syllable has <strong>one vowel sound</strong> (a, e, i, o, u).</p>
+  <div class="pattern-box">
+    <strong>Rule:</strong> Say the word slowly. Count the beats. One beat = <code>one syllable</code>.
+  </div>
+  <div class="example"><span class="key">cat</span> — 1 beat — 1 syllable</div>
+  <div class="example"><span class="key">hap · py</span> — 2 beats — 2 syllables</div>
+  <div class="example"><span class="key">beau · ti · ful</span> — 3 beats — 3 syllables</div>
+  <div class="example"><span class="key">in · for · ma · tion</span> — 4 beats — 4 syllables</div>
+  <p class="note">Say each word with the class. Clap one time for each beat.</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 3: HOW TO COUNT -->
+<section>
+  <h2>Three ways to count</h2>
+  <table class="compare">
+    <tr><th>Way</th><th>How</th><th>Try it</th></tr>
+    <tr><td>1. Clap</td><td>Say the word. Clap one time for each beat.</td><td>dog (clap) = 1 &nbsp;·&nbsp; wa · ter (clap, clap) = 2</td></tr>
+    <tr><td>2. Chin</td><td>Put your hand under your chin. Say the word. Your chin goes down one time for each syllable.</td><td>spa · ghet · ti = 3</td></tr>
+    <tr><td>3. Vowel sounds</td><td>Count the vowel SOUNDS you hear. Not the letters!</td><td>cake = 1 sound (the e is silent)</td></tr>
+  </table>
+  <div class="check-tip"><strong>Quick check:</strong> Every word has at least one syllable. If you hear one beat, the answer is 1.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 4: TWO CAREFUL RULES -->
+<section>
+  <h2>Two careful rules</h2>
+  <div class="pattern-box">
+    <strong>Silent e:</strong> An <code>e</code> at the end of a word is often silent. It is NOT a syllable.
+  </div>
+  <div class="example"><span class="key">cake</span> = 1 &nbsp;·&nbsp; <span class="key">late</span> = 1 &nbsp;·&nbsp; <span class="key">huge</span> = 1</div>
+  <div class="pattern-box">
+    <strong>-le at the end:</strong> Words that end in <code>-le</code> have one more beat. The -le IS a syllable.
+  </div>
+  <div class="example"><span class="key">ta · ble</span> = 2 &nbsp;·&nbsp; <span class="key">lit · tle</span> = 2 &nbsp;·&nbsp; <span class="key">can · dle</span> = 2</div>
+  <p class="note">Say "late" and "little." Feel the difference under your chin.</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 5: EXERCISE 1 — HOW MANY SYLLABLES (MC) -->
+<section>
+  <h2>Exercise 1 — How many syllables?</h2>
+  <p>Say the word. Clap the beats. Click the number.</p>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> mother</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. 1</button>
+      <button class="opt">b. 2</button>
+      <button class="opt">c. 3</button>
+      <button class="opt">d. 4</button>
+    </div>
+    <div class="explain" data-explain="moth · er = 2 beats."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> book</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. 1</button>
+      <button class="opt">b. 2</button>
+      <button class="opt">c. 3</button>
+      <button class="opt">d. 4</button>
+    </div>
+    <div class="explain" data-explain="book = 1 beat."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> education</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. 1</button>
+      <button class="opt">b. 2</button>
+      <button class="opt">c. 3</button>
+      <button class="opt">d. 4</button>
+    </div>
+    <div class="explain" data-explain="ed · u · ca · tion = 4 beats."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> Saturday</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. 1</button>
+      <button class="opt">b. 2</button>
+      <button class="opt">c. 3</button>
+      <button class="opt">d. 4</button>
+    </div>
+    <div class="explain" data-explain="Sat · ur · day = 3 beats."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> quick</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. 1</button>
+      <button class="opt">b. 2</button>
+      <button class="opt">c. 3</button>
+      <button class="opt">d. 4</button>
+    </div>
+    <div class="explain" data-explain="quick = 1 beat. Two vowel letters, one vowel sound."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> telephone</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. 1</button>
+      <button class="opt">b. 2</button>
+      <button class="opt">c. 3</button>
+      <button class="opt">d. 4</button>
+    </div>
+    <div class="explain" data-explain="tel · e · phone = 3 beats. The last e is silent."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">7.</span> friendly</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. 1</button>
+      <button class="opt">b. 2</button>
+      <button class="opt">c. 3</button>
+      <button class="opt">d. 4</button>
+    </div>
+    <div class="explain" data-explain="friend · ly = 2 beats."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">8.</span> incredible</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. 1</button>
+      <button class="opt">b. 2</button>
+      <button class="opt">c. 3</button>
+      <button class="opt">d. 4</button>
+    </div>
+    <div class="explain" data-explain="in · cred · i · ble = 4 beats. The -le is a syllable."></div>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 6: EXERCISE 2 — CLAP AND SPLIT (reveal) -->
+<section>
+  <h2>Exercise 2 — Clap and split</h2>
+  <p>Say the word. Clap the beats. How many syllables? Then click to check.</p>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> pineapple</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">pine · ap · ple = 3</span> — The -le at the end is a beat.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> jacket</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">jack · et = 2</span> — Two vowel sounds.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> cute</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">cute = 1</span> — The e at the end is silent.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> bottle</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">bot · tle = 2</span> — The -le at the end is a beat.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> apologize</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">a · pol · o · gize = 4</span> — The last e is silent.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> animal</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">an · i · mal = 3</span> — Three vowel sounds.</p>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 7: EXERCISE 3 — ODD ONE OUT (MC) -->
+<section>
+  <h2>Exercise 3 — Find the different word</h2>
+  <p>Three words have the same number of syllables. One word is different. Click the different word.</p>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> Which word is different?</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. dinner</button>
+      <button class="opt">b. sun</button>
+      <button class="opt">c. chair</button>
+      <button class="opt">d. desk</button>
+    </div>
+    <div class="explain" data-explain="din · ner = 2. The others = 1."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> Which word is different?</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. morning</button>
+      <button class="opt">b. purple</button>
+      <button class="opt">c. piano</button>
+      <button class="opt">d. pocket</button>
+    </div>
+    <div class="explain" data-explain="pi · an · o = 3. The others = 2."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> Which word is different?</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. vacation</button>
+      <button class="opt">b. pajamas</button>
+      <button class="opt">c. October</button>
+      <button class="opt">d. baby</button>
+    </div>
+    <div class="explain" data-explain="ba · by = 2. The others = 3."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> Which word is different?</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. celebration</button>
+      <button class="opt">b. delivery</button>
+      <button class="opt">c. Arizona</button>
+      <button class="opt">d. newspaper</button>
+    </div>
+    <div class="explain" data-explain="news · pa · per = 3. The others = 4."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> Which word is different?</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. smart</button>
+      <button class="opt">b. cookie</button>
+      <button class="opt">c. bright</button>
+      <button class="opt">d. loud</button>
+    </div>
+    <div class="explain" data-explain="cook · ie = 2. The others = 1."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> Which word is different?</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. avocado</button>
+      <button class="opt">b. grandmother</button>
+      <button class="opt">c. basketball</button>
+      <button class="opt">d. engineer</button>
+    </div>
+    <div class="explain" data-explain="av · o · ca · do = 4. The others = 3."></div>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 8: WHY SYLLABLES — LOOK AHEAD -->
+<section>
+  <h2>Why syllables? Look ahead</h2>
+  <p>Next we will <strong>compare</strong> things: <em>My car is older than your car.</em> The number of syllables in an adjective tells us how to change it.</p>
+  <table class="compare">
+    <tr><th>Adjective group</th><th>Example</th><th>Next lesson</th></tr>
+    <tr><td>1 syllable</td><td>old, new, slow</td><td>old → <strong>older</strong></td></tr>
+    <tr><td>2 syllables, ends in -y</td><td>easy, noisy, hungry</td><td>easy → <strong>easier</strong></td></tr>
+    <tr><td>2 syllables, no -y</td><td>cheerful, helpful, honest</td><td>cheerful → <strong>more cheerful</strong></td></tr>
+    <tr><td>3 or more syllables</td><td>beautiful, popular, exciting</td><td>beautiful → <strong>more beautiful</strong></td></tr>
+  </table>
+  <div class="check-tip"><strong>Today:</strong> just count the syllables and look at the last letter. The new forms come next lesson.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 9: EXERCISE 4 — ADJECTIVE GROUPS (MC) -->
+<section>
+  <h2>Exercise 4 — Which group?</h2>
+  <p>Count the syllables. Look at the last letter. Click the group.</p>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> young</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. 1 syllable</button>
+      <button class="opt">b. 2 syllables, ends in -y</button>
+      <button class="opt">c. 2 syllables, no -y</button>
+      <button class="opt">d. 3 or more syllables</button>
+    </div>
+    <div class="explain" data-explain="young = 1 beat."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> colorful</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. 1 syllable</button>
+      <button class="opt">b. 2 syllables, ends in -y</button>
+      <button class="opt">c. 2 syllables, no -y</button>
+      <button class="opt">d. 3 or more syllables</button>
+    </div>
+    <div class="explain" data-explain="col · or · ful = 3 beats."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> pretty</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. 1 syllable</button>
+      <button class="opt">b. 2 syllables, ends in -y</button>
+      <button class="opt">c. 2 syllables, no -y</button>
+      <button class="opt">d. 3 or more syllables</button>
+    </div>
+    <div class="explain" data-explain="pret · ty = 2 beats, and it ends in -y."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> modern</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. 1 syllable</button>
+      <button class="opt">b. 2 syllables, ends in -y</button>
+      <button class="opt">c. 2 syllables, no -y</button>
+      <button class="opt">d. 3 or more syllables</button>
+    </div>
+    <div class="explain" data-explain="mod · ern = 2 beats. It ends in -n, not -y."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> safe</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. 1 syllable</button>
+      <button class="opt">b. 2 syllables, ends in -y</button>
+      <button class="opt">c. 2 syllables, no -y</button>
+      <button class="opt">d. 3 or more syllables</button>
+    </div>
+    <div class="explain" data-explain="safe = 1 beat. The e at the end is silent."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> lazy</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. 1 syllable</button>
+      <button class="opt">b. 2 syllables, ends in -y</button>
+      <button class="opt">c. 2 syllables, no -y</button>
+      <button class="opt">d. 3 or more syllables</button>
+    </div>
+    <div class="explain" data-explain="la · zy = 2 beats, and it ends in -y."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">7.</span> terrible</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. 1 syllable</button>
+      <button class="opt">b. 2 syllables, ends in -y</button>
+      <button class="opt">c. 2 syllables, no -y</button>
+      <button class="opt">d. 3 or more syllables</button>
+    </div>
+    <div class="explain" data-explain="ter · ri · ble = 3 beats. The -le is a syllable."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">8.</span> boring</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. 1 syllable</button>
+      <button class="opt">b. 2 syllables, ends in -y</button>
+      <button class="opt">c. 2 syllables, no -y</button>
+      <button class="opt">d. 3 or more syllables</button>
+    </div>
+    <div class="explain" data-explain="bor · ing = 2 beats. It ends in -g, not -y."></div>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 10: SUMMARY -->
+<section>
+  <h2>Summary — Syllables</h2>
+  <table class="compare">
+    <tr><th>Remember</th><th>Example</th></tr>
+    <tr><td>One beat = one syllable</td><td>cat = 1 &nbsp;·&nbsp; hap · py = 2 &nbsp;·&nbsp; beau · ti · ful = 3 &nbsp;·&nbsp; in · for · ma · tion = 4</td></tr>
+    <tr><td>Count vowel sounds, not letters</td><td>cake = 1 (two vowel letters, one sound)</td></tr>
+    <tr><td>Silent e is not a syllable</td><td>late = 1 &nbsp;·&nbsp; huge = 1</td></tr>
+    <tr><td>-le at the end is a syllable</td><td>ta · ble = 2 &nbsp;·&nbsp; lit · tle = 2</td></tr>
+    <tr><td>Next lesson</td><td>1 syllable → -er &nbsp;·&nbsp; ends in -y → -ier &nbsp;·&nbsp; long adjectives → more</td></tr>
+  </table>
+  <p style="text-align:center; margin-top:30px; font-size:0.95em; color:var(--accent);"><strong>End of Deck — Great work!</strong></p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    controls: true,
+    progress: true,
+    center: false,
+    transition: 'slide',
+    width: 1100,
+    height: 720,
+    margin: 0.04
+  });
+
+  // Clickable multiple-choice wiring (data-correct = 0-indexed button)
+  document.querySelectorAll('.mc').forEach(mc => {
+    const correct = parseInt(mc.dataset.correct, 10);
+    const buttons = mc.querySelectorAll('button.opt');
+    const explain = mc.nextElementSibling && mc.nextElementSibling.classList.contains('explain')
+      ? mc.nextElementSibling : null;
+    const explainText = explain ? explain.dataset.explain || '' : '';
+    buttons.forEach((b, i) => {
+      b.addEventListener('click', () => {
+        // `sel` marks the clicked button so its class always changes on every
+        // click — keeps verify_html_deck.mjs from false-failing when the correct
+        // answer isn't option (a). Do not remove.
+        buttons.forEach(x => x.classList.remove('correct', 'wrong', 'sel'));
+        b.classList.add('sel');
+        if (i === correct) {
+          b.classList.add('correct');
+          if (explain) {
+            explain.textContent = '✓ Correct. ' + explainText;
+            explain.classList.remove('bad'); explain.classList.add('good');
+          }
+        } else {
+          b.classList.add('wrong');
+          buttons[correct].classList.add('correct');
+          if (explain) {
+            const answerText = buttons[correct].textContent;
+            explain.innerHTML = '✗ The answer is <strong>' + answerText + '</strong>. ' + explainText;
+            explain.classList.remove('good'); explain.classList.add('bad');
+          }
+        }
+      });
+    });
+  });
+</script>
+<!-- PENCIL DRAW OVERLAY — iPad annotation layer (additive; safe to delete this whole block) -->
+<style>
+  #drawCanvas {
+    position: fixed; inset: 0; z-index: 50; pointer-events: none; touch-action: none;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  }
+  html.draw-armed, html.draw-armed body, html.draw-armed .reveal {
+    -webkit-user-select: none !important; user-select: none !important;
+    -webkit-touch-callout: none !important;
+  }
+  html.presentation-mode, html.presentation-mode body {
+    width: 100%; height: 100%; overflow: hidden !important; overscroll-behavior: none;
+  }
+  html.presentation-mode body { position: fixed; inset: 0; }
+  html.presentation-mode .reveal { width: 100vw !important; height: 100vh !important; height: 100dvh !important; }
+  html.presentation-mode .reveal .slides section { overscroll-behavior-y: contain; }
+  #drawToggle {
+    position: fixed; top: 10px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 20px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle.armed { opacity: 1; background: #fde9c8; border-color: #e8a013; }
+  #fsToggle {
+    position: fixed; top: 62px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 19px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle, #fsToggle { transition: opacity 0.3s; }
+  html.presentation-mode #drawToggle:not(.armed), html.presentation-mode #fsToggle { opacity: 0.15; }
+  #drawBar {
+    position: fixed; top: 10px; right: 62px; z-index: 60; display: flex; gap: 8px;
+    background: #fff; border: 1px solid #bbb; border-radius: 22px; padding: 6px 10px;
+    align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  #drawBar button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ccc; background: #fff; cursor: pointer; font-size: 15px; padding: 0; }
+  #drawBar .swatch { border-width: 2px; }
+  #drawBar .swatch.on { outline: 3px solid #e8a013; }
+</style>
+<canvas id="drawCanvas"></canvas>
+<div id="drawBar" hidden>
+  <button class="swatch on" data-color="#d33333" style="background:#d33333"></button>
+  <button class="swatch" data-color="#2266cc" style="background:#2266cc"></button>
+  <button class="swatch" data-color="#1a1a1a" style="background:#1a1a1a"></button>
+  <button id="drawUndo" title="Undo">↩</button>
+  <button id="drawClear" title="Clear slide">✕</button>
+</div>
+<button id="drawToggle" title="Pencil mode (pen only; finger locked)" aria-pressed="false">✏️</button>
+<button id="fsToggle" title="Presentation mode" aria-label="Presentation mode" aria-pressed="false">⛶</button>
+<script>
+(() => {
+  const cv = document.getElementById('drawCanvas');
+  const ctx = cv.getContext('2d');
+  const bar = document.getElementById('drawBar');
+  const toggle = document.getElementById('drawToggle');
+  let armed = false, color = '#d33333', cur = null, drawPointerId = null;
+  const strokes = new Map(); // slide "h-v" -> stroke list; ink persists per slide
+  const key = () => { const i = Reveal.getIndices(); return i.h + '-' + (i.v || 0); };
+  const list = () => { const k = key(); if (!strokes.has(k)) strokes.set(k, []); return strokes.get(k); };
+
+  function size() {
+    const d = window.devicePixelRatio || 1;
+    cv.width = innerWidth * d; cv.height = innerHeight * d;
+    cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    render();
+  }
+  function seg(a, b, c, w) {
+    ctx.strokeStyle = c; ctx.lineWidth = Math.max(0.75, w * innerWidth);
+    ctx.beginPath(); ctx.moveTo(a.x * innerWidth, a.y * innerHeight);
+    ctx.lineTo(b.x * innerWidth, b.y * innerHeight); ctx.stroke();
+  }
+  function render() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const s of list())
+      for (let i = 1; i < s.pts.length; i++) seg(s.pts[i - 1], s.pts[i], s.color, s.pts[i].w);
+  }
+  const pt = (e) => ({ x: e.clientX / innerWidth, y: e.clientY / innerHeight,
+    w: (e.pointerType === 'pen' ? 1.5 + 4 * (e.pressure || 0.5) : 3) / innerWidth });
+
+  const cancel = (e) => { if (e.cancelable) e.preventDefault(); };
+  cv.addEventListener('pointerdown', (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerType === 'touch') {
+      cv.setPointerCapture(e.pointerId); // swallow the palm/finger for its full contact
+      return;
+    }
+    if ((e.pointerType !== 'pen' && e.pointerType !== 'mouse') || drawPointerId !== null) return;
+    drawPointerId = e.pointerId;
+    cur = { color, pts: [pt(e)] };
+    list().push(cur);
+    cv.setPointerCapture(e.pointerId);
+  }, { passive: false });
+  cv.addEventListener('pointermove', (e) => {
+    if (!armed) return;
+    if (e.pointerType === 'touch') { cancel(e); return; }
+    if (!cur || e.pointerId !== drawPointerId) return;
+    cancel(e);
+    const coalesced = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+    const events = coalesced && coalesced.length ? coalesced : [e];
+    for (const ev of events) {
+      const p = pt(ev);
+      seg(cur.pts[cur.pts.length - 1], p, cur.color, p.w);
+      cur.pts.push(p);
+    }
+  }, { passive: false });
+  const end = (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerId === drawPointerId) { cur = null; drawPointerId = null; }
+  };
+  cv.addEventListener('pointerup', end, { passive: false });
+  cv.addEventListener('pointercancel', end, { passive: false });
+  for (const eventName of ['touchstart', 'touchmove', 'touchend', 'touchcancel'])
+    cv.addEventListener(eventName, (e) => { if (armed) cancel(e); }, { passive: false });
+  document.addEventListener('selectstart', (e) => { if (armed) cancel(e); });
+
+  toggle.addEventListener('click', () => {
+    armed = !armed;
+    cv.style.pointerEvents = armed ? 'auto' : 'none'; // disarmed = taps/swipes reach the slides
+    bar.hidden = !armed;
+    toggle.classList.toggle('armed', armed);
+    toggle.setAttribute('aria-pressed', String(armed));
+    document.documentElement.classList.toggle('draw-armed', armed);
+    if (!armed) { cur = null; drawPointerId = null; }
+  });
+  bar.querySelectorAll('.swatch').forEach((b) => b.addEventListener('click', () => {
+    color = b.dataset.color;
+    bar.querySelectorAll('.swatch').forEach((x) => x.classList.toggle('on', x === b));
+  }));
+  document.getElementById('drawUndo').addEventListener('click', () => { list().pop(); render(); });
+  document.getElementById('drawClear').addEventListener('click', () => { strokes.set(key(), []); render(); });
+
+  Reveal.on('slidechanged', render);
+  addEventListener('resize', size);
+  size();
+
+  // Fixed presentation mode avoids iPadOS's native-fullscreen pull-down exit gesture.
+  const fsT = document.getElementById('fsToggle');
+  let presenting = false;
+  const toast = (message) => {
+    const t = document.createElement('div');
+    t.textContent = message;
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:10px;font:14px system-ui;z-index:99;max-width:46ch;text-align:center';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  };
+  fsT.addEventListener('click', () => {
+    presenting = !presenting;
+    document.documentElement.classList.toggle('presentation-mode', presenting);
+    fsT.textContent = presenting ? '\u2921' : '\u26f6';
+    fsT.setAttribute('aria-pressed', String(presenting));
+    fsT.title = presenting ? 'Exit presentation mode' : 'Presentation mode';
+    requestAnimationFrame(() => {
+      if (Reveal.layout) Reveal.layout();
+      size();
+    });
+    if (presenting) toast('Presentation mode on. For more space in Safari, tap AA, then Hide Toolbar.');
+  });
+})();
+</script>
+<!-- END PENCIL DRAW OVERLAY -->
+
+</body>
+</html>
