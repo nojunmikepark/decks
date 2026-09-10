@@ -1,0 +1,696 @@
+<!-- generator: _lib/school_deck_scaffold.py -->
+<!DOCTYPE html>
+<!--
+  ESL reveal.js DECK TEMPLATE — copy this file, rename to
+  YYYY-MM-DD_Title_Case_Topic_L<level>_ccode.html in the School Stuff root,
+  and fill the Edit.
+
+  LEVEL SWAP: this template ships L2 colors (green). For L4, change the
+  three lines in :root marked  /* L4: ... */  and swap theme to white
+  (already white). L2 accent 2E6B3A / light D9E9D3.  L4 accent 1F4E79 /
+  light D6E4F2.
+
+  All canonical contracts (invisible scrollbar, 80vh bottom spacer per
+  section, no font-size on .reveal, table.compare last-child border,
+  reveal init config) are baked in. Run the linter after editing:
+      node _lib/verify_html_deck.mjs <deck.html>            # rendered check
+      python3 _lib/verify_html_deck_static.py <deck.html>   # fast source lint
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Comparative Adjectives — Level 2</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/theme/white.css">
+<style>
+  :root { --accent: #2E6B3A; --accent-light: #D9E9D3; --gray: #555555;
+          /* L4: --accent: #1F4E79; --accent-light: #D6E4F2; */
+          --good: #15803D; --bad: #B91C1C; --muted: #777; }
+
+  /* TYPOGRAPHY CANON — never put font-size on .reveal itself */
+  .reveal { font-family: Arial, sans-serif; }
+  .reveal h1, .reveal h2, .reveal h3 { color: var(--accent); font-family: Arial, sans-serif; text-transform: none; letter-spacing: 0; }
+  .reveal h1 { font-size: 2.2em; }
+  .reveal h2 { font-size: 1.6em; }
+  .reveal h3 { font-size: 1.15em; }
+  .reveal h4 { font-size: 1.05em; }
+  .reveal p, .reveal li { font-size: 0.85em; line-height: 1.5; }
+
+  /* SCROLLABLE SLIDES WITH INVISIBLE SCROLLBAR */
+  .reveal .slides section {
+    overflow-y: auto !important;
+    max-height: 92vh !important;
+    text-align: left;
+    padding: 20px 40px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .reveal .slides section::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* Title slide */
+  .title-slide { text-align: center !important; }
+  .title-slide h1 { font-size: 2.6em; margin-bottom: 0.3em; }
+  .title-slide .subtitle { font-size: 1.2em; color: var(--gray); }
+
+  /* Pattern / example / note / tip */
+  .pattern-box {
+    background: var(--accent-light);
+    border-left: 6px solid var(--accent);
+    padding: 14px 20px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+  .pattern-box code {
+    background: white; padding: 2px 8px; border-radius: 3px;
+    color: var(--accent); font-weight: bold;
+  }
+  .example {
+    background: #FAFAFA; border: 1px solid #DDD;
+    padding: 10px 16px; margin: 8px 0; border-radius: 3px; font-size: 0.9em;
+  }
+  .example .key { color: var(--accent); font-weight: bold; }
+  .note { font-style: italic; color: var(--gray); font-size: 0.85em; margin-top: 10px; }
+  .check-tip {
+    background: #FFF8E1; border-left: 6px solid #F5A623;
+    padding: 12px 18px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+
+  /* Comparison tables — borders need !important (reveal theme strips them) */
+  table.compare {
+    border-collapse: collapse !important; margin: 14px 0;
+    font-size: 0.82em; width: 100%; border: 1px solid var(--accent) !important;
+  }
+  table.compare th, table.compare td {
+    border: 1px solid var(--accent) !important; padding: 8px 12px; text-align: left;
+  }
+  table.compare tr:last-child td { border-bottom: 1px solid var(--accent) !important; }
+  table.compare th { background: var(--accent); color: white; }
+  table.compare td:first-child { font-weight: bold; color: var(--accent); }
+
+  /* Click-to-reveal exercise (single-answer reveal) */
+  .exercise {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .exercise .question { font-size: 0.9em; margin: 0 0 10px 0; }
+  .exercise .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .exercise button.reveal-btn {
+    background: var(--accent); color: white; border: none; padding: 6px 14px;
+    border-radius: 4px; font-family: Arial; font-size: 0.8em; cursor: pointer;
+  }
+  .exercise button.reveal-btn:hover { filter: brightness(0.85); }
+  .exercise .answer {
+    display: none; margin-top: 10px; padding: 10px 14px;
+    background: var(--accent-light); border-left: 4px solid var(--accent); font-size: 0.9em;
+  }
+  .exercise .answer .key { color: var(--accent); font-weight: bold; }
+  .exercise .answer.shown { display: block; }
+
+  /* Clickable multiple choice */
+  .mc-q {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .mc-q .stem { font-size: 0.9em; margin: 0 0 10px 0; }
+  .mc-q .stem .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .mc { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .mc button.opt {
+    font-family: inherit; font-size: 0.8em; padding: 10px 12px;
+    border: 2px solid #d0d8e4; background: white; border-radius: 8px;
+    cursor: pointer; transition: all .15s; font-weight: 600;
+  }
+  .mc button.opt:hover { border-color: var(--accent); background: var(--accent-light); }
+  .mc button.opt.correct { background: #DCFCE7; border-color: var(--good); color: var(--good); }
+  .mc button.opt.wrong   { background: #FEE2E2; border-color: var(--bad);  color: var(--bad); }
+  .explain { margin-top: 10px; font-size: 0.78em; color: var(--muted); font-style: italic; min-height: 1.2em; }
+  .explain.good { color: var(--good); font-style: normal; }
+  .explain.bad  { color: var(--bad); }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1: TITLE -->
+<section class="title-slide">
+  <h1>Comparative Adjectives</h1>
+  <p class="subtitle">Compare two people, places, or things</p>
+  <p class="subtitle" style="margin-top: 1.5em;">Level 2 — Grammar</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 2: WHAT IS A COMPARATIVE -->
+<section>
+  <h2>What is a comparative adjective?</h2>
+  <p>We use a <strong>comparative adjective</strong> to compare <strong>two</strong> people, places, or things.</p>
+  <div class="pattern-box">
+    <strong>Pattern:</strong> A + is + <code>adjective-er</code> + <strong>than</strong> + B<br>
+    <strong>Pattern:</strong> A + is + <code>more</code> + adjective + <strong>than</strong> + B
+  </div>
+  <div class="example">My car is <span class="key">older than</span> your car.</div>
+  <div class="example">This book is <span class="key">easier than</span> that book.</div>
+  <div class="example">Tokyo is <span class="key">larger than</span> Seoul.</div>
+  <div class="example">Your garden is <span class="key">more beautiful than</span> my garden.</div>
+  <div class="check-tip"><strong>Watch out:</strong> The word is <strong>than</strong> (t-h-a-n). Not <em>then</em>. Not <em>that</em>.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 3: STEP 1 COUNT SYLLABLES -->
+<section>
+  <h2>Step 1 — Count the syllables</h2>
+  <p>Remember last class? Clap the beats. The number of syllables tells you the rule.</p>
+  <table class="compare">
+    <tr><th>Syllables</th><th>Rule</th><th>Example</th></tr>
+    <tr><td>1 syllable</td><td>add <strong>-er</strong></td><td>old → <strong>older</strong></td></tr>
+    <tr><td>1 syllable, ends in -e</td><td>add <strong>-r</strong></td><td>large → <strong>larger</strong></td></tr>
+    <tr><td>1 syllable, consonant-vowel-consonant</td><td><strong>double</strong> the last letter + -er</td><td>wet → <strong>wetter</strong></td></tr>
+    <tr><td>2 syllables, ends in -y</td><td>change <strong>y → i</strong> + -er</td><td>easy → <strong>easier</strong></td></tr>
+    <tr><td>2 syllables, no -y</td><td><strong>more</strong> + adjective</td><td>cheerful → <strong>more cheerful</strong></td></tr>
+    <tr><td>3 or more syllables</td><td><strong>more</strong> + adjective</td><td>beautiful → <strong>more beautiful</strong></td></tr>
+    <tr><td>irregular</td><td>new word</td><td>good → <strong>better</strong>, bad → <strong>worse</strong></td></tr>
+  </table>
+  <p class="note">Short word (1 syllable) → -er. Long word (3+ syllables) → more. Two syllables? Look at the last letter.</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 4: RULE 1 -->
+<section>
+  <h2>Rule 1 — One syllable: add -er</h2>
+  <div class="pattern-box">
+    <strong>1 syllable:</strong> adjective + <code>-er</code><br>
+    <em>long → longer &nbsp;·&nbsp; cool → cooler</em>
+  </div>
+  <div class="example">The Nile is <span class="key">longer</span> than the Amazon.</div>
+  <h3>Two spelling changes</h3>
+  <div class="pattern-box">
+    <strong>Ends in -e:</strong> add only <code>-r</code> &nbsp;→&nbsp; <em>large → larger, close → closer</em><br>
+    <strong>Consonant-vowel-consonant:</strong> double the last letter + <code>-er</code> &nbsp;→&nbsp; <em>wet → wetter, sad → sadder</em>
+  </div>
+  <div class="check-tip"><strong>Quick check:</strong> w-e-t = consonant, vowel, consonant → double the <strong>t</strong>: we<strong>tt</strong>er. But cool → coo<strong>l</strong>er (two vowels, no double).</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 5: RULE 2 -->
+<section>
+  <h2>Rule 2 — Two syllables ending in -y: y → i + -er</h2>
+  <div class="pattern-box">
+    <strong>2 syllables, ends in -y:</strong> change <code>y</code> to <code>i</code>, then add <code>-er</code><br>
+    <em>happy → happier &nbsp;·&nbsp; lucky → luckier &nbsp;·&nbsp; easy → easier</em>
+  </div>
+  <div class="example">Maria is <span class="key">happier</span> than she was last year.</div>
+  <div class="example">This puzzle is <span class="key">easier</span> than that puzzle.</div>
+  <p class="note">Say it: hap-py → hap-pi-er. The sound is the same. Only the spelling changes.</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 6: RULE 3 -->
+<section>
+  <h2>Rule 3 — Long adjectives: more + adjective</h2>
+  <div class="pattern-box">
+    <strong>2 syllables with no -y, or 3 or more syllables:</strong> <code>more</code> + adjective<br>
+    <em>careful → more careful &nbsp;·&nbsp; famous → more famous &nbsp;·&nbsp; beautiful → more beautiful</em>
+  </div>
+  <div class="example">A nurse is <span class="key">more careful</span> than a child.</div>
+  <div class="example">Hollywood is <span class="key">more famous</span> than Glendale.</div>
+  <h3>Irregular adjectives — learn them</h3>
+  <div class="pattern-box">
+    good → <code>better</code> &nbsp;·&nbsp; bad → <code>worse</code>
+  </div>
+  <div class="check-tip"><strong>Watch out:</strong> Use <strong>-er</strong> OR <strong>more</strong>. Never both. NOT <em>more longer</em>. NOT <em>more happier</em>.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 7: EXERCISE 1 MC -->
+<section>
+  <h2>Exercise 1 — Choose the form</h2>
+  <p>Count the syllables. Click the correct comparative.</p>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> San Diego is ____ than Seattle. (warm)</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. warmer</button>
+      <button class="opt">b. more warm</button>
+      <button class="opt">c. warmest</button>
+      <button class="opt">d. more warmer</button>
+    </div>
+    <div class="explain" data-explain="warm = 1 syllable → add -er."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> My grandfather's stories are ____ than my father's stories. (funny)</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. funnyer</button>
+      <button class="opt">b. more funny</button>
+      <button class="opt">c. funnier</button>
+      <button class="opt">d. funniest</button>
+    </div>
+    <div class="explain" data-explain="fun-ny = 2 syllables, ends in -y → y to i + -er."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> The Mississippi River is ____ than the Los Angeles River. (wide)</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. wide</button>
+      <button class="opt">b. more wide</button>
+      <button class="opt">c. widest</button>
+      <button class="opt">d. wider</button>
+    </div>
+    <div class="explain" data-explain="wide = 1 syllable, ends in -e → add only -r."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> Fruit is ____ than candy. (healthy)</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. healthyer</button>
+      <button class="opt">b. healthier</button>
+      <button class="opt">c. more healthier</button>
+      <button class="opt">d. healthiest</button>
+    </div>
+    <div class="explain" data-explain="health-y = 2 syllables, ends in -y → y to i + -er."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> This exercise is ____ than the last one. (difficult)</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. difficulter</button>
+      <button class="opt">b. most difficult</button>
+      <button class="opt">c. more difficult</button>
+      <button class="opt">d. more difficulter</button>
+    </div>
+    <div class="explain" data-explain="dif-fi-cult = 3 syllables → more + adjective."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> The floor is ____ than the table. (low)</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. lower</button>
+      <button class="opt">b. more low</button>
+      <button class="opt">c. lowest</button>
+      <button class="opt">d. more lower</button>
+    </div>
+    <div class="explain" data-explain="low = 1 syllable → add -er."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">7.</span> Soccer is ____ than golf. (exciting)</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. excitinger</button>
+      <button class="opt">b. more exciting</button>
+      <button class="opt">c. most exciting</button>
+      <button class="opt">d. more excitinger</button>
+    </div>
+    <div class="explain" data-explain="ex-cit-ing = 3 syllables → more + adjective."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">8.</span> My hands are ____ than your hands. (dirty)</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. dirtyer</button>
+      <button class="opt">b. more dirty</button>
+      <button class="opt">c. dirtiest</button>
+      <button class="opt">d. dirtier</button>
+    </div>
+    <div class="explain" data-explain="dirt-y = 2 syllables, ends in -y → y to i + -er."></div>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 8: EXERCISE 2 MAKE THE FORM -->
+<section>
+  <h2>Exercise 2 — Make the comparative</h2>
+  <p>Say the comparative form. Then click to check.</p>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> dark → ?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">darker</span> — 1 syllable: add -er.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> lazy → ?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">lazier</span> — la-zy: 2 syllables, ends in -y: y → i + -er.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> popular → ?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">more popular</span> — pop-u-lar: 3 syllables: more + adjective.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> fat → ?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">fatter</span> — f-a-t: consonant-vowel-consonant: double the t + -er.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> late → ?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">later</span> — ends in -e: add only -r.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> angry → ?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">angrier</span> — an-gry: 2 syllables, ends in -y: y → i + -er.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">7.</span> useful → ?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">more useful</span> — use-ful: 2 syllables, no -y: more + adjective.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">8.</span> rich → ?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">richer</span> — 1 syllable: add -er.</p>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 9: EXERCISE 3 FIND THE MISTAKE -->
+<section>
+  <h2>Exercise 3 — Find the mistake</h2>
+  <p>Each sentence has one mistake. Say the correct sentence. Then click to check.</p>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> This rope is more stronger than that rope.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">This rope is <span class="key">stronger</span> than that rope. — -er OR more, never both.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> My uncle's truck is uglyer than my aunt's car.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">My uncle's truck is <span class="key">uglier</span> than my aunt's car. — ends in -y: y → i + -er.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> Honey is sweet than sugar.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Honey is <span class="key">sweeter</span> than sugar. — the adjective needs -er before than.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> Health is more important then money.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Health is more important <span class="key">than</span> money. — than, not then.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> My room is cleaner that your room.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">My room is cleaner <span class="key">than</span> your room. — than, not that.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> Pasta is deliciouser than rice.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Pasta is <span class="key">more delicious</span> than rice. — de-li-cious: 3 syllables: more + adjective.</p>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 10: EXERCISE 4 COMPARE TWO THINGS -->
+<section>
+  <h2>Exercise 4 — Compare two things</h2>
+  <p>Make a sentence with the adjective in ( ). Then click to check.</p>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> a drum / a guitar (loud)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">A drum is <span class="key">louder than</span> a guitar.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> the sun / the moon (bright)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">The sun is <span class="key">brighter than</span> the moon.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> a rose / a weed (pretty)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">A rose is <span class="key">prettier than</span> a weed.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> a mountain / a hill (high)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">A mountain is <span class="key">higher than</span> a hill.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> a dictionary / a comic book (helpful)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">A dictionary is <span class="key">more helpful than</span> a comic book.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> 6:00 a.m. / 9:00 a.m. (early)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">6:00 a.m. is <span class="key">earlier than</span> 9:00 a.m.</p>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 11: SUMMARY -->
+<section>
+  <h2>Summary — Comparative Adjectives</h2>
+  <table class="compare">
+    <tr><th>Remember</th><th>Example</th></tr>
+    <tr><td>Compare TWO things. Use <strong>than</strong>.</td><td>My car is older <strong>than</strong> your car.</td></tr>
+    <tr><td>1 syllable → -er (double the letter after consonant-vowel-consonant)</td><td>old → older, wet → wetter</td></tr>
+    <tr><td>2 syllables, ends in -y → -ier</td><td>easy → easier</td></tr>
+    <tr><td>2 syllables no -y, 3+ syllables → more</td><td>cheerful → more cheerful</td></tr>
+    <tr><td>Irregular</td><td>good → better, bad → worse</td></tr>
+    <tr><td>Never -er AND more together</td><td>NOT more older</td></tr>
+  </table>
+  <p style="text-align:center; margin-top:30px; font-size:0.95em; color:var(--accent);"><strong>Next class: the biggest, the most beautiful — superlatives!</strong></p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    controls: true,
+    progress: true,
+    center: false,
+    transition: 'slide',
+    width: 1100,
+    height: 720,
+    margin: 0.04
+  });
+
+  // Clickable multiple-choice wiring (data-correct = 0-indexed button)
+  document.querySelectorAll('.mc').forEach(mc => {
+    const correct = parseInt(mc.dataset.correct, 10);
+    const buttons = mc.querySelectorAll('button.opt');
+    const explain = mc.nextElementSibling && mc.nextElementSibling.classList.contains('explain')
+      ? mc.nextElementSibling : null;
+    const explainText = explain ? explain.dataset.explain || '' : '';
+    buttons.forEach((b, i) => {
+      b.addEventListener('click', () => {
+        // `sel` marks the clicked button so its class always changes on every
+        // click — keeps verify_html_deck.mjs from false-failing when the correct
+        // answer isn't option (a). Do not remove.
+        buttons.forEach(x => x.classList.remove('correct', 'wrong', 'sel'));
+        b.classList.add('sel');
+        if (i === correct) {
+          b.classList.add('correct');
+          if (explain) {
+            explain.textContent = '✓ Correct. ' + explainText;
+            explain.classList.remove('bad'); explain.classList.add('good');
+          }
+        } else {
+          b.classList.add('wrong');
+          buttons[correct].classList.add('correct');
+          if (explain) {
+            const answerText = buttons[correct].textContent;
+            explain.innerHTML = '✗ The answer is <strong>' + answerText + '</strong>. ' + explainText;
+            explain.classList.remove('good'); explain.classList.add('bad');
+          }
+        }
+      });
+    });
+  });
+</script>
+<!-- PENCIL DRAW OVERLAY — iPad annotation layer (additive; safe to delete this whole block) -->
+<style>
+  #drawCanvas {
+    position: fixed; inset: 0; z-index: 50; pointer-events: none; touch-action: none;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  }
+  html.draw-armed, html.draw-armed body, html.draw-armed .reveal {
+    -webkit-user-select: none !important; user-select: none !important;
+    -webkit-touch-callout: none !important;
+  }
+  html.presentation-mode, html.presentation-mode body {
+    width: 100%; height: 100%; overflow: hidden !important; overscroll-behavior: none;
+  }
+  html.presentation-mode body { position: fixed; inset: 0; }
+  html.presentation-mode .reveal { width: 100vw !important; height: 100vh !important; height: 100dvh !important; }
+  html.presentation-mode .reveal .slides section { overscroll-behavior-y: contain; }
+  #drawToggle {
+    position: fixed; top: 10px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 20px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle.armed { opacity: 1; background: #fde9c8; border-color: #e8a013; }
+  #fsToggle {
+    position: fixed; top: 62px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 19px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle, #fsToggle { transition: opacity 0.3s; }
+  html.presentation-mode #drawToggle:not(.armed), html.presentation-mode #fsToggle { opacity: 0.15; }
+  #drawBar {
+    position: fixed; top: 10px; right: 62px; z-index: 60; display: flex; gap: 8px;
+    background: #fff; border: 1px solid #bbb; border-radius: 22px; padding: 6px 10px;
+    align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  #drawBar button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ccc; background: #fff; cursor: pointer; font-size: 15px; padding: 0; }
+  #drawBar .swatch { border-width: 2px; }
+  #drawBar .swatch.on { outline: 3px solid #e8a013; }
+</style>
+<canvas id="drawCanvas"></canvas>
+<div id="drawBar" hidden>
+  <button class="swatch on" data-color="#d33333" style="background:#d33333"></button>
+  <button class="swatch" data-color="#2266cc" style="background:#2266cc"></button>
+  <button class="swatch" data-color="#1a1a1a" style="background:#1a1a1a"></button>
+  <button id="drawUndo" title="Undo">↩</button>
+  <button id="drawClear" title="Clear slide">✕</button>
+</div>
+<button id="drawToggle" title="Pencil mode (pen only; finger locked)" aria-pressed="false">✏️</button>
+<button id="fsToggle" title="Presentation mode" aria-label="Presentation mode" aria-pressed="false">⛶</button>
+<script>
+(() => {
+  const cv = document.getElementById('drawCanvas');
+  const ctx = cv.getContext('2d');
+  const bar = document.getElementById('drawBar');
+  const toggle = document.getElementById('drawToggle');
+  let armed = false, color = '#d33333', cur = null, drawPointerId = null;
+  const strokes = new Map(); // slide "h-v" -> stroke list; ink persists per slide
+  const key = () => { const i = Reveal.getIndices(); return i.h + '-' + (i.v || 0); };
+  const list = () => { const k = key(); if (!strokes.has(k)) strokes.set(k, []); return strokes.get(k); };
+
+  function size() {
+    const d = window.devicePixelRatio || 1;
+    cv.width = innerWidth * d; cv.height = innerHeight * d;
+    cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    render();
+  }
+  function seg(a, b, c, w) {
+    ctx.strokeStyle = c; ctx.lineWidth = Math.max(0.75, w * innerWidth);
+    ctx.beginPath(); ctx.moveTo(a.x * innerWidth, a.y * innerHeight);
+    ctx.lineTo(b.x * innerWidth, b.y * innerHeight); ctx.stroke();
+  }
+  function render() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const s of list())
+      for (let i = 1; i < s.pts.length; i++) seg(s.pts[i - 1], s.pts[i], s.color, s.pts[i].w);
+  }
+  const pt = (e) => ({ x: e.clientX / innerWidth, y: e.clientY / innerHeight,
+    w: (e.pointerType === 'pen' ? 1.5 + 4 * (e.pressure || 0.5) : 3) / innerWidth });
+
+  const cancel = (e) => { if (e.cancelable) e.preventDefault(); };
+  cv.addEventListener('pointerdown', (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerType === 'touch') {
+      cv.setPointerCapture(e.pointerId); // swallow the palm/finger for its full contact
+      return;
+    }
+    if ((e.pointerType !== 'pen' && e.pointerType !== 'mouse') || drawPointerId !== null) return;
+    drawPointerId = e.pointerId;
+    cur = { color, pts: [pt(e)] };
+    list().push(cur);
+    cv.setPointerCapture(e.pointerId);
+  }, { passive: false });
+  cv.addEventListener('pointermove', (e) => {
+    if (!armed) return;
+    if (e.pointerType === 'touch') { cancel(e); return; }
+    if (!cur || e.pointerId !== drawPointerId) return;
+    cancel(e);
+    const coalesced = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+    const events = coalesced && coalesced.length ? coalesced : [e];
+    for (const ev of events) {
+      const p = pt(ev);
+      seg(cur.pts[cur.pts.length - 1], p, cur.color, p.w);
+      cur.pts.push(p);
+    }
+  }, { passive: false });
+  const end = (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerId === drawPointerId) { cur = null; drawPointerId = null; }
+  };
+  cv.addEventListener('pointerup', end, { passive: false });
+  cv.addEventListener('pointercancel', end, { passive: false });
+  for (const eventName of ['touchstart', 'touchmove', 'touchend', 'touchcancel'])
+    cv.addEventListener(eventName, (e) => { if (armed) cancel(e); }, { passive: false });
+  document.addEventListener('selectstart', (e) => { if (armed) cancel(e); });
+
+  toggle.addEventListener('click', () => {
+    armed = !armed;
+    cv.style.pointerEvents = armed ? 'auto' : 'none'; // disarmed = taps/swipes reach the slides
+    bar.hidden = !armed;
+    toggle.classList.toggle('armed', armed);
+    toggle.setAttribute('aria-pressed', String(armed));
+    document.documentElement.classList.toggle('draw-armed', armed);
+    if (!armed) { cur = null; drawPointerId = null; }
+  });
+  bar.querySelectorAll('.swatch').forEach((b) => b.addEventListener('click', () => {
+    color = b.dataset.color;
+    bar.querySelectorAll('.swatch').forEach((x) => x.classList.toggle('on', x === b));
+  }));
+  document.getElementById('drawUndo').addEventListener('click', () => { list().pop(); render(); });
+  document.getElementById('drawClear').addEventListener('click', () => { strokes.set(key(), []); render(); });
+
+  Reveal.on('slidechanged', render);
+  addEventListener('resize', size);
+  size();
+
+  // Fixed presentation mode avoids iPadOS's native-fullscreen pull-down exit gesture.
+  const fsT = document.getElementById('fsToggle');
+  let presenting = false;
+  const toast = (message) => {
+    const t = document.createElement('div');
+    t.textContent = message;
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:10px;font:14px system-ui;z-index:99;max-width:46ch;text-align:center';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  };
+  fsT.addEventListener('click', () => {
+    presenting = !presenting;
+    document.documentElement.classList.toggle('presentation-mode', presenting);
+    fsT.textContent = presenting ? '\u2921' : '\u26f6';
+    fsT.setAttribute('aria-pressed', String(presenting));
+    fsT.title = presenting ? 'Exit presentation mode' : 'Presentation mode';
+    requestAnimationFrame(() => {
+      if (Reveal.layout) Reveal.layout();
+      size();
+    });
+    if (presenting) toast('Presentation mode on. For more space in Safari, tap AA, then Hide Toolbar.');
+  });
+})();
+</script>
+<!-- END PENCIL DRAW OVERLAY -->
+
+</body>
+</html>
