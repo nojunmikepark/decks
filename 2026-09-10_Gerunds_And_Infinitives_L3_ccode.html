@@ -1,0 +1,740 @@
+<!-- generator: _lib/school_deck_scaffold.py -->
+<!DOCTYPE html>
+<!--
+  ESL reveal.js DECK TEMPLATE — copy this file, rename to
+  YYYY-MM-DD_Title_Case_Topic_L<level>_ccode.html in the School Stuff root,
+  and fill the Edit.
+
+  LEVEL SWAP: this template ships L2 colors (green). For L4, change the
+  three lines in :root marked  /* L4: ... */  and swap theme to white
+  (already white). L2 accent 2E6B3A / light D9E9D3.  L4 accent 1F4E79 /
+  light D6E4F2.
+
+  All canonical contracts (invisible scrollbar, 80vh bottom spacer per
+  section, no font-size on .reveal, table.compare last-child border,
+  reveal init config) are baked in. Run the linter after editing:
+      node _lib/verify_html_deck.mjs <deck.html>            # rendered check
+      python3 _lib/verify_html_deck_static.py <deck.html>   # fast source lint
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Gerunds and Infinitives — Level 3</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/theme/white.css">
+<style>
+  :root { --accent: #1F6B6B; --accent-light: #D6E8E8; --gray: #555555;
+          /* L4: --accent: #1F4E79; --accent-light: #D6E4F2; */
+          --good: #15803D; --bad: #B91C1C; --muted: #777; }
+
+  /* TYPOGRAPHY CANON — never put font-size on .reveal itself */
+  .reveal { font-family: Arial, sans-serif; }
+  .reveal h1, .reveal h2, .reveal h3 { color: var(--accent); font-family: Arial, sans-serif; text-transform: none; letter-spacing: 0; }
+  .reveal h1 { font-size: 2.2em; }
+  .reveal h2 { font-size: 1.6em; }
+  .reveal h3 { font-size: 1.15em; }
+  .reveal h4 { font-size: 1.05em; }
+  .reveal p, .reveal li { font-size: 0.85em; line-height: 1.5; }
+
+  /* SCROLLABLE SLIDES WITH INVISIBLE SCROLLBAR */
+  .reveal .slides section {
+    overflow-y: auto !important;
+    max-height: 92vh !important;
+    text-align: left;
+    padding: 20px 40px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .reveal .slides section::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* Title slide */
+  .title-slide { text-align: center !important; }
+  .title-slide h1 { font-size: 2.6em; margin-bottom: 0.3em; }
+  .title-slide .subtitle { font-size: 1.2em; color: var(--gray); }
+
+  /* Pattern / example / note / tip */
+  .pattern-box {
+    background: var(--accent-light);
+    border-left: 6px solid var(--accent);
+    padding: 14px 20px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+  .pattern-box code {
+    background: white; padding: 2px 8px; border-radius: 3px;
+    color: var(--accent); font-weight: bold;
+  }
+  .example {
+    background: #FAFAFA; border: 1px solid #DDD;
+    padding: 10px 16px; margin: 8px 0; border-radius: 3px; font-size: 0.9em;
+  }
+  .example .key { color: var(--accent); font-weight: bold; }
+  .note { font-style: italic; color: var(--gray); font-size: 0.85em; margin-top: 10px; }
+  .check-tip {
+    background: #FFF8E1; border-left: 6px solid #F5A623;
+    padding: 12px 18px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+
+  /* Comparison tables — borders need !important (reveal theme strips them) */
+  table.compare {
+    border-collapse: collapse !important; margin: 14px 0;
+    font-size: 0.82em; width: 100%; border: 1px solid var(--accent) !important;
+  }
+  table.compare th, table.compare td {
+    border: 1px solid var(--accent) !important; padding: 8px 12px; text-align: left;
+  }
+  table.compare tr:last-child td { border-bottom: 1px solid var(--accent) !important; }
+  table.compare th { background: var(--accent); color: white; }
+  table.compare td:first-child { font-weight: bold; color: var(--accent); }
+
+  /* Click-to-reveal exercise (single-answer reveal) */
+  .exercise {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .exercise .question { font-size: 0.9em; margin: 0 0 10px 0; }
+  .exercise .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .exercise button.reveal-btn {
+    background: var(--accent); color: white; border: none; padding: 6px 14px;
+    border-radius: 4px; font-family: Arial; font-size: 0.8em; cursor: pointer;
+  }
+  .exercise button.reveal-btn:hover { filter: brightness(0.85); }
+  .exercise .answer {
+    display: none; margin-top: 10px; padding: 10px 14px;
+    background: var(--accent-light); border-left: 4px solid var(--accent); font-size: 0.9em;
+  }
+  .exercise .answer .key { color: var(--accent); font-weight: bold; }
+  .exercise .answer.shown { display: block; }
+
+  /* Clickable multiple choice */
+  .mc-q {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .mc-q .stem { font-size: 0.9em; margin: 0 0 10px 0; }
+  .mc-q .stem .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .mc { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .mc button.opt {
+    font-family: inherit; font-size: 0.8em; padding: 10px 12px;
+    border: 2px solid #d0d8e4; background: white; border-radius: 8px;
+    cursor: pointer; transition: all .15s; font-weight: 600;
+  }
+  .mc button.opt:hover { border-color: var(--accent); background: var(--accent-light); }
+  .mc button.opt.correct { background: #DCFCE7; border-color: var(--good); color: var(--good); }
+  .mc button.opt.wrong   { background: #FEE2E2; border-color: var(--bad);  color: var(--bad); }
+  .explain { margin-top: 10px; font-size: 0.78em; color: var(--muted); font-style: italic; min-height: 1.2em; }
+  .explain.good { color: var(--good); font-style: normal; }
+  .explain.bad  { color: var(--bad); }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<section class="title-slide">
+  <h1>Gerunds and Infinitives</h1>
+  <p class="subtitle">Level 3 &mdash; Grammar Practice</p>
+  <p class="subtitle" style="margin-top: 1.5em;">-ing form &nbsp;&bull;&nbsp; to + verb &nbsp;&bull;&nbsp; either one</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Two Forms After a Verb</h2>
+  <p>When one verb follows another verb, the second verb changes form.</p>
+  <div class="pattern-box">
+    <strong>Gerund:</strong> verb + <code>-ing</code> &nbsp;&rarr;&nbsp; <em>She keeps a diary. She enjoys <u>writing</u>.</em><br>
+    <strong>Infinitive:</strong> <code>to</code> + base verb &nbsp;&rarr;&nbsp; <em>He needs a job. He wants <u>to work</u>.</em>
+  </div>
+  <p class="note">The first verb tells you which form to use. There is no rule you can hear &mdash; you learn the lists.</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Group 1 &mdash; Verb + -ing</h2>
+  <div class="pattern-box">
+    <strong>advise, avoid, consider, deny, dislike, enjoy, finish, postpone, practice</strong>
+  </div>
+  <div class="example">
+    <p>The judge advised <strong>paying</strong> the ticket online.</p>
+    <p>My brother avoids <strong>flying</strong> in small planes.</p>
+    <p>We considered <strong>hiring</strong> a plumber.</p>
+    <p>She finished <strong>packing</strong> at midnight.</p>
+  </div>
+  <div class="check-tip"><strong>Quick check:</strong> After these verbs, never write <em>to</em>.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Practice 1 &mdash; Verb + -ing</h2>
+  <p>Say the answer, then click to check.</p>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> The driver denied ____ (see) the stop sign.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">seeing</span> — <em>deny</em> is a Group 1 verb.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> We practiced ____ (park) on a steep hill.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">parking</span> — <em>practice</em> is a Group 1 verb.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> The doctor advised ____ (walk) every morning.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">walking</span> — <em>advise</em> is a Group 1 verb.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> Please avoid ____ (text) while you drive.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">texting</span> — <em>avoid</em> is a Group 1 verb.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> They finished ____ (sweep) the hallway.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">sweeping</span> — <em>finish</em> is a Group 1 verb.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> Nobody enjoys ____ (repeat) the same story.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">repeating</span> — <em>enjoy</em> is a Group 1 verb.</p>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Group 2 &mdash; Verb + to + verb</h2>
+  <div class="pattern-box">
+    <strong>agree, ask, decide, expect, learn, need, offer, plan, promise, want, would like</strong>
+  </div>
+  <div class="example">
+    <p>The bank agreed <strong>to lower</strong> the fee.</p>
+    <p>My neighbor learned <strong>to fix</strong> his own bicycle.</p>
+    <p>We expect <strong>to hear</strong> from the school on Monday.</p>
+    <p>Would you like <strong>to try</strong> the soup?</p>
+  </div>
+  <div class="check-tip"><strong>Quick check:</strong> After these verbs, always write <em>to</em> + the base verb &mdash; never <em>to</em> + <em>-ing</em>.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Practice 2 &mdash; Verb + to + verb</h2>
+  <p>Say the answer, then click to check.</p>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> Omar agreed ____ (drive) me to class.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">to drive</span> — <em>agree</em> is a Group 2 verb.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> The kids want ____ (stay) up late.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">to stay</span> — <em>want</em> is a Group 2 verb.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> She promised ____ (return) my book.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">to return</span> — <em>promise</em> is a Group 2 verb.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> We need ____ (call) the landlord today.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">to call</span> — <em>need</em> is a Group 2 verb.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> He expects ____ (finish) by Friday.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">to finish</span> — <em>expect</em> is a Group 2 verb.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> My cousin decided ____ (join) the army.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">to join</span> — <em>decide</em> is a Group 2 verb.</p>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Group 3 &mdash; Either Form</h2>
+  <div class="pattern-box">
+    <strong>begin, can&rsquo;t stand, continue, hate, like, love, start</strong><br>
+    Both forms are correct, and the meaning is the same.
+  </div>
+  <table class="compare">
+    <tr><th>Verb</th><th>-ing form</th><th>to + verb</th></tr>
+    <tr><td>begin</td><td>The baby began crying.</td><td>The baby began to cry.</td></tr>
+    <tr><td>hate</td><td>I hate cleaning the oven.</td><td>I hate to clean the oven.</td></tr>
+    <tr><td>continue</td><td>He continued reading.</td><td>He continued to read.</td></tr>
+  </table>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Practice 3 &mdash; Either Form</h2>
+  <p>Both forms are right here. Say one, then click.</p>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> It began ____ (snow) around midnight.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">snowing <em>or</em> to snow</span> — <em>begin</em> takes either form.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> They continued ____ (talk) after the movie.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">talking <em>or</em> to talk</span> — <em>continue</em> takes either form.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> I love ____ (dance) at weddings.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">dancing <em>or</em> to dance</span> — <em>love</em> takes either form.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> Do you like ____ (travel) by train?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">traveling <em>or</em> to travel</span> — <em>like</em> takes either form.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> My uncle can&rsquo;t stand ____ (fly).</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">flying <em>or</em> to fly</span> — <em>can&rsquo;t stand</em> takes either form.</p>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Preposition + -ing</h2>
+  <div class="pattern-box">
+    After <strong>any</strong> preposition (of, about, at, in, for, on), use the <code>-ing</code> form.
+  </div>
+  <div class="example">
+    <p>She is good <strong>at</strong> <u>remembering</u> names.</p>
+    <p>They are tired <strong>of</strong> <u>paying</u> for parking.</p>
+    <p>We are thinking <strong>about</strong> <u>painting</u> the hallway.</p>
+    <p>Thank you <strong>for</strong> <u>coming</u> so early.</p>
+  </div>
+  <div class="check-tip"><strong>Watch out:</strong> <em>to</em> is sometimes a preposition &mdash; <em>look forward to <u>seeing</u> you</em>.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Practice 4 &mdash; Preposition + -ing</h2>
+  <p>Say the answer, then click to check.</p>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> She is afraid of ____ (speak) in public.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">speaking</span> — <em>of</em> is a preposition.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> Thank you for ____ (invite) us.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">inviting</span> — <em>for</em> is a preposition.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> He is interested in ____ (learn) Korean.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">learning</span> — <em>in</em> is a preposition.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> We talked about ____ (change) the schedule.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">changing</span> — <em>about</em> is a preposition.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> She is excited about ____ (start) college.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">starting</span> — <em>about</em> is a preposition.</p>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Exercise 5 &mdash; Mixed Practice</h2>
+  <p>Click a, b, c, or d. The correct button turns green.</p>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> The city postponed ____ the parade.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. to cancel</button>
+      <button class="opt">b. cancel</button>
+      <button class="opt">c. canceling</button>
+      <button class="opt">d. cancels</button>
+    </div>
+    <div class="explain" data-explain="postpone is a Group 1 verb, so it takes the -ing form."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> Rosa offered ____ the dishes.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. to wash</button>
+      <button class="opt">b. washing</button>
+      <button class="opt">c. wash</button>
+      <button class="opt">d. washed</button>
+    </div>
+    <div class="explain" data-explain="offer is a Group 2 verb, so it takes to + verb."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> We plan ____ a picnic on Sunday.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. having</button>
+      <button class="opt">b. have</button>
+      <button class="opt">c. had</button>
+      <button class="opt">d. to have</button>
+    </div>
+    <div class="explain" data-explain="plan is a Group 2 verb, so it takes to + verb."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> Mia denied ____ the message.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. to delete</button>
+      <button class="opt">b. deleting</button>
+      <button class="opt">c. delete</button>
+      <button class="opt">d. deleted</button>
+    </div>
+    <div class="explain" data-explain="deny is a Group 1 verb, so it takes the -ing form."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> Are you interested in ____ a class?</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. take</button>
+      <button class="opt">b. to take</button>
+      <button class="opt">c. took</button>
+      <button class="opt">d. taking</button>
+    </div>
+    <div class="explain" data-explain="in is a preposition, so the -ing form follows."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> They can&rsquo;t stand ____ homework late at night.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. does</button>
+      <button class="opt">b. doing</button>
+      <button class="opt">c. to doing</button>
+      <button class="opt">d. did</button>
+    </div>
+    <div class="explain" data-explain="can&#39;t stand takes either form, but to doing is never correct - only doing is offered here."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">7.</span> My parents want ____ to Texas.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. moving</button>
+      <button class="opt">b. move</button>
+      <button class="opt">c. to move</button>
+      <button class="opt">d. moved</button>
+    </div>
+    <div class="explain" data-explain="want is a Group 2 verb, so it takes to + verb."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">8.</span> We considered ____ a used car.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. buying</button>
+      <button class="opt">b. to buy</button>
+      <button class="opt">c. buy</button>
+      <button class="opt">d. bought</button>
+    </div>
+    <div class="explain" data-explain="consider is a Group 1 verb, so it takes the -ing form."></div>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Exercise 6 &mdash; Fix the Mistake</h2>
+  <p>Each CAPITALIZED part is wrong. Say the correct form, then click to check.</p>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> We enjoy TO WATCH baseball.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">watching</span> — <em>enjoy</em> is a Group 1 verb.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> He decided BRINGING the tools.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">to bring</span> — <em>decide</em> is a Group 2 verb.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> They avoid TO EAT after nine.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">eating</span> — <em>avoid</em> is a Group 1 verb.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> The class would like MEETING outside today.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">to meet</span> — <em>would like</em> takes to + verb.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> The team practiced TO THROW the ball.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">throwing</span> — <em>practice</em> is a Group 1 verb.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> Do you want HEARING the news?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">to hear</span> — <em>want</em> is a Group 2 verb.</p>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Summary</h2>
+  <table class="compare">
+    <tr><th>Pattern</th><th>Verbs</th><th>Example</th></tr>
+    <tr><td>-ing form</td><td>advise, avoid, consider, deny, dislike, enjoy, finish, postpone, practice</td><td>She avoids driving downtown.</td></tr>
+    <tr><td>to + verb</td><td>agree, ask, decide, expect, learn, need, offer, plan, promise, want, would like</td><td>He offered to drive.</td></tr>
+    <tr><td>either form</td><td>begin, can&rsquo;t stand, continue, hate, like, love, start</td><td>They began working. = They began to work.</td></tr>
+    <tr><td>preposition + -ing</td><td>good at, tired of, excited about, interested in, afraid of</td><td>I am good at listening.</td></tr>
+  </table>
+  <p style="text-align:center; margin-top:30px; font-size:0.95em; color:var(--accent);"><strong>End of Deck &mdash; Great work!</strong></p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    controls: true,
+    progress: true,
+    center: false,
+    transition: 'slide',
+    width: 1100,
+    height: 720,
+    margin: 0.04
+  });
+
+  // Clickable multiple-choice wiring (data-correct = 0-indexed button)
+  document.querySelectorAll('.mc').forEach(mc => {
+    const correct = parseInt(mc.dataset.correct, 10);
+    const buttons = mc.querySelectorAll('button.opt');
+    const explain = mc.nextElementSibling && mc.nextElementSibling.classList.contains('explain')
+      ? mc.nextElementSibling : null;
+    const explainText = explain ? explain.dataset.explain || '' : '';
+    buttons.forEach((b, i) => {
+      b.addEventListener('click', () => {
+        // `sel` marks the clicked button so its class always changes on every
+        // click — keeps verify_html_deck.mjs from false-failing when the correct
+        // answer isn't option (a). Do not remove.
+        buttons.forEach(x => x.classList.remove('correct', 'wrong', 'sel'));
+        b.classList.add('sel');
+        if (i === correct) {
+          b.classList.add('correct');
+          if (explain) {
+            explain.textContent = '✓ Correct. ' + explainText;
+            explain.classList.remove('bad'); explain.classList.add('good');
+          }
+        } else {
+          b.classList.add('wrong');
+          buttons[correct].classList.add('correct');
+          if (explain) {
+            const answerText = buttons[correct].textContent;
+            explain.innerHTML = '✗ The answer is <strong>' + answerText + '</strong>. ' + explainText;
+            explain.classList.remove('good'); explain.classList.add('bad');
+          }
+        }
+      });
+    });
+  });
+</script>
+<!-- PENCIL DRAW OVERLAY — iPad annotation layer (additive; safe to delete this whole block) -->
+<style>
+  #drawCanvas {
+    position: fixed; inset: 0; z-index: 50; pointer-events: none; touch-action: none;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  }
+  html.draw-armed, html.draw-armed body, html.draw-armed .reveal {
+    -webkit-user-select: none !important; user-select: none !important;
+    -webkit-touch-callout: none !important;
+  }
+  html.presentation-mode, html.presentation-mode body {
+    width: 100%; height: 100%; overflow: hidden !important; overscroll-behavior: none;
+  }
+  html.presentation-mode body { position: fixed; inset: 0; }
+  html.presentation-mode .reveal { width: 100vw !important; height: 100vh !important; height: 100dvh !important; }
+  html.presentation-mode .reveal .slides section { overscroll-behavior-y: contain; }
+  #drawToggle {
+    position: fixed; top: 10px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 20px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle.armed { opacity: 1; background: #fde9c8; border-color: #e8a013; }
+  #fsToggle {
+    position: fixed; top: 62px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 19px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle, #fsToggle { transition: opacity 0.3s; }
+  html.presentation-mode #drawToggle:not(.armed), html.presentation-mode #fsToggle { opacity: 0.15; }
+  #drawBar {
+    position: fixed; top: 10px; right: 62px; z-index: 60; display: flex; gap: 8px;
+    background: #fff; border: 1px solid #bbb; border-radius: 22px; padding: 6px 10px;
+    align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  #drawBar button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ccc; background: #fff; cursor: pointer; font-size: 15px; padding: 0; }
+  #drawBar .swatch { border-width: 2px; }
+  #drawBar .swatch.on { outline: 3px solid #e8a013; }
+</style>
+<canvas id="drawCanvas"></canvas>
+<div id="drawBar" hidden>
+  <button class="swatch on" data-color="#d33333" style="background:#d33333"></button>
+  <button class="swatch" data-color="#2266cc" style="background:#2266cc"></button>
+  <button class="swatch" data-color="#1a1a1a" style="background:#1a1a1a"></button>
+  <button id="drawUndo" title="Undo">↩</button>
+  <button id="drawClear" title="Clear slide">✕</button>
+</div>
+<button id="drawToggle" title="Pencil mode (pen only; finger locked)" aria-pressed="false">✏️</button>
+<button id="fsToggle" title="Presentation mode" aria-label="Presentation mode" aria-pressed="false">⛶</button>
+<script>
+(() => {
+  const cv = document.getElementById('drawCanvas');
+  const ctx = cv.getContext('2d');
+  const bar = document.getElementById('drawBar');
+  const toggle = document.getElementById('drawToggle');
+  let armed = false, color = '#d33333', cur = null, drawPointerId = null;
+  const strokes = new Map(); // slide "h-v" -> stroke list; ink persists per slide
+  const key = () => { const i = Reveal.getIndices(); return i.h + '-' + (i.v || 0); };
+  const list = () => { const k = key(); if (!strokes.has(k)) strokes.set(k, []); return strokes.get(k); };
+
+  function size() {
+    const d = window.devicePixelRatio || 1;
+    cv.width = innerWidth * d; cv.height = innerHeight * d;
+    cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    render();
+  }
+  function seg(a, b, c, w) {
+    ctx.strokeStyle = c; ctx.lineWidth = Math.max(0.75, w * innerWidth);
+    ctx.beginPath(); ctx.moveTo(a.x * innerWidth, a.y * innerHeight);
+    ctx.lineTo(b.x * innerWidth, b.y * innerHeight); ctx.stroke();
+  }
+  function render() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const s of list())
+      for (let i = 1; i < s.pts.length; i++) seg(s.pts[i - 1], s.pts[i], s.color, s.pts[i].w);
+  }
+  const pt = (e) => ({ x: e.clientX / innerWidth, y: e.clientY / innerHeight,
+    w: (e.pointerType === 'pen' ? 1.5 + 4 * (e.pressure || 0.5) : 3) / innerWidth });
+
+  const cancel = (e) => { if (e.cancelable) e.preventDefault(); };
+  cv.addEventListener('pointerdown', (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerType === 'touch') {
+      cv.setPointerCapture(e.pointerId); // swallow the palm/finger for its full contact
+      return;
+    }
+    if ((e.pointerType !== 'pen' && e.pointerType !== 'mouse') || drawPointerId !== null) return;
+    drawPointerId = e.pointerId;
+    cur = { color, pts: [pt(e)] };
+    list().push(cur);
+    cv.setPointerCapture(e.pointerId);
+  }, { passive: false });
+  cv.addEventListener('pointermove', (e) => {
+    if (!armed) return;
+    if (e.pointerType === 'touch') { cancel(e); return; }
+    if (!cur || e.pointerId !== drawPointerId) return;
+    cancel(e);
+    const coalesced = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+    const events = coalesced && coalesced.length ? coalesced : [e];
+    for (const ev of events) {
+      const p = pt(ev);
+      seg(cur.pts[cur.pts.length - 1], p, cur.color, p.w);
+      cur.pts.push(p);
+    }
+  }, { passive: false });
+  const end = (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerId === drawPointerId) { cur = null; drawPointerId = null; }
+  };
+  cv.addEventListener('pointerup', end, { passive: false });
+  cv.addEventListener('pointercancel', end, { passive: false });
+  for (const eventName of ['touchstart', 'touchmove', 'touchend', 'touchcancel'])
+    cv.addEventListener(eventName, (e) => { if (armed) cancel(e); }, { passive: false });
+  document.addEventListener('selectstart', (e) => { if (armed) cancel(e); });
+
+  toggle.addEventListener('click', () => {
+    armed = !armed;
+    cv.style.pointerEvents = armed ? 'auto' : 'none'; // disarmed = taps/swipes reach the slides
+    bar.hidden = !armed;
+    toggle.classList.toggle('armed', armed);
+    toggle.setAttribute('aria-pressed', String(armed));
+    document.documentElement.classList.toggle('draw-armed', armed);
+    if (!armed) { cur = null; drawPointerId = null; }
+  });
+  bar.querySelectorAll('.swatch').forEach((b) => b.addEventListener('click', () => {
+    color = b.dataset.color;
+    bar.querySelectorAll('.swatch').forEach((x) => x.classList.toggle('on', x === b));
+  }));
+  document.getElementById('drawUndo').addEventListener('click', () => { list().pop(); render(); });
+  document.getElementById('drawClear').addEventListener('click', () => { strokes.set(key(), []); render(); });
+
+  Reveal.on('slidechanged', render);
+  addEventListener('resize', size);
+  size();
+
+  // Fixed presentation mode avoids iPadOS's native-fullscreen pull-down exit gesture.
+  const fsT = document.getElementById('fsToggle');
+  let presenting = false;
+  const toast = (message) => {
+    const t = document.createElement('div');
+    t.textContent = message;
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:10px;font:14px system-ui;z-index:99;max-width:46ch;text-align:center';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  };
+  fsT.addEventListener('click', () => {
+    presenting = !presenting;
+    document.documentElement.classList.toggle('presentation-mode', presenting);
+    fsT.textContent = presenting ? '\u2921' : '\u26f6';
+    fsT.setAttribute('aria-pressed', String(presenting));
+    fsT.title = presenting ? 'Exit presentation mode' : 'Presentation mode';
+    requestAnimationFrame(() => {
+      if (Reveal.layout) Reveal.layout();
+      size();
+    });
+    if (presenting) toast('Presentation mode on. For more space in Safari, tap AA, then Hide Toolbar.');
+  });
+})();
+</script>
+<!-- END PENCIL DRAW OVERLAY -->
+
+</body>
+</html>
