@@ -1,0 +1,656 @@
+<!-- generator: _lib/school_deck_scaffold.py -->
+<!DOCTYPE html>
+<!--
+  ESL reveal.js DECK TEMPLATE — copy this file, rename to
+  YYYY-MM-DD_Title_Case_Topic_L<level>_ccode.html in the School Stuff root,
+  and fill the Edit.
+
+  LEVEL SWAP: this template ships L2 colors (green). For L4, change the
+  three lines in :root marked  /* L4: ... */  and swap theme to white
+  (already white). L2 accent 2E6B3A / light D9E9D3.  L4 accent 1F4E79 /
+  light D6E4F2.
+
+  All canonical contracts (invisible scrollbar, 80vh bottom spacer per
+  section, no font-size on .reveal, table.compare last-child border,
+  reveal init config) are baked in. Run the linter after editing:
+      node _lib/verify_html_deck.mjs <deck.html>            # rendered check
+      python3 _lib/verify_html_deck_static.py <deck.html>   # fast source lint
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Separable Phrasal Verbs — Level 3</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/theme/white.css">
+<style>
+  :root { --accent: #1F6B6B; --accent-light: #D6E8E8; --gray: #555555;
+          /* L4: --accent: #1F4E79; --accent-light: #D6E4F2; */
+          --good: #15803D; --bad: #B91C1C; --muted: #777; }
+
+  /* TYPOGRAPHY CANON — never put font-size on .reveal itself */
+  .reveal { font-family: Arial, sans-serif; }
+  .reveal h1, .reveal h2, .reveal h3 { color: var(--accent); font-family: Arial, sans-serif; text-transform: none; letter-spacing: 0; }
+  .reveal h1 { font-size: 2.2em; }
+  .reveal h2 { font-size: 1.6em; }
+  .reveal h3 { font-size: 1.15em; }
+  .reveal h4 { font-size: 1.05em; }
+  .reveal p, .reveal li { font-size: 0.85em; line-height: 1.5; }
+
+  /* SCROLLABLE SLIDES WITH INVISIBLE SCROLLBAR */
+  .reveal .slides section {
+    overflow-y: auto !important;
+    max-height: 92vh !important;
+    text-align: left;
+    padding: 20px 40px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .reveal .slides section::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* Title slide */
+  .title-slide { text-align: center !important; }
+  .title-slide h1 { font-size: 2.6em; margin-bottom: 0.3em; }
+  .title-slide .subtitle { font-size: 1.2em; color: var(--gray); }
+
+  /* Pattern / example / note / tip */
+  .pattern-box {
+    background: var(--accent-light);
+    border-left: 6px solid var(--accent);
+    padding: 14px 20px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+  .pattern-box code {
+    background: white; padding: 2px 8px; border-radius: 3px;
+    color: var(--accent); font-weight: bold;
+  }
+  .example {
+    background: #FAFAFA; border: 1px solid #DDD;
+    padding: 10px 16px; margin: 8px 0; border-radius: 3px; font-size: 0.9em;
+  }
+  .example .key { color: var(--accent); font-weight: bold; }
+  .note { font-style: italic; color: var(--gray); font-size: 0.85em; margin-top: 10px; }
+  .check-tip {
+    background: #FFF8E1; border-left: 6px solid #F5A623;
+    padding: 12px 18px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+
+  /* Comparison tables — borders need !important (reveal theme strips them) */
+  table.compare {
+    border-collapse: collapse !important; margin: 14px 0;
+    font-size: 0.82em; width: 100%; border: 1px solid var(--accent) !important;
+  }
+  table.compare th, table.compare td {
+    border: 1px solid var(--accent) !important; padding: 8px 12px; text-align: left;
+  }
+  table.compare tr:last-child td { border-bottom: 1px solid var(--accent) !important; }
+  table.compare th { background: var(--accent); color: white; }
+  table.compare td:first-child { font-weight: bold; color: var(--accent); }
+
+  /* Click-to-reveal exercise (single-answer reveal) */
+  .exercise {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .exercise .question { font-size: 0.9em; margin: 0 0 10px 0; }
+  .exercise .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .exercise button.reveal-btn {
+    background: var(--accent); color: white; border: none; padding: 6px 14px;
+    border-radius: 4px; font-family: Arial; font-size: 0.8em; cursor: pointer;
+  }
+  .exercise button.reveal-btn:hover { filter: brightness(0.85); }
+  .exercise .answer {
+    display: none; margin-top: 10px; padding: 10px 14px;
+    background: var(--accent-light); border-left: 4px solid var(--accent); font-size: 0.9em;
+  }
+  .exercise .answer .key { color: var(--accent); font-weight: bold; }
+  .exercise .answer.shown { display: block; }
+
+  /* Clickable multiple choice */
+  .mc-q {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .mc-q .stem { font-size: 0.9em; margin: 0 0 10px 0; }
+  .mc-q .stem .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .mc { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .mc button.opt {
+    font-family: inherit; font-size: 0.8em; padding: 10px 12px;
+    border: 2px solid #d0d8e4; background: white; border-radius: 8px;
+    cursor: pointer; transition: all .15s; font-weight: 600;
+  }
+  .mc button.opt:hover { border-color: var(--accent); background: var(--accent-light); }
+  .mc button.opt.correct { background: #DCFCE7; border-color: var(--good); color: var(--good); }
+  .mc button.opt.wrong   { background: #FEE2E2; border-color: var(--bad);  color: var(--bad); }
+  .explain { margin-top: 10px; font-size: 0.78em; color: var(--muted); font-style: italic; min-height: 1.2em; }
+  .explain.good { color: var(--good); font-style: normal; }
+  .explain.bad  { color: var(--bad); }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1: TITLE -->
+<section class="title-slide">
+  <h1>Separable Phrasal Verbs</h1>
+  <p class="subtitle">bring back · call up · cross out · do over · drop off</p>
+  <p class="subtitle" style="margin-top: 1.5em;">Level 3 — Grammar Review</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 2: CONCEPT -->
+<section>
+  <h2>What Is a Separable Phrasal Verb?</h2>
+  <p>A phrasal verb is a <strong>verb + a small word</strong> (a particle): <em>call + up</em>, <em>drop + off</em>. Together they make one new meaning.</p>
+  <div class="pattern-box">
+    <strong>Separable</strong> means the object can go <strong>between</strong> the two parts.<br>
+    <code>verb + object + particle</code> &nbsp;or&nbsp; <code>verb + particle + noun</code>
+  </div>
+  <div class="example">✔ Please call <span class="key">the dentist</span> up. &nbsp;&nbsp; ✔ Please call up <span class="key">the dentist</span>.</div>
+  <p class="note">Today's five verbs are all separable.</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 3: REFERENCE TABLE (shared reference examples with the worksheet) -->
+<section>
+  <h2>The Five Verbs</h2>
+  <table class="compare">
+    <tr><th>Phrasal Verb</th><th>Meaning</th><th>Example</th></tr>
+    <tr><td>bring back</td><td>return something to its place or owner</td><td>Bring back my pen when you finish.</td></tr>
+    <tr><td>call up</td><td>phone a person or a place</td><td>We called up the hotel.</td></tr>
+    <tr><td>cross out</td><td>put a line through a word</td><td>Cross out the extra word.</td></tr>
+    <tr><td>do over</td><td>do a job again from the start</td><td>The chef had to do the soup over.</td></tr>
+    <tr><td>drop off</td><td>take a person or thing to a place and leave it there</td><td>I'll drop you off at the station.</td></tr>
+  </table>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 4: THE RULE -->
+<section>
+  <h2>The One Rule: Nouns and Pronouns</h2>
+  <div class="pattern-box">
+    <strong>Noun object</strong> → it can go in the middle OR at the end.
+  </div>
+  <div class="example">✔ drop off <span class="key">the mail</span> &nbsp;&nbsp; ✔ drop <span class="key">the mail</span> off</div>
+  <div class="pattern-box">
+    <strong>Pronoun object</strong> (me, you, him, her, it, us, them) → it MUST go in the <strong>middle</strong>.
+  </div>
+  <div class="example">✔ drop <span class="key">it</span> off &nbsp;&nbsp; ✘ drop off <span class="key">it</span></div>
+  <div class="check-tip"><strong>Quick check:</strong> Do you see a pronoun right after <em>up, out, back, over,</em> or <em>off</em>? Move it to the middle.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 5: EXERCISE 1 — FIND THE MISTAKE (data-correct = the WRONG sentence) -->
+<section>
+  <h2>Exercise 1 — Find the Mistake</h2>
+  <p>Three sentences are correct. Click the ONE sentence with a word-order mistake.</p>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> bring back</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. Bring back them tomorrow.</button>
+      <button class="opt">b. Bring the umbrellas back tomorrow.</button>
+      <button class="opt">c. Bring back the umbrellas tomorrow.</button>
+      <button class="opt">d. Bring them back tomorrow.</button>
+    </div>
+    <div class="explain" data-explain="&quot;them&quot; is a pronoun, so it goes in the middle: bring them back."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> cross out</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. She crossed the old address out.</button>
+      <button class="opt">b. She crossed out the old address.</button>
+      <button class="opt">c. She crossed out it.</button>
+      <button class="opt">d. She crossed it out.</button>
+    </div>
+    <div class="explain" data-explain="&quot;it&quot; is a pronoun, so it goes in the middle: crossed it out."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> drop off</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. We dropped off the puppy at the vet.</button>
+      <button class="opt">b. We dropped it off at the vet.</button>
+      <button class="opt">c. We dropped the puppy off at the vet.</button>
+      <button class="opt">d. We dropped off it at the vet.</button>
+    </div>
+    <div class="explain" data-explain="&quot;it&quot; must go in the middle: dropped it off."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> do over</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. The band did the song over.</button>
+      <button class="opt">b. The band did over it.</button>
+      <button class="opt">c. The band did over the song.</button>
+      <button class="opt">d. The band did it over.</button>
+    </div>
+    <div class="explain" data-explain="&quot;it&quot; must go in the middle: did it over."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> call up</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. Nina called up her grandson.</button>
+      <button class="opt">b. Nina called him up.</button>
+      <button class="opt">c. Nina called up him.</button>
+      <button class="opt">d. Nina called her grandson up.</button>
+    </div>
+    <div class="explain" data-explain="&quot;him&quot; is a pronoun, so it goes in the middle: called him up."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> drop off</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. The taxi dropped off us downtown.</button>
+      <button class="opt">b. The taxi dropped us off downtown.</button>
+      <button class="opt">c. The taxi dropped off the tourists downtown.</button>
+      <button class="opt">d. The taxi dropped the tourists off downtown.</button>
+    </div>
+    <div class="explain" data-explain="&quot;us&quot; is a pronoun, so it goes in the middle: dropped us off."></div>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 6: EXERCISE 2 — CHANGE THE NOUN TO A PRONOUN -->
+<section>
+  <h2>Exercise 2 — Change the Noun to a Pronoun</h2>
+  <p>Say the sentence again. Change the CAPITALIZED words to a pronoun. Then click to check.</p>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> Can you drop off THE TWINS at the pool?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Can you <span class="key">drop them off</span> at the pool? — the twins → them, in the middle.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> Please cross MY PHONE NUMBER out.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Please <span class="key">cross it out</span>. — my phone number → it.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> Mom called up MR. SILVA this morning.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Mom <span class="key">called him up</span> this morning. — Mr. Silva → him.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> The workers have to do over THE TILE FLOOR.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">The workers have to <span class="key">do it over</span>. — the tile floor → it.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> Did you bring back MY SCISSORS?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Did you <span class="key">bring them back</span>? — scissors are plural → them.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> The driver dropped off MY WIFE AND ME near the park.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">The driver <span class="key">dropped us off</span> near the park. — my wife and me → us.</p>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 7: TRICKY PAIR -->
+<section>
+  <h2>Tricky Pair: bring back or drop off?</h2>
+  <table class="compare">
+    <tr><th>Verb</th><th>Think…</th><th>Example</th></tr>
+    <tr><td>bring back</td><td>It goes <strong>back</strong> to where it came from, or to its owner.</td><td>Please bring back the ruler you took from my desk.</td></tr>
+    <tr><td>drop off</td><td>You take it to a <strong>new place</strong> and leave it there.</td><td>I dropped off the rent at the office.</td></tr>
+  </table>
+  <div class="check-tip"><strong>Quick check:</strong> <em>drop off</em> often has <strong>at</strong> + a place. <em>bring back</em> often has <strong>to</strong> + the owner or the first place.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 8: EXERCISE 3 — WHICH VERB FITS? -->
+<section>
+  <h2>Exercise 3 — Which Verb Fits?</h2>
+  <p>Read the sentence. Click the phrasal verb with the right meaning.</p>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> Tomorrow I will _____ the gym to ask about its hours.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. cross out</button>
+      <button class="opt">b. bring back</button>
+      <button class="opt">c. call up</button>
+      <button class="opt">d. do over</button>
+    </div>
+    <div class="explain" data-explain="call up = phone a person or a place."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> On the guest list, Rosa _____ two names because those people can't come.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. crossed out</button>
+      <button class="opt">b. dropped off</button>
+      <button class="opt">c. brought back</button>
+      <button class="opt">d. called up</button>
+    </div>
+    <div class="explain" data-explain="cross out = put a line through a word."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> You can borrow my stapler, but please _____ the stapler to my desk later.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. do over</button>
+      <button class="opt">b. cross out</button>
+      <button class="opt">c. call up</button>
+      <button class="opt">d. bring back</button>
+    </div>
+    <div class="explain" data-explain="bring back = return something to its owner. Notice &quot;to my desk&quot;."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> The video had bad sound, so we _____ the whole interview from the beginning.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. called up</button>
+      <button class="opt">b. did over</button>
+      <button class="opt">c. dropped off</button>
+      <button class="opt">d. crossed out</button>
+    </div>
+    <div class="explain" data-explain="do over = do a job again from the start."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> On Saturday, Omar _____ his old clothes at the donation center.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. did over</button>
+      <button class="opt">b. crossed out</button>
+      <button class="opt">c. called up</button>
+      <button class="opt">d. dropped off</button>
+    </div>
+    <div class="explain" data-explain="drop off = take something to a place and leave it there. Notice &quot;at the donation center&quot;."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> When the power went out, we _____ the electric company.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. called up</button>
+      <button class="opt">b. brought back</button>
+      <button class="opt">c. did over</button>
+      <button class="opt">d. crossed out</button>
+    </div>
+    <div class="explain" data-explain="call up = phone a person or a place."></div>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 9: EXERCISE 4 — MIXED PRACTICE -->
+<section>
+  <h2>Exercise 4 — Mixed Practice</h2>
+  <p>Choose the verb, use the correct form, and put it around the pronoun. Then click to check.</p>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> Grandpa couldn't drive to the clinic this morning, so my sister _____ him _____ there.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">my sister <span class="key">dropped him off</span> — took him to a place and left him there. Past tense: <em>dropped</em>.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> Your new neighbors seem nice. Why don't you _____ them _____ and invite them for coffee?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Why don't you <span class="key">call them up</span> — phone them. Base form after "why don't you".</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> The magician's first trick failed last night, so he _____ it _____.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">he <span class="key">did it over</span> — did it again. Past tense: <em>did</em>.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> The price on this tag is old. Please _____ it _____ and write the new price.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Please <span class="key">cross it out</span> — put a line through it.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> I took this chair from the room next door. After the meeting, I'll _____ it _____ there.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">I'll <span class="key">bring it back</span> — return it to its first place.</p>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 10: SUMMARY -->
+<section>
+  <h2>Summary — Main Takeaways</h2>
+  <table class="compare">
+    <tr><th>Remember</th><th>Example</th></tr>
+    <tr><td>Noun object → middle or end</td><td>call up the bank / call the bank up</td></tr>
+    <tr><td>Pronoun object → middle only</td><td>call it up &nbsp;(NOT call up it)</td></tr>
+    <tr><td>bring back vs drop off</td><td>bring back = return · drop off = leave at a new place</td></tr>
+  </table>
+  <p style="text-align:center; margin-top:30px; font-size:0.95em; color:var(--accent);"><strong>End of Deck — Great work!</strong></p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    controls: true,
+    progress: true,
+    center: false,
+    transition: 'slide',
+    width: 1100,
+    height: 720,
+    margin: 0.04
+  });
+
+  // Clickable multiple-choice wiring (data-correct = 0-indexed button)
+  document.querySelectorAll('.mc').forEach(mc => {
+    const correct = parseInt(mc.dataset.correct, 10);
+    const buttons = mc.querySelectorAll('button.opt');
+    const explain = mc.nextElementSibling && mc.nextElementSibling.classList.contains('explain')
+      ? mc.nextElementSibling : null;
+    const explainText = explain ? explain.dataset.explain || '' : '';
+    buttons.forEach((b, i) => {
+      b.addEventListener('click', () => {
+        // `sel` marks the clicked button so its class always changes on every
+        // click — keeps verify_html_deck.mjs from false-failing when the correct
+        // answer isn't option (a). Do not remove.
+        buttons.forEach(x => x.classList.remove('correct', 'wrong', 'sel'));
+        b.classList.add('sel');
+        if (i === correct) {
+          b.classList.add('correct');
+          if (explain) {
+            explain.textContent = '✓ Correct. ' + explainText;
+            explain.classList.remove('bad'); explain.classList.add('good');
+          }
+        } else {
+          b.classList.add('wrong');
+          buttons[correct].classList.add('correct');
+          if (explain) {
+            const answerText = buttons[correct].textContent;
+            explain.innerHTML = '✗ The answer is <strong>' + answerText + '</strong>. ' + explainText;
+            explain.classList.remove('good'); explain.classList.add('bad');
+          }
+        }
+      });
+    });
+  });
+</script>
+<!-- PENCIL DRAW OVERLAY — iPad annotation layer (additive; safe to delete this whole block) -->
+<style>
+  #drawCanvas {
+    position: fixed; inset: 0; z-index: 50; pointer-events: none; touch-action: none;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  }
+  html.draw-armed, html.draw-armed body, html.draw-armed .reveal {
+    -webkit-user-select: none !important; user-select: none !important;
+    -webkit-touch-callout: none !important;
+  }
+  html.presentation-mode, html.presentation-mode body {
+    width: 100%; height: 100%; overflow: hidden !important; overscroll-behavior: none;
+  }
+  html.presentation-mode body { position: fixed; inset: 0; }
+  html.presentation-mode .reveal { width: 100vw !important; height: 100vh !important; height: 100dvh !important; }
+  html.presentation-mode .reveal .slides section { overscroll-behavior-y: contain; }
+  #drawToggle {
+    position: fixed; top: 10px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 20px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle.armed { opacity: 1; background: #fde9c8; border-color: #e8a013; }
+  #fsToggle {
+    position: fixed; top: 62px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 19px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle, #fsToggle { transition: opacity 0.3s; }
+  html.presentation-mode #drawToggle:not(.armed), html.presentation-mode #fsToggle { opacity: 0.15; }
+  #drawBar {
+    position: fixed; top: 10px; right: 62px; z-index: 60; display: flex; gap: 8px;
+    background: #fff; border: 1px solid #bbb; border-radius: 22px; padding: 6px 10px;
+    align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  #drawBar button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ccc; background: #fff; cursor: pointer; font-size: 15px; padding: 0; }
+  #drawBar .swatch { border-width: 2px; }
+  #drawBar .swatch.on { outline: 3px solid #e8a013; }
+</style>
+<canvas id="drawCanvas"></canvas>
+<div id="drawBar" hidden>
+  <button class="swatch on" data-color="#d33333" style="background:#d33333"></button>
+  <button class="swatch" data-color="#2266cc" style="background:#2266cc"></button>
+  <button class="swatch" data-color="#1a1a1a" style="background:#1a1a1a"></button>
+  <button id="drawUndo" title="Undo">↩</button>
+  <button id="drawClear" title="Clear slide">✕</button>
+</div>
+<button id="drawToggle" title="Pencil mode (pen only; finger locked)" aria-pressed="false">✏️</button>
+<button id="fsToggle" title="Presentation mode" aria-label="Presentation mode" aria-pressed="false">⛶</button>
+<script>
+(() => {
+  const cv = document.getElementById('drawCanvas');
+  const ctx = cv.getContext('2d');
+  const bar = document.getElementById('drawBar');
+  const toggle = document.getElementById('drawToggle');
+  let armed = false, color = '#d33333', cur = null, drawPointerId = null;
+  const strokes = new Map(); // slide "h-v" -> stroke list; ink persists per slide
+  const key = () => { const i = Reveal.getIndices(); return i.h + '-' + (i.v || 0); };
+  const list = () => { const k = key(); if (!strokes.has(k)) strokes.set(k, []); return strokes.get(k); };
+
+  function size() {
+    const d = window.devicePixelRatio || 1;
+    cv.width = innerWidth * d; cv.height = innerHeight * d;
+    cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    render();
+  }
+  function seg(a, b, c, w) {
+    ctx.strokeStyle = c; ctx.lineWidth = Math.max(0.75, w * innerWidth);
+    ctx.beginPath(); ctx.moveTo(a.x * innerWidth, a.y * innerHeight);
+    ctx.lineTo(b.x * innerWidth, b.y * innerHeight); ctx.stroke();
+  }
+  function render() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const s of list())
+      for (let i = 1; i < s.pts.length; i++) seg(s.pts[i - 1], s.pts[i], s.color, s.pts[i].w);
+  }
+  const pt = (e) => ({ x: e.clientX / innerWidth, y: e.clientY / innerHeight,
+    w: (e.pointerType === 'pen' ? 1.5 + 4 * (e.pressure || 0.5) : 3) / innerWidth });
+
+  const cancel = (e) => { if (e.cancelable) e.preventDefault(); };
+  cv.addEventListener('pointerdown', (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerType === 'touch') {
+      cv.setPointerCapture(e.pointerId); // swallow the palm/finger for its full contact
+      return;
+    }
+    if ((e.pointerType !== 'pen' && e.pointerType !== 'mouse') || drawPointerId !== null) return;
+    drawPointerId = e.pointerId;
+    cur = { color, pts: [pt(e)] };
+    list().push(cur);
+    cv.setPointerCapture(e.pointerId);
+  }, { passive: false });
+  cv.addEventListener('pointermove', (e) => {
+    if (!armed) return;
+    if (e.pointerType === 'touch') { cancel(e); return; }
+    if (!cur || e.pointerId !== drawPointerId) return;
+    cancel(e);
+    const coalesced = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+    const events = coalesced && coalesced.length ? coalesced : [e];
+    for (const ev of events) {
+      const p = pt(ev);
+      seg(cur.pts[cur.pts.length - 1], p, cur.color, p.w);
+      cur.pts.push(p);
+    }
+  }, { passive: false });
+  const end = (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerId === drawPointerId) { cur = null; drawPointerId = null; }
+  };
+  cv.addEventListener('pointerup', end, { passive: false });
+  cv.addEventListener('pointercancel', end, { passive: false });
+  for (const eventName of ['touchstart', 'touchmove', 'touchend', 'touchcancel'])
+    cv.addEventListener(eventName, (e) => { if (armed) cancel(e); }, { passive: false });
+  document.addEventListener('selectstart', (e) => { if (armed) cancel(e); });
+
+  toggle.addEventListener('click', () => {
+    armed = !armed;
+    cv.style.pointerEvents = armed ? 'auto' : 'none'; // disarmed = taps/swipes reach the slides
+    bar.hidden = !armed;
+    toggle.classList.toggle('armed', armed);
+    toggle.setAttribute('aria-pressed', String(armed));
+    document.documentElement.classList.toggle('draw-armed', armed);
+    if (!armed) { cur = null; drawPointerId = null; }
+  });
+  bar.querySelectorAll('.swatch').forEach((b) => b.addEventListener('click', () => {
+    color = b.dataset.color;
+    bar.querySelectorAll('.swatch').forEach((x) => x.classList.toggle('on', x === b));
+  }));
+  document.getElementById('drawUndo').addEventListener('click', () => { list().pop(); render(); });
+  document.getElementById('drawClear').addEventListener('click', () => { strokes.set(key(), []); render(); });
+
+  Reveal.on('slidechanged', render);
+  addEventListener('resize', size);
+  size();
+
+  // Fixed presentation mode avoids iPadOS's native-fullscreen pull-down exit gesture.
+  const fsT = document.getElementById('fsToggle');
+  let presenting = false;
+  const toast = (message) => {
+    const t = document.createElement('div');
+    t.textContent = message;
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:10px;font:14px system-ui;z-index:99;max-width:46ch;text-align:center';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  };
+  fsT.addEventListener('click', () => {
+    presenting = !presenting;
+    document.documentElement.classList.toggle('presentation-mode', presenting);
+    fsT.textContent = presenting ? '\u2921' : '\u26f6';
+    fsT.setAttribute('aria-pressed', String(presenting));
+    fsT.title = presenting ? 'Exit presentation mode' : 'Presentation mode';
+    requestAnimationFrame(() => {
+      if (Reveal.layout) Reveal.layout();
+      size();
+    });
+    if (presenting) toast('Presentation mode on. For more space in Safari, tap AA, then Hide Toolbar.');
+  });
+})();
+</script>
+<!-- END PENCIL DRAW OVERLAY -->
+
+</body>
+</html>
