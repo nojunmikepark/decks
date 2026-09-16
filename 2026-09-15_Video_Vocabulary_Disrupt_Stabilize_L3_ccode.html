@@ -131,146 +131,6 @@
 
   /* ---- animated silent clips (self-contained SVG, no video file needed) ---- */
   .clip { border: 2px solid var(--accent-light); border-radius: 8px; background: #F3F7F7; max-width: 560px; margin: 8px 0; }
-  .clip svg { width: 100%; height: auto; display: block; }
-  .clip .anim { animation-duration: 4s; animation-timing-function: ease-in-out; animation-fill-mode: both; animation-play-state: paused; transform-box: fill-box; transform-origin: 50% 100%; }
-  .clip.playing .anim { animation-play-state: running; }
-  .clip.loop .anim { animation-play-state: running; animation-iteration-count: infinite; }
-  .clip.frozen .anim { animation-delay: -1.8s; }
-  .clipbar { display: flex; gap: 10px; align-items: center; padding: 8px 12px; border-top: 1px solid #DDE; }
-  .clipbar button.play { background: var(--accent); color: white; border: none; padding: 6px 14px; border-radius: 4px; font-family: Arial; font-size: 0.8em; cursor: pointer; }
-  .clipbar button.play.played { background: #555; }
-  .clipbar .lbl { font-size: 0.75em; color: var(--gray); }
-  .wordbank { background: var(--accent-light); border-radius: 6px; padding: 8px 14px; font-size: 0.85em; margin: 8px 0; }
-  .wordbank b { color: var(--accent); }
-  .row2 { display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap; }
-  .row2 .clip { flex: 0 1 380px; }
-  .row2 .mc-q { flex: 1 1 320px; }
-  .oc { transform-origin: 0% 50%; }
-  @keyframes wobble  { 0%{transform:rotate(0)} 30%{transform:rotate(4deg)} 45%{transform:rotate(-10deg)} 55%{transform:rotate(12deg)} 62%{transform:rotate(30deg)} 70%,100%{transform:rotate(30deg)} }
-  @keyframes fall    { 0%,58%{transform:none} 100%{transform:translate(var(--dx),var(--dy)) rotate(var(--rot))} }
-  @keyframes wobble2 { 0%{transform:rotate(0)} 12%{transform:rotate(5deg)} 25%{transform:rotate(-5deg)} 38%{transform:rotate(5deg)} 50%{transform:rotate(-6deg)} 62%,100%{transform:rotate(0)} }
-  @keyframes handin  { 0%,45%{transform:translateX(150px);opacity:0} 60%,100%{transform:translateX(0);opacity:1} }
-  @keyframes dash    { 0%,30%{transform:translateX(0)} 55%,100%{transform:translateX(230px)} }
-  @keyframes jump    { 0%,55%{transform:none} 70%,100%{transform:translate(var(--dx),var(--dy)) rotate(var(--rot))} }
-  @keyframes talk1   { 0%,20%{opacity:1} 25%,45%{opacity:0} 50%{opacity:1} 55%,100%{opacity:0} }
-  @keyframes talk2   { 0%,20%{opacity:0} 25%,45%{opacity:1} 50%,100%{opacity:0} }
-  @keyframes phone   { 0%,50%{opacity:0;transform:rotate(0)} 55%{opacity:1;transform:rotate(-10deg)} 62%{transform:rotate(10deg)} 69%{transform:rotate(-10deg)} 76%{transform:rotate(10deg)} 83%,100%{opacity:1;transform:rotate(0)} }
-  @keyframes bang    { 0%,58%{opacity:0} 65%,100%{opacity:1} }
-  @keyframes dark    { 0%,25%{opacity:0} 30%,65%{opacity:0.78} 75%,100%{opacity:0} }
-  @keyframes bulb    { 0%,25%{fill:#FFD84D} 30%,65%{fill:#9A9A9A} 75%,100%{fill:#FFD84D} }
-  @keyframes walkin  { 0%,35%{transform:translateX(-140px)} 60%,100%{transform:translateX(0)} }
-  @keyframes tip     { 0%,35%{transform:rotate(-12deg)} 70%{transform:rotate(-12deg)} 100%{transform:rotate(0)} }
-  @keyframes slidebox{ 0%,35%{transform:translateY(-70px);opacity:0} 70%,100%{transform:translateY(0);opacity:1} }
-  @keyframes catin   { 0%,25%{transform:translateX(-90px)} 55%,100%{transform:translateX(0)} }
-  @keyframes fly     { 0%,50%{transform:none} 100%{transform:translate(var(--dx),var(--dy))} }
-  @keyframes sag     { 0%,40%{transform:rotate(10deg)} 65%{transform:rotate(10deg)} 100%{transform:rotate(0)} }
-  @keyframes postup  { 0%,40%{transform:scaleY(0)} 65%,100%{transform:scaleY(1)} }
-  @keyframes rock    { 0%{transform:rotate(-10deg)} 12%{transform:rotate(10deg)} 24%{transform:rotate(-10deg)} 36%{transform:rotate(10deg)} 48%{transform:rotate(-8deg)} 60%,100%{transform:rotate(0)} }
-  @keyframes drop    { 0%,45%{transform:translateY(-90px);opacity:0} 65%,100%{transform:translateY(0);opacity:1} }
-  @keyframes gust    { 0%,15%{transform:translateX(-120px);opacity:0} 25%{opacity:1} 45%,100%{transform:translateX(120px);opacity:0} }
-  @keyframes flatten { 0%,45%{transform:scaleY(1)} 70%,100%{transform:scaleY(0.1)} }
-  @keyframes move    { 0%{transform:translateX(0)} 50%,100%{transform:translateX(60px)} }
-  @keyframes dropw   { 0%,40%{transform:translateY(-160px) rotate(0);opacity:0} 55%,100%{transform:translateY(0) rotate(35deg);opacity:1} }
-  @keyframes lamp    { 0%,50%{fill:#8BC34A} 56%,100%{fill:#D32F2F} }
-  @keyframes fade    { 0%,30%{filter:grayscale(1);opacity:0.45} 60%{filter:grayscale(1);opacity:0.45} 90%,100%{filter:none;opacity:1} }
-  @keyframes brush   { 0%,30%{opacity:0;transform:translate(-60px,-30px)} 40%{opacity:1;transform:translate(-60px,-30px)} 60%{transform:translate(60px,20px)} 80%{transform:translate(-40px,40px)} 90%,100%{opacity:0;transform:translate(-40px,40px)} }
-
-  /* ---- animated silent clips (self-contained SVG, no video file needed) ---- */
-  .clip { border: 2px solid var(--accent-light); border-radius: 8px; background: #F3F7F7; max-width: 560px; margin: 8px 0; }
-  .clip svg { width: 100%; height: auto; display: block; overflow: hidden; }
-  .clip { overflow: hidden; }
-  .clip .anim { animation-duration: 4s; animation-timing-function: ease-in-out; animation-fill-mode: both; animation-play-state: paused; transform-box: fill-box; transform-origin: 50% 100%; }
-  .clip.playing .anim { animation-play-state: running; }
-  .clip.loop .anim { animation-play-state: running; animation-iteration-count: infinite; }
-  .clip.frozen .anim { animation-delay: -1.8s; }
-  .clipbar { display: flex; gap: 10px; align-items: center; padding: 8px 12px; border-top: 1px solid #DDE; }
-  .clipbar button.play { background: var(--accent); color: white; border: none; padding: 6px 14px; border-radius: 4px; font-family: Arial; font-size: 0.8em; cursor: pointer; }
-  .clipbar button.play.played { background: #555; }
-  .clipbar .lbl { font-size: 0.75em; color: var(--gray); }
-  .wordbank { background: var(--accent-light); border-radius: 6px; padding: 8px 14px; font-size: 0.85em; margin: 8px 0; }
-  .wordbank b { color: var(--accent); }
-  .row2 { display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap; }
-  .row2 .clip { flex: 0 1 380px; }
-  .row2 .mc-q { flex: 1 1 320px; }
-  .oc { transform-origin: 0% 50%; }
-  @keyframes wobble  { 0%{transform:rotate(0)} 30%{transform:rotate(4deg)} 45%{transform:rotate(-10deg)} 55%{transform:rotate(12deg)} 62%{transform:rotate(30deg)} 70%,100%{transform:rotate(30deg)} }
-  @keyframes fall    { 0%,58%{transform:none} 100%{transform:translate(var(--dx),var(--dy)) rotate(var(--rot))} }
-  @keyframes wobble2 { 0%{transform:rotate(0)} 12%{transform:rotate(5deg)} 25%{transform:rotate(-5deg)} 38%{transform:rotate(5deg)} 50%{transform:rotate(-6deg)} 62%,100%{transform:rotate(0)} }
-  @keyframes handin  { 0%,45%{transform:translateX(150px);opacity:0} 60%,100%{transform:translateX(0);opacity:1} }
-  @keyframes dash    { 0%,30%{transform:translateX(0)} 55%,100%{transform:translateX(230px)} }
-  @keyframes jump    { 0%,55%{transform:none} 70%,100%{transform:translate(var(--dx),var(--dy)) rotate(var(--rot))} }
-  @keyframes talk1   { 0%,20%{opacity:1} 25%,45%{opacity:0} 50%{opacity:1} 55%,100%{opacity:0} }
-  @keyframes talk2   { 0%,20%{opacity:0} 25%,45%{opacity:1} 50%,100%{opacity:0} }
-  @keyframes phone   { 0%,50%{opacity:0;transform:rotate(0)} 55%{opacity:1;transform:rotate(-10deg)} 62%{transform:rotate(10deg)} 69%{transform:rotate(-10deg)} 76%{transform:rotate(10deg)} 83%,100%{opacity:1;transform:rotate(0)} }
-  @keyframes bang    { 0%,58%{opacity:0} 65%,100%{opacity:1} }
-  @keyframes dark    { 0%,25%{opacity:0} 30%,65%{opacity:0.78} 75%,100%{opacity:0} }
-  @keyframes bulb    { 0%,25%{fill:#FFD84D} 30%,65%{fill:#9A9A9A} 75%,100%{fill:#FFD84D} }
-  @keyframes walkin  { 0%,35%{transform:translateX(-140px)} 60%,100%{transform:translateX(0)} }
-  @keyframes tip     { 0%,35%{transform:rotate(-12deg)} 70%{transform:rotate(-12deg)} 100%{transform:rotate(0)} }
-  @keyframes slidebox{ 0%,35%{transform:translateY(-70px);opacity:0} 70%,100%{transform:translateY(0);opacity:1} }
-  @keyframes catin   { 0%,25%{transform:translateX(-90px)} 55%,100%{transform:translateX(0)} }
-  @keyframes fly     { 0%,50%{transform:none} 100%{transform:translate(var(--dx),var(--dy))} }
-  @keyframes sag     { 0%,40%{transform:rotate(10deg)} 65%{transform:rotate(10deg)} 100%{transform:rotate(0)} }
-  @keyframes postup  { 0%,40%{transform:scaleY(0)} 65%,100%{transform:scaleY(1)} }
-  @keyframes rock    { 0%{transform:rotate(-10deg)} 12%{transform:rotate(10deg)} 24%{transform:rotate(-10deg)} 36%{transform:rotate(10deg)} 48%{transform:rotate(-8deg)} 60%,100%{transform:rotate(0)} }
-  @keyframes drop    { 0%,45%{transform:translateY(-90px);opacity:0} 65%,100%{transform:translateY(0);opacity:1} }
-  @keyframes gust    { 0%,15%{transform:translateX(-120px);opacity:0} 25%{opacity:1} 45%,100%{transform:translateX(120px);opacity:0} }
-  @keyframes flatten { 0%,45%{transform:scaleY(1)} 70%,100%{transform:scaleY(0.1)} }
-  @keyframes move    { 0%{transform:translateX(0)} 50%,100%{transform:translateX(60px)} }
-  @keyframes dropw   { 0%,40%{transform:translateY(-160px) rotate(0);opacity:0} 55%,100%{transform:translateY(0) rotate(35deg);opacity:1} }
-  @keyframes lamp    { 0%,50%{fill:#8BC34A} 56%,100%{fill:#D32F2F} }
-  @keyframes fade    { 0%,30%{filter:grayscale(1);opacity:0.45} 60%{filter:grayscale(1);opacity:0.45} 90%,100%{filter:none;opacity:1} }
-  @keyframes brush   { 0%,30%{opacity:0;transform:translate(-60px,-30px)} 40%{opacity:1;transform:translate(-60px,-30px)} 60%{transform:translate(60px,20px)} 80%{transform:translate(-40px,40px)} 90%,100%{opacity:0;transform:translate(-40px,40px)} }
-
-  /* ---- animated silent clips (self-contained SVG, no video file needed) ---- */
-  .clip { border: 2px solid var(--accent-light); border-radius: 8px; background: #F3F7F7; max-width: 560px; margin: 8px 0; }
-  .clip svg { width: 100%; height: auto; display: block; overflow: hidden; }
-  .clip { overflow: hidden; }
-  .clip .anim { animation-duration: 4s; animation-timing-function: ease-in-out; animation-fill-mode: both; animation-play-state: paused; transform-box: fill-box; transform-origin: 50% 100%; }
-  .clip.playing .anim { animation-play-state: running; }
-  .clip.loop .anim { animation-play-state: running; animation-iteration-count: infinite; }
-  .clip.frozen .anim { animation-delay: -1.8s; }
-  .clipbar { display: flex; gap: 10px; align-items: center; padding: 8px 12px; border-top: 1px solid #DDE; }
-  .clipbar button.play { background: var(--accent); color: white; border: none; padding: 6px 14px; border-radius: 4px; font-family: Arial; font-size: 0.8em; cursor: pointer; }
-  .clipbar button.play.played { background: #555; }
-  .clipbar .lbl { font-size: 0.75em; color: var(--gray); }
-  .wordbank { background: var(--accent-light); border-radius: 6px; padding: 8px 14px; font-size: 0.85em; margin: 8px 0; }
-  .wordbank b { color: var(--accent); }
-  .row2 { display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap; }
-  .row2 .clip { flex: 0 1 380px; }
-  .row2 .mc-q { flex: 1 1 320px; }
-  .oc { transform-origin: 0% 50%; }
-  @keyframes wobble  { 0%{transform:rotate(0)} 30%{transform:rotate(4deg)} 45%{transform:rotate(-10deg)} 55%{transform:rotate(12deg)} 62%{transform:rotate(30deg)} 70%,100%{transform:rotate(30deg)} }
-  @keyframes fall    { 0%,58%{transform:none} 100%{transform:translate(var(--dx),var(--dy)) rotate(var(--rot))} }
-  @keyframes wobble2 { 0%{transform:rotate(0)} 12%{transform:rotate(5deg)} 25%{transform:rotate(-5deg)} 38%{transform:rotate(5deg)} 50%{transform:rotate(-6deg)} 62%,100%{transform:rotate(0)} }
-  @keyframes handin  { 0%,45%{transform:translateX(60px);opacity:0} 60%,100%{transform:translateX(0);opacity:1} }
-  @keyframes dash    { 0%,30%{transform:translateX(0)} 55%,100%{transform:translateX(196px)} }
-  @keyframes jump    { 0%,55%{transform:none} 70%,100%{transform:translate(var(--dx),var(--dy)) rotate(var(--rot))} }
-  @keyframes talk1   { 0%,20%{opacity:1} 25%,45%{opacity:0} 50%{opacity:1} 55%,100%{opacity:0} }
-  @keyframes talk2   { 0%,20%{opacity:0} 25%,45%{opacity:1} 50%,100%{opacity:0} }
-  @keyframes phone   { 0%,50%{opacity:0;transform:rotate(0)} 55%{opacity:1;transform:rotate(-10deg)} 62%{transform:rotate(10deg)} 69%{transform:rotate(-10deg)} 76%{transform:rotate(10deg)} 83%,100%{opacity:1;transform:rotate(0)} }
-  @keyframes bang    { 0%,58%{opacity:0} 65%,100%{opacity:1} }
-  @keyframes dark    { 0%,25%{opacity:0} 30%,65%{opacity:0.78} 75%,100%{opacity:0} }
-  @keyframes bulb    { 0%,25%{fill:#FFD84D} 30%,65%{fill:#9A9A9A} 75%,100%{fill:#FFD84D} }
-  @keyframes walkin  { 0%,35%{transform:translateX(-52px);opacity:0} 42%{opacity:1} 60%,100%{transform:translateX(0);opacity:1} }
-  @keyframes tip     { 0%,35%{transform:rotate(-12deg)} 70%{transform:rotate(-12deg)} 100%{transform:rotate(0)} }
-  @keyframes slidebox{ 0%,35%{transform:translateY(-70px);opacity:0} 70%,100%{transform:translateY(0);opacity:1} }
-  @keyframes catin   { 0%,25%{transform:translateX(-70px)} 55%,100%{transform:translateX(0)} }
-  @keyframes fly     { 0%,50%{transform:none} 100%{transform:translate(var(--dx),var(--dy))} }
-  @keyframes sag     { 0%,40%{transform:rotate(10deg)} 65%{transform:rotate(10deg)} 100%{transform:rotate(0)} }
-  @keyframes postup  { 0%,40%{transform:scaleY(0)} 65%,100%{transform:scaleY(1)} }
-  @keyframes rock    { 0%{transform:rotate(-10deg)} 12%{transform:rotate(10deg)} 24%{transform:rotate(-10deg)} 36%{transform:rotate(10deg)} 48%{transform:rotate(-8deg)} 60%,100%{transform:rotate(0)} }
-  @keyframes drop    { 0%,45%{transform:translateY(-90px);opacity:0} 65%,100%{transform:translateY(0);opacity:1} }
-  @keyframes gust    { 0%,15%{transform:translateX(-120px);opacity:0} 25%{opacity:1} 45%,100%{transform:translateX(120px);opacity:0} }
-  @keyframes flatten { 0%,45%{transform:scaleY(1)} 70%,100%{transform:scaleY(0.1)} }
-  @keyframes move    { 0%{transform:translateX(0)} 50%,100%{transform:translateX(60px)} }
-  @keyframes dropw   { 0%,40%{transform:translateY(-160px) rotate(0);opacity:0} 55%,100%{transform:translateY(0) rotate(35deg);opacity:1} }
-  @keyframes lamp    { 0%,50%{fill:#8BC34A} 56%,100%{fill:#D32F2F} }
-  @keyframes fade    { 0%,30%{filter:grayscale(1);opacity:0.45} 60%{filter:grayscale(1);opacity:0.45} 90%,100%{filter:none;opacity:1} }
-  @keyframes brush   { 0%,30%{opacity:0;transform:translate(-60px,-30px)} 40%{opacity:1;transform:translate(-60px,-30px)} 60%{transform:translate(60px,20px)} 80%{transform:translate(-40px,40px)} 90%,100%{opacity:0;transform:translate(-40px,40px)} }
-
-  /* ---- animated silent clips (self-contained SVG, no video file needed) ---- */
-  .clip { border: 2px solid var(--accent-light); border-radius: 8px; background: #F3F7F7; max-width: 560px; margin: 8px 0; }
   .clip svg { width: 100%; height: auto; display: block; overflow: hidden; }
   .clip { overflow: hidden; }
   .clip .anim { animation-duration: 4s; animation-timing-function: ease-in-out; animation-fill-mode: both; animation-play-state: paused; transform-box: fill-box; transform-origin: 50% 100%; }
@@ -539,63 +399,20 @@
 
 
   // Silent-clip controls: Play starts the CSS animation; a second click replays it.
+  // Restart goes through the Web Animations API on purpose. Do NOT write to
+  // a.style.animation to reset: the animation NAME lives in each SVG group's
+  // inline style attribute, and the shorthand erases it, so the clip then never
+  // plays again. Also: this block must appear ONCE. Two copies of it cancel each
+  // other out on the first click. (Both bugs hit 2026-09-15.)
   document.querySelectorAll('.clip').forEach(c => {
     const btn = c.querySelector('button.play');
     if (!btn) return;
     btn.addEventListener('click', () => {
-      if (c.classList.contains('playing')) {
-        c.classList.remove('playing');
-        c.querySelectorAll('.anim').forEach(a => { a.style.animation = 'none'; a.getBoundingClientRect(); a.style.animation = ''; });
-      }
+      c.classList.remove('frozen');          // drop the freeze-frame offset
       c.classList.add('playing');
-      btn.textContent = '↺ Replay';
-      btn.classList.add('played');
-    });
-  });
-
-
-  // Silent-clip controls: Play starts the CSS animation; a second click replays it.
-  document.querySelectorAll('.clip').forEach(c => {
-    const btn = c.querySelector('button.play');
-    if (!btn) return;
-    btn.addEventListener('click', () => {
-      if (c.classList.contains('playing')) {
-        c.classList.remove('playing');
-        c.querySelectorAll('.anim').forEach(a => { a.style.animation = 'none'; a.getBoundingClientRect(); a.style.animation = ''; });
-      }
-      c.classList.add('playing');
-      btn.textContent = '↺ Replay';
-      btn.classList.add('played');
-    });
-  });
-
-
-  // Silent-clip controls: Play starts the CSS animation; a second click replays it.
-  document.querySelectorAll('.clip').forEach(c => {
-    const btn = c.querySelector('button.play');
-    if (!btn) return;
-    btn.addEventListener('click', () => {
-      if (c.classList.contains('playing')) {
-        c.classList.remove('playing');
-        c.querySelectorAll('.anim').forEach(a => { a.style.animation = 'none'; a.getBoundingClientRect(); a.style.animation = ''; });
-      }
-      c.classList.add('playing');
-      btn.textContent = '↺ Replay';
-      btn.classList.add('played');
-    });
-  });
-
-
-  // Silent-clip controls: Play starts the CSS animation; a second click replays it.
-  document.querySelectorAll('.clip').forEach(c => {
-    const btn = c.querySelector('button.play');
-    if (!btn) return;
-    btn.addEventListener('click', () => {
-      if (c.classList.contains('playing')) {
-        c.classList.remove('playing');
-        c.querySelectorAll('.anim').forEach(a => { a.style.animation = 'none'; a.getBoundingClientRect(); a.style.animation = ''; });
-      }
-      c.classList.add('playing');
+      c.querySelectorAll('.anim').forEach(a => {
+        a.getAnimations().forEach(an => { an.currentTime = 0; an.play(); });
+      });
       btn.textContent = '↺ Replay';
       btn.classList.add('played');
     });
