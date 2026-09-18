@@ -1,0 +1,682 @@
+<!-- generator: _lib/school_deck_scaffold.py -->
+<!DOCTYPE html>
+<!--
+  ESL reveal.js DECK TEMPLATE — copy this file, rename to
+  YYYY-MM-DD_Title_Case_Topic_L<level>_ccode.html in the School Stuff root,
+  and fill the Edit.
+
+  LEVEL SWAP: this template ships L2 colors (green). For L4, change the
+  three lines in :root marked  /* L4: ... */  and swap theme to white
+  (already white). L2 accent 2E6B3A / light D9E9D3.  L4 accent 1F4E79 /
+  light D6E4F2.
+
+  All canonical contracts (invisible scrollbar, 80vh bottom spacer per
+  section, no font-size on .reveal, table.compare last-child border,
+  reveal init config) are baked in. Run the linter after editing:
+      node _lib/verify_html_deck.mjs <deck.html>            # rendered check
+      python3 _lib/verify_html_deck_static.py <deck.html>   # fast source lint
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Adjective + Preposition — Level 3</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/theme/white.css">
+<style>
+  :root { --accent: #1F6B6B; --accent-light: #D6E8E8; --gray: #555555;
+          /* L4: --accent: #1F4E79; --accent-light: #D6E4F2; */
+          --good: #15803D; --bad: #B91C1C; --muted: #777; }
+
+  /* TYPOGRAPHY CANON — never put font-size on .reveal itself */
+  .reveal { font-family: Arial, sans-serif; }
+  .reveal h1, .reveal h2, .reveal h3 { color: var(--accent); font-family: Arial, sans-serif; text-transform: none; letter-spacing: 0; }
+  .reveal h1 { font-size: 2.2em; }
+  .reveal h2 { font-size: 1.6em; }
+  .reveal h3 { font-size: 1.15em; }
+  .reveal h4 { font-size: 1.05em; }
+  .reveal p, .reveal li { font-size: 0.85em; line-height: 1.5; }
+
+  /* SCROLLABLE SLIDES WITH INVISIBLE SCROLLBAR */
+  .reveal .slides section {
+    overflow-y: auto !important;
+    max-height: 92vh !important;
+    text-align: left;
+    padding: 20px 40px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .reveal .slides section::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* Title slide */
+  .title-slide { text-align: center !important; }
+  .title-slide h1 { font-size: 2.6em; margin-bottom: 0.3em; }
+  .title-slide .subtitle { font-size: 1.2em; color: var(--gray); }
+
+  /* Pattern / example / note / tip */
+  .pattern-box {
+    background: var(--accent-light);
+    border-left: 6px solid var(--accent);
+    padding: 14px 20px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+  .pattern-box code {
+    background: white; padding: 2px 8px; border-radius: 3px;
+    color: var(--accent); font-weight: bold;
+  }
+  .example {
+    background: #FAFAFA; border: 1px solid #DDD;
+    padding: 10px 16px; margin: 8px 0; border-radius: 3px; font-size: 0.9em;
+  }
+  .example .key { color: var(--accent); font-weight: bold; }
+  .note { font-style: italic; color: var(--gray); font-size: 0.85em; margin-top: 10px; }
+  .check-tip {
+    background: #FFF8E1; border-left: 6px solid #F5A623;
+    padding: 12px 18px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+
+  /* Comparison tables — borders need !important (reveal theme strips them) */
+  table.compare {
+    border-collapse: collapse !important; margin: 14px 0;
+    font-size: 0.82em; width: 100%; border: 1px solid var(--accent) !important;
+  }
+  table.compare th, table.compare td {
+    border: 1px solid var(--accent) !important; padding: 8px 12px; text-align: left;
+  }
+  table.compare tr:last-child td { border-bottom: 1px solid var(--accent) !important; }
+  table.compare th { background: var(--accent); color: white; }
+  table.compare td:first-child { font-weight: bold; color: var(--accent); }
+
+  /* Click-to-reveal exercise (single-answer reveal) */
+  .exercise {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .exercise .question { font-size: 0.9em; margin: 0 0 10px 0; }
+  .exercise .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .exercise button.reveal-btn {
+    background: var(--accent); color: white; border: none; padding: 6px 14px;
+    border-radius: 4px; font-family: Arial; font-size: 0.8em; cursor: pointer;
+  }
+  .exercise button.reveal-btn:hover { filter: brightness(0.85); }
+  .exercise .answer {
+    display: none; margin-top: 10px; padding: 10px 14px;
+    background: var(--accent-light); border-left: 4px solid var(--accent); font-size: 0.9em;
+  }
+  .exercise .answer .key { color: var(--accent); font-weight: bold; }
+  .exercise .answer.shown { display: block; }
+
+  /* Clickable multiple choice */
+  .mc-q {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .mc-q .stem { font-size: 0.9em; margin: 0 0 10px 0; }
+  .mc-q .stem .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .mc { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .mc button.opt {
+    font-family: inherit; font-size: 0.8em; padding: 10px 12px;
+    border: 2px solid #d0d8e4; background: white; border-radius: 8px;
+    cursor: pointer; transition: all .15s; font-weight: 600;
+  }
+  .mc button.opt:hover { border-color: var(--accent); background: var(--accent-light); }
+  .mc button.opt.correct { background: #DCFCE7; border-color: var(--good); color: var(--good); }
+  .mc button.opt.wrong   { background: #FEE2E2; border-color: var(--bad);  color: var(--bad); }
+  .explain { margin-top: 10px; font-size: 0.78em; color: var(--muted); font-style: italic; min-height: 1.2em; }
+  .explain.good { color: var(--good); font-style: normal; }
+  .explain.bad  { color: var(--bad); }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1: TITLE -->
+<section class="title-slide">
+  <h1>Adjective + Preposition</h1>
+  <p class="subtitle">afraid of, excited about, good at, and more</p>
+  <p class="subtitle" style="margin-top: 1.5em;">Level 3 — Grammar Lesson</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 2: CONCEPT -->
+<section>
+  <h2>Core Idea</h2>
+  <p>Many adjectives come with a partner preposition. The adjective chooses the preposition, so learn them as a pair.</p>
+  <div class="pattern-box">
+    <strong>Pattern:</strong> <code>be + adjective + preposition + noun</code><br>
+    <strong>or:</strong> <code>be + adjective + preposition + verb-ing</code>
+  </div>
+  <div class="example">Paulo is <span class="key">afraid of</span> heights.</div>
+  <div class="example">We are <span class="key">excited about</span> summer.</div>
+  <div class="example">Kate is <span class="key">interested in</span> photography.</div>
+  <p class="note">Other verbs work too: feel, look, get, become. “The dog looks jealous of the new kitten.”</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 3: GROUP 1 -->
+<section>
+  <h2>Group 1 — of, about, with</h2>
+  <table class="compare">
+    <tr><th>Preposition</th><th>Adjectives</th><th>Example</th></tr>
+    <tr><td>of</td><td>afraid, scared, proud, tired, full, jealous</td><td>The kids are scared of thunder.</td></tr>
+    <tr><td>about</td><td>excited, worried, nervous, upset</td><td>Lisa is upset about the long wait.</td></tr>
+    <tr><td>with</td><td>bored, happy, pleased, satisfied</td><td>The boss is pleased with the new schedule.</td></tr>
+  </table>
+  <div class="check-tip"><strong>Tip:</strong> use <em>about</em> for the thing you think or worry about: excited, worried, nervous, upset.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 4: EXERCISE 1 -->
+<section>
+  <h2>Exercise 1 — of, about, or with?</h2>
+  <p>Write <strong>of</strong>, <strong>about</strong>, or <strong>with</strong>. Then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> The new bus driver was nervous ______ the icy roads.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">about</span> — nervous about + something that worries you.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> The refrigerator is full ______ leftovers.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">of</span> — full of + what is inside.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> Our customers were satisfied ______ the fast delivery.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">with</span> — satisfied with + a result or service.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> Farmers are worried ______ the dry weather.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">about</span> — worried about + a problem.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> The team felt proud ______ its first win.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">of</span> — proud of + something good.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> Tom got bored ______ the long movie and fell asleep.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">with (or of)</span> — bored with is most common; bored of is also used in speaking.</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 5: GROUP 2 -->
+<section>
+  <h2>Group 2 — at, in, for, to, from</h2>
+  <table class="compare">
+    <tr><th>Preposition</th><th>Adjectives</th><th>Example</th></tr>
+    <tr><td>at</td><td>good, bad</td><td>My son is good at math but bad at drawing.</td></tr>
+    <tr><td>in</td><td>interested</td><td>Ben is interested in old movies.</td></tr>
+    <tr><td>for</td><td>ready, late, famous, responsible</td><td>Hurry! We are late for the train.</td></tr>
+    <tr><td>to</td><td>married, similar, kind</td><td>Be kind to your neighbors.</td></tr>
+    <tr><td>from</td><td>absent, different</td><td>Tea is very different from coffee.</td></tr>
+  </table>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 6: EXERCISE 2 -->
+<section>
+  <h2>Exercise 2 — at, in, for, to, or from?</h2>
+  <p>Write <strong>at</strong>, <strong>in</strong>, <strong>for</strong>, <strong>to</strong>, or <strong>from</strong>. Then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> That singer became famous ______ one sad love song.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">for</span> — famous for + the reason people know you.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> Why were you absent ______ the meeting?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">from</span> — absent from + the place or event you missed.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> Are you good ______ chess?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">at</span> — good at + a skill or subject.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> Her handwriting looks similar ______ her mother’s.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">to</span> — similar to + the thing you compare.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> Each student is responsible ______ one part of the project.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">for</span> — responsible for + a job or duty.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> My sister is interested ______ becoming a pilot.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">in</span> — interested in + noun or verb-ing.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">7.</span> Don’t be late ______ your first day at work!</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">for (or to)</span> — late for is most common; late to is also used in American English.</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 7: AFTER THE PREPOSITION -->
+<section>
+  <h2>After the Preposition</h2>
+  <p>After the preposition, use a noun, a pronoun, or a verb + <strong>-ing</strong>.</p>
+  <div class="example">noun: I’m tired of <span class="key">rain</span>.</div>
+  <div class="example">pronoun: She is jealous of <span class="key">him</span>.</div>
+  <div class="example">verb-ing: They are nervous about <span class="key">flying</span>.</div>
+  <div class="check-tip"><strong>Watch out:</strong> no base verb after the preposition.<br>
+    ✗ My son is afraid of <u>swim</u>. ✓ My son is afraid of <strong>swimming</strong>.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 8: EXERCISE 3 (MC) -->
+<section>
+  <h2>Exercise 3 — Choose the Preposition</h2>
+  <p>Click a, b, c, or d.</p>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> Many people are scared ____ snakes.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. of</button>
+      <button class="opt">b. in</button>
+      <button class="opt">c. at</button>
+      <button class="opt">d. with</button>
+    </div>
+    <div class="explain" data-explain="scared of + something that frightens you."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> Everyone was excited ____ the long weekend.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. in</button>
+      <button class="opt">b. from</button>
+      <button class="opt">c. about</button>
+      <button class="opt">d. at</button>
+    </div>
+    <div class="explain" data-explain="excited about + something good that is coming."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> We were happy ____ the hotel room.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. to</button>
+      <button class="opt">b. with</button>
+      <button class="opt">c. of</button>
+      <button class="opt">d. from</button>
+    </div>
+    <div class="explain" data-explain="happy with + something you are pleased with."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> Is a crocodile different ____ an alligator?</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. in</button>
+      <button class="opt">b. at</button>
+      <button class="opt">c. of</button>
+      <button class="opt">d. from</button>
+    </div>
+    <div class="explain" data-explain="different from + the thing you compare."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> How long has your aunt been married ____ your uncle?</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. with</button>
+      <button class="opt">b. to</button>
+      <button class="opt">c. in</button>
+      <button class="opt">d. for</button>
+    </div>
+    <div class="explain" data-explain="married to + a person."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> I am nervous ____ my driving test.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. about</button>
+      <button class="opt">b. to</button>
+      <button class="opt">c. at</button>
+      <button class="opt">d. in</button>
+    </div>
+    <div class="explain" data-explain="nervous about + something that worries you."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">7.</span> That waiter was very kind ____ us.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. from</button>
+      <button class="opt">b. at</button>
+      <button class="opt">c. to</button>
+      <button class="opt">d. in</button>
+    </div>
+    <div class="explain" data-explain="kind to + a person."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">8.</span> The students are ready ____ the final exam.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. at</button>
+      <button class="opt">b. in</button>
+      <button class="opt">c. from</button>
+      <button class="opt">d. for</button>
+    </div>
+    <div class="explain" data-explain="ready for + a noun."></div>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 9: EXERCISE 4 (error correction) -->
+<section>
+  <h2>Exercise 4 — Fix the Mistake</h2>
+  <p>The CAPITALIZED preposition is wrong. Say the correct preposition. Then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> Why is your cat afraid AT the vacuum cleaner?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">of</span> — afraid of</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> Sara is interested FOR joining the soccer team.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">in</span> — interested in + verb-ing</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> I’m really tired WITH this cold weather.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">of</span> — tired of = I don’t want any more of it</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> Were you pleased OF the results of your blood test?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">with (or about, by)</span> — pleased with</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> Who in your family is good IN cooking?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">at</span> — good at + verb-ing</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> Is Spanish very different OF Portuguese?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">from (or than)</span> — different from</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">7.</span> Why is Maria upset OF her test score?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">about (or by, over)</span> — upset about + a thing</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 10: EXERCISE 5 (word bank) -->
+<section>
+  <h2>Exercise 5 — Mixed Practice</h2>
+  <p>Complete each sentence with a phrase from the box. Use each phrase one time.</p>
+  <div class="pattern-box">proud of · worried about · responsible for · interested in · similar to · absent from</div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> The coach is ______ the team’s equipment. It is his job to keep it clean.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">responsible for</span> — it is his job.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> My twin brother and I are ______ each other in many ways.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">similar to</span> — twins are alike.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> My boss is rarely ______ the office.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">absent from</span> — she is almost always there.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> Grandpa is ______ his old army photos. He shows them to everyone.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">proud of</span> — he feels good about them.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> Are you ______ a free computer class? There is one on Saturday.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">interested in</span> — you might want to join.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> Dad is ______ the car. It makes a strange noise.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">worried about</span> — a strange noise is a problem.</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 11: SUMMARY -->
+<section>
+  <h2>Summary — Learn the Pairs</h2>
+  <table class="compare">
+    <tr><th>Preposition</th><th>Adjectives</th></tr>
+    <tr><td>of</td><td>afraid, scared, proud, tired, full, jealous</td></tr>
+    <tr><td>about</td><td>excited, worried, nervous, upset</td></tr>
+    <tr><td>with</td><td>bored, happy, pleased, satisfied</td></tr>
+    <tr><td>at</td><td>good, bad</td></tr>
+    <tr><td>in</td><td>interested</td></tr>
+    <tr><td>for</td><td>ready, late, famous, responsible</td></tr>
+    <tr><td>to</td><td>married, similar, kind</td></tr>
+    <tr><td>from</td><td>absent, different</td></tr>
+  </table>
+  <table class="compare">
+    <tr><th>Remember</th><th>Example</th></tr>
+    <tr><td>preposition + noun</td><td>The kids are scared of thunder.</td></tr>
+    <tr><td>preposition + verb-ing</td><td>They are nervous about flying.</td></tr>
+  </table>
+  <p style="text-align:center; margin-top:30px; font-size:0.95em; color:var(--accent);"><strong>End of Deck — Great work!</strong></p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    controls: true,
+    progress: true,
+    center: false,
+    transition: 'slide',
+    width: 1100,
+    height: 720,
+    margin: 0.04
+  });
+
+  // Clickable multiple-choice wiring (data-correct = 0-indexed button)
+  document.querySelectorAll('.mc').forEach(mc => {
+    const correct = parseInt(mc.dataset.correct, 10);
+    const buttons = mc.querySelectorAll('button.opt');
+    const explain = mc.nextElementSibling && mc.nextElementSibling.classList.contains('explain')
+      ? mc.nextElementSibling : null;
+    const explainText = explain ? explain.dataset.explain || '' : '';
+    buttons.forEach((b, i) => {
+      b.addEventListener('click', () => {
+        // `sel` marks the clicked button so its class always changes on every
+        // click — keeps verify_html_deck.mjs from false-failing when the correct
+        // answer isn't option (a). Do not remove.
+        buttons.forEach(x => x.classList.remove('correct', 'wrong', 'sel'));
+        b.classList.add('sel');
+        if (i === correct) {
+          b.classList.add('correct');
+          if (explain) {
+            explain.textContent = '✓ Correct. ' + explainText;
+            explain.classList.remove('bad'); explain.classList.add('good');
+          }
+        } else {
+          b.classList.add('wrong');
+          buttons[correct].classList.add('correct');
+          if (explain) {
+            const answerText = buttons[correct].textContent;
+            explain.innerHTML = '✗ The answer is <strong>' + answerText + '</strong>. ' + explainText;
+            explain.classList.remove('good'); explain.classList.add('bad');
+          }
+        }
+      });
+    });
+  });
+</script>
+<!-- PENCIL DRAW OVERLAY — iPad annotation layer (additive; safe to delete this whole block) -->
+<style>
+  #drawCanvas {
+    position: fixed; inset: 0; z-index: 50; pointer-events: none; touch-action: none;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  }
+  html.draw-armed, html.draw-armed body, html.draw-armed .reveal {
+    -webkit-user-select: none !important; user-select: none !important;
+    -webkit-touch-callout: none !important;
+  }
+  html.presentation-mode, html.presentation-mode body {
+    width: 100%; height: 100%; overflow: hidden !important; overscroll-behavior: none;
+  }
+  html.presentation-mode body { position: fixed; inset: 0; }
+  html.presentation-mode .reveal { width: 100vw !important; height: 100vh !important; height: 100dvh !important; }
+  html.presentation-mode .reveal .slides section { overscroll-behavior-y: contain; }
+  #drawToggle {
+    position: fixed; top: 10px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 20px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle.armed { opacity: 1; background: #fde9c8; border-color: #e8a013; }
+  #fsToggle {
+    position: fixed; top: 62px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 19px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle, #fsToggle { transition: opacity 0.3s; }
+  html.presentation-mode #drawToggle:not(.armed), html.presentation-mode #fsToggle { opacity: 0.15; }
+  #drawBar {
+    position: fixed; top: 10px; right: 62px; z-index: 60; display: flex; gap: 8px;
+    background: #fff; border: 1px solid #bbb; border-radius: 22px; padding: 6px 10px;
+    align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  #drawBar button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ccc; background: #fff; cursor: pointer; font-size: 15px; padding: 0; }
+  #drawBar .swatch { border-width: 2px; }
+  #drawBar .swatch.on { outline: 3px solid #e8a013; }
+</style>
+<canvas id="drawCanvas"></canvas>
+<div id="drawBar" hidden>
+  <button class="swatch on" data-color="#d33333" style="background:#d33333"></button>
+  <button class="swatch" data-color="#2266cc" style="background:#2266cc"></button>
+  <button class="swatch" data-color="#1a1a1a" style="background:#1a1a1a"></button>
+  <button id="drawUndo" title="Undo">↩</button>
+  <button id="drawClear" title="Clear slide">✕</button>
+</div>
+<button id="drawToggle" title="Pencil mode (pen only; finger locked)" aria-pressed="false">✏️</button>
+<button id="fsToggle" title="Presentation mode" aria-label="Presentation mode" aria-pressed="false">⛶</button>
+<script>
+(() => {
+  const cv = document.getElementById('drawCanvas');
+  const ctx = cv.getContext('2d');
+  const bar = document.getElementById('drawBar');
+  const toggle = document.getElementById('drawToggle');
+  let armed = false, color = '#d33333', cur = null, drawPointerId = null;
+  const strokes = new Map(); // slide "h-v" -> stroke list; ink persists per slide
+  const key = () => { const i = Reveal.getIndices(); return i.h + '-' + (i.v || 0); };
+  const list = () => { const k = key(); if (!strokes.has(k)) strokes.set(k, []); return strokes.get(k); };
+
+  function size() {
+    const d = window.devicePixelRatio || 1;
+    cv.width = innerWidth * d; cv.height = innerHeight * d;
+    cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    render();
+  }
+  function seg(a, b, c, w) {
+    ctx.strokeStyle = c; ctx.lineWidth = Math.max(0.75, w * innerWidth);
+    ctx.beginPath(); ctx.moveTo(a.x * innerWidth, a.y * innerHeight);
+    ctx.lineTo(b.x * innerWidth, b.y * innerHeight); ctx.stroke();
+  }
+  function render() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const s of list())
+      for (let i = 1; i < s.pts.length; i++) seg(s.pts[i - 1], s.pts[i], s.color, s.pts[i].w);
+  }
+  const pt = (e) => ({ x: e.clientX / innerWidth, y: e.clientY / innerHeight,
+    w: (e.pointerType === 'pen' ? 1.5 + 4 * (e.pressure || 0.5) : 3) / innerWidth });
+
+  const cancel = (e) => { if (e.cancelable) e.preventDefault(); };
+  cv.addEventListener('pointerdown', (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerType === 'touch') {
+      cv.setPointerCapture(e.pointerId); // swallow the palm/finger for its full contact
+      return;
+    }
+    if ((e.pointerType !== 'pen' && e.pointerType !== 'mouse') || drawPointerId !== null) return;
+    drawPointerId = e.pointerId;
+    cur = { color, pts: [pt(e)] };
+    list().push(cur);
+    cv.setPointerCapture(e.pointerId);
+  }, { passive: false });
+  cv.addEventListener('pointermove', (e) => {
+    if (!armed) return;
+    if (e.pointerType === 'touch') { cancel(e); return; }
+    if (!cur || e.pointerId !== drawPointerId) return;
+    cancel(e);
+    const coalesced = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+    const events = coalesced && coalesced.length ? coalesced : [e];
+    for (const ev of events) {
+      const p = pt(ev);
+      seg(cur.pts[cur.pts.length - 1], p, cur.color, p.w);
+      cur.pts.push(p);
+    }
+  }, { passive: false });
+  const end = (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerId === drawPointerId) { cur = null; drawPointerId = null; }
+  };
+  cv.addEventListener('pointerup', end, { passive: false });
+  cv.addEventListener('pointercancel', end, { passive: false });
+  for (const eventName of ['touchstart', 'touchmove', 'touchend', 'touchcancel'])
+    cv.addEventListener(eventName, (e) => { if (armed) cancel(e); }, { passive: false });
+  document.addEventListener('selectstart', (e) => { if (armed) cancel(e); });
+
+  toggle.addEventListener('click', () => {
+    armed = !armed;
+    cv.style.pointerEvents = armed ? 'auto' : 'none'; // disarmed = taps/swipes reach the slides
+    bar.hidden = !armed;
+    toggle.classList.toggle('armed', armed);
+    toggle.setAttribute('aria-pressed', String(armed));
+    document.documentElement.classList.toggle('draw-armed', armed);
+    if (!armed) { cur = null; drawPointerId = null; }
+  });
+  bar.querySelectorAll('.swatch').forEach((b) => b.addEventListener('click', () => {
+    color = b.dataset.color;
+    bar.querySelectorAll('.swatch').forEach((x) => x.classList.toggle('on', x === b));
+  }));
+  document.getElementById('drawUndo').addEventListener('click', () => { list().pop(); render(); });
+  document.getElementById('drawClear').addEventListener('click', () => { strokes.set(key(), []); render(); });
+
+  Reveal.on('slidechanged', render);
+  addEventListener('resize', size);
+  size();
+
+  // Fixed presentation mode avoids iPadOS's native-fullscreen pull-down exit gesture.
+  const fsT = document.getElementById('fsToggle');
+  let presenting = false;
+  const toast = (message) => {
+    const t = document.createElement('div');
+    t.textContent = message;
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:10px;font:14px system-ui;z-index:99;max-width:46ch;text-align:center';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  };
+  fsT.addEventListener('click', () => {
+    presenting = !presenting;
+    document.documentElement.classList.toggle('presentation-mode', presenting);
+    fsT.textContent = presenting ? '\u2921' : '\u26f6';
+    fsT.setAttribute('aria-pressed', String(presenting));
+    fsT.title = presenting ? 'Exit presentation mode' : 'Presentation mode';
+    requestAnimationFrame(() => {
+      if (Reveal.layout) Reveal.layout();
+      size();
+    });
+    if (presenting) toast('Presentation mode on. For more space in Safari, tap AA, then Hide Toolbar.');
+  });
+})();
+</script>
+<!-- END PENCIL DRAW OVERLAY -->
+
+</body>
+</html>
