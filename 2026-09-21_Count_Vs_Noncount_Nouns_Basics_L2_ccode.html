@@ -1,0 +1,748 @@
+<!-- generator: _lib/school_deck_scaffold.py -->
+<!DOCTYPE html>
+<!--
+  ESL reveal.js DECK TEMPLATE — copy this file, rename to
+  YYYY-MM-DD_Title_Case_Topic_L<level>_ccode.html in the School Stuff root,
+  and fill the Edit.
+
+  LEVEL SWAP: this template ships L2 colors (green). For L4, change the
+  three lines in :root marked  /* L4: ... */  and swap theme to white
+  (already white). L2 accent 2E6B3A / light D9E9D3.  L4 accent 1F4E79 /
+  light D6E4F2.
+
+  All canonical contracts (invisible scrollbar, 80vh bottom spacer per
+  section, no font-size on .reveal, table.compare last-child border,
+  reveal init config) are baked in. Run the linter after editing:
+      node _lib/verify_html_deck.mjs <deck.html>            # rendered check
+      python3 _lib/verify_html_deck_static.py <deck.html>   # fast source lint
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Count Vs Noncount Nouns Basics — Level 2</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/theme/white.css">
+<style>
+  :root { --accent: #2E6B3A; --accent-light: #D9E9D3; --gray: #555555;
+          /* L4: --accent: #1F4E79; --accent-light: #D6E4F2; */
+          --good: #15803D; --bad: #B91C1C; --muted: #777; }
+
+  /* TYPOGRAPHY CANON — never put font-size on .reveal itself */
+  .reveal { font-family: Arial, sans-serif; }
+  .reveal h1, .reveal h2, .reveal h3 { color: var(--accent); font-family: Arial, sans-serif; text-transform: none; letter-spacing: 0; }
+  .reveal h1 { font-size: 2.2em; }
+  .reveal h2 { font-size: 1.6em; }
+  .reveal h3 { font-size: 1.15em; }
+  .reveal h4 { font-size: 1.05em; }
+  .reveal p, .reveal li { font-size: 0.85em; line-height: 1.5; }
+
+  /* SCROLLABLE SLIDES WITH INVISIBLE SCROLLBAR */
+  .reveal .slides section {
+    overflow-y: auto !important;
+    max-height: 92vh !important;
+    text-align: left;
+    padding: 20px 40px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .reveal .slides section::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* Title slide */
+  .title-slide { text-align: center !important; }
+  .title-slide h1 { font-size: 2.6em; margin-bottom: 0.3em; }
+  .title-slide .subtitle { font-size: 1.2em; color: var(--gray); }
+
+  /* Pattern / example / note / tip */
+  .pattern-box {
+    background: var(--accent-light);
+    border-left: 6px solid var(--accent);
+    padding: 14px 20px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+  .pattern-box code {
+    background: white; padding: 2px 8px; border-radius: 3px;
+    color: var(--accent); font-weight: bold;
+  }
+  .example {
+    background: #FAFAFA; border: 1px solid #DDD;
+    padding: 10px 16px; margin: 8px 0; border-radius: 3px; font-size: 0.9em;
+  }
+  .example .key { color: var(--accent); font-weight: bold; }
+  .note { font-style: italic; color: var(--gray); font-size: 0.85em; margin-top: 10px; }
+  .check-tip {
+    background: #FFF8E1; border-left: 6px solid #F5A623;
+    padding: 12px 18px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+
+  /* Comparison tables — borders need !important (reveal theme strips them) */
+  table.compare {
+    border-collapse: collapse !important; margin: 14px 0;
+    font-size: 0.82em; width: 100%; border: 1px solid var(--accent) !important;
+  }
+  table.compare th, table.compare td {
+    border: 1px solid var(--accent) !important; padding: 8px 12px; text-align: left;
+  }
+  table.compare tr:last-child td { border-bottom: 1px solid var(--accent) !important; }
+  table.compare th { background: var(--accent); color: white; }
+  table.compare td:first-child { font-weight: bold; color: var(--accent); }
+
+  /* Click-to-reveal exercise (single-answer reveal) */
+  .exercise {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .exercise .question { font-size: 0.9em; margin: 0 0 10px 0; }
+  .exercise .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .exercise button.reveal-btn {
+    background: var(--accent); color: white; border: none; padding: 6px 14px;
+    border-radius: 4px; font-family: Arial; font-size: 0.8em; cursor: pointer;
+  }
+  .exercise button.reveal-btn:hover { filter: brightness(0.85); }
+  .exercise .answer {
+    display: none; margin-top: 10px; padding: 10px 14px;
+    background: var(--accent-light); border-left: 4px solid var(--accent); font-size: 0.9em;
+  }
+  .exercise .answer .key { color: var(--accent); font-weight: bold; }
+  .exercise .answer.shown { display: block; }
+
+  /* Clickable multiple choice */
+  .mc-q {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .mc-q .stem { font-size: 0.9em; margin: 0 0 10px 0; }
+  .mc-q .stem .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .mc { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .mc button.opt {
+    font-family: inherit; font-size: 0.8em; padding: 10px 12px;
+    border: 2px solid #d0d8e4; background: white; border-radius: 8px;
+    cursor: pointer; transition: all .15s; font-weight: 600;
+  }
+  .mc button.opt:hover { border-color: var(--accent); background: var(--accent-light); }
+  .mc button.opt.correct { background: #DCFCE7; border-color: var(--good); color: var(--good); }
+  .mc button.opt.wrong   { background: #FEE2E2; border-color: var(--bad);  color: var(--bad); }
+  .explain { margin-top: 10px; font-size: 0.78em; color: var(--muted); font-style: italic; min-height: 1.2em; }
+  .explain.good { color: var(--good); font-style: normal; }
+  .explain.bad  { color: var(--bad); }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1: TITLE -->
+<section class="title-slide">
+  <h1>Count vs. Noncount Nouns</h1>
+  <p class="subtitle">The Basics</p>
+  <p class="subtitle" style="margin-top: 1.5em;">Level 2 — Grammar Practice</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 2: WHAT IS A NOUN -->
+<section>
+  <h2>What Is a Noun?</h2>
+  <p>A noun is a person, a place, a thing, an idea, or a feeling.</p>
+  <table class="compare">
+    <tr><th>Type</th><th>What it is</th><th>Examples</th></tr>
+    <tr><td>Common</td><td>a general person, place, or thing</td><td>lamp, doctor, park</td></tr>
+    <tr><td>Proper</td><td>a name (capital letter)</td><td>Maria, Mexico, Los Angeles</td></tr>
+    <tr><td>Collective</td><td>a group of people or animals</td><td>class, band, flock</td></tr>
+    <tr><td>Abstract</td><td>an idea or a feeling (you can't touch it)</td><td>fear, peace, trust</td></tr>
+  </table>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 3: COUNT NOUNS -->
+<section>
+  <h2>Count Nouns</h2>
+  <p>You can count them: one, two, three.</p>
+  <div class="pattern-box">
+    <strong>One:</strong> <code>a</code> / <code>an</code> / <code>one</code> + noun<br>
+    <strong>Two or more:</strong> number + noun + <code>-s</code>
+  </div>
+  <div class="example"><span class="key">a</span> lamp → two lamp<span class="key">s</span></div>
+  <div class="example"><span class="key">an</span> idea → three idea<span class="key">s</span></div>
+  <div class="example"><span class="key">a</span> doctor → five doctor<span class="key">s</span></div>
+  <div class="check-tip"><strong>Watch out:</strong> Never use <em>a</em> or <em>an</em> with a plural. a lamps ✗ &nbsp; lamps ✓</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 4: NONCOUNT NOUNS -->
+<section>
+  <h2>Noncount Nouns</h2>
+  <p>We do not count them. They have no plural.</p>
+  <div class="pattern-box">
+    No <code>a</code> / <code>an</code> / <code>one</code> &nbsp;·&nbsp; No <code>-s</code> &nbsp;·&nbsp; Verb: <code>is</code><br>
+    <em>some water</em> ✓ &nbsp; <em>a water</em> ✗ &nbsp; <em>two waters</em> ✗
+  </div>
+  <table class="compare">
+    <tr><th>Group</th><th>Examples</th></tr>
+    <tr><td>Liquids</td><td>water, coffee, oil</td></tr>
+    <tr><td>Tiny parts</td><td>rice, sugar, salt</td></tr>
+    <tr><td>Groups of things</td><td>money, mail, furniture</td></tr>
+    <tr><td>Ideas</td><td>advice, news, luck</td></tr>
+    <tr><td>School subjects</td><td>math, history, English</td></tr>
+  </table>
+  <div class="check-tip"><strong>Quick check:</strong> Can you say "one ___, two ___"? Yes → count. No → noncount.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 5: EX1 C OR N -->
+<section>
+  <h2>Exercise 1 — Count or Noncount?</h2>
+  <p>Say <strong>C</strong> (count) or <strong>N</strong> (noncount). Then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> spoon</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">C</span> — one spoon, two spoons</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> soap</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">N</span> — some soap</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> pillow</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">C</span> — one pillow, two pillows</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> cash</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">N</span> — some cash</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> cousin</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">C</span> — one cousin, two cousins</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> ice</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">N</span> — some ice</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">7.</span> shampoo</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">N</span> — some shampoo</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">8.</span> bicycle</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">C</span> — one bicycle, two bicycles</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 6: EX2 A / AN / SOME -->
+<section>
+  <h2>Exercise 2 — a, an, or some?</h2>
+  <div class="pattern-box">
+    <code>a</code> + consonant sound (a book) &nbsp;·&nbsp; <code>an</code> + vowel sound (an arm) &nbsp;·&nbsp; <code>some</code> + noncount (some rice)<br><em>(some also goes with plurals: some cookies)</em>
+  </div>
+  <p>Say <strong>a</strong>, <strong>an</strong>, or <strong>some</strong>. Then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> ___ onion</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">an</span> onion — "onion" starts with a vowel sound.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> ___ toothpaste</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">some</span> toothpaste — noncount</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> ___ nurse</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">a</span> nurse — count, consonant sound</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> ___ ketchup</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">some</span> ketchup — noncount</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> ___ egg</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">an</span> egg — count, vowel sound</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> ___ dollar</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">a</span> dollar — count, consonant sound</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">7.</span> ___ lotion</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">some</span> lotion — noncount</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">8.</span> ___ oven</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">an</span> oven — count, vowel sound</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 7: EX3 IS / ARE -->
+<section>
+  <h2>Exercise 3 — is or are?</h2>
+  <div class="pattern-box">
+    One count noun → <code>is</code> &nbsp;·&nbsp; Two or more → <code>are</code> &nbsp;·&nbsp; Noncount → <code>is</code>
+  </div>
+  <p>Say <strong>is</strong> or <strong>are</strong>. Then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> The tea ___ very hot.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">The tea <span class="key">is</span> very hot. — noncount</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> My shoes ___ under the bed.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">My shoes <span class="key">are</span> under the bed. — plural</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> The shampoo ___ in the shower.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">The shampoo <span class="key">is</span> in the shower. — noncount</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> My phone ___ in my bag.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">My phone <span class="key">is</span> in my bag. — one count noun</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> Three pencils ___ on my desk.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Three pencils <span class="key">are</span> on my desk. — plural</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> I think chemistry ___ hard.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">I think chemistry <span class="key">is</span> hard. — school subject, noncount</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">7.</span> The children ___ at the park.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">The children <span class="key">are</span> at the park. — plural (one child, two children)</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">8.</span> The heat in my apartment ___ off.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">The heat in my apartment <span class="key">is</span> off. — noncount</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 8: MEASURE WORDS -->
+<section>
+  <h2>Measure Words</h2>
+  <p>How do we count a noncount noun? Use a measure word.</p>
+  <div class="pattern-box">
+    <code>a</code> / <code>an</code> / number + measure word + <code>of</code> + noncount noun
+  </div>
+  <div class="example"><span class="key">a glass of</span> water</div>
+  <div class="example"><span class="key">a bowl of</span> soup</div>
+  <div class="example"><span class="key">a piece of</span> cake</div>
+  <div class="example"><span class="key">two cans of</span> soda</div>
+  <div class="example"><span class="key">three boxes of</span> cereal</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 9: EX4 MEASURE WORD BANK -->
+<section>
+  <h2>Exercise 4 — Measure Words</h2>
+  <p>Complete with <strong>a</strong> + a word from the box + <strong>of</strong>. Use each word once.</p>
+  <div class="pattern-box"><strong>Word Box:</strong> &nbsp; jar &nbsp;·&nbsp; cup &nbsp;·&nbsp; bottle &nbsp;·&nbsp; bar &nbsp;·&nbsp; bag &nbsp;·&nbsp; loaf</div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> Please buy ________ soap for the bathroom.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Please buy <span class="key">a bar of</span> soap for the bathroom.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> He got ________ bread at the bakery.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">He got <span class="key">a loaf of</span> bread at the bakery.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> On cold days, I drink ________ hot chocolate.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">On cold days, I drink <span class="key">a cup of</span> hot chocolate.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> Put ________ ice in the cooler.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Put <span class="key">a bag of</span> ice in the cooler.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> Please get ________ ketchup at the store.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Please get <span class="key">a bottle of</span> ketchup at the store.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> Mom opened ________ peanut butter for our sandwiches.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Mom opened <span class="key">a jar of</span> peanut butter for our sandwiches.</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 10: EX5 FIND THE ERROR -->
+<section>
+  <h2>Exercise 5 — Find the Error</h2>
+  <p>The CAPITALIZED word is wrong. Say the correct word (use the present tense). Then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> We need A butter for the cake.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">We need <span class="key">some</span> butter for the cake. — butter is noncount (no a). "We need butter for the cake." is also correct.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> My keys IS in the car.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">My keys <span class="key">are</span> in the car. — plural</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> We need three TOMATO for the salad.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">We need three <span class="key">tomatoes</span> for the salad. — count, plural</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> The sunshine ARE warm this morning.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">The sunshine <span class="key">is</span> warm this morning. — noncount</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> I have A uncle in Miami.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">I have <span class="key">an</span> uncle in Miami. — vowel sound ("one uncle" is also correct)</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> He has a new COMPUTERS.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">He has a new <span class="key">computer</span>. — a + one thing (no -s)</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 11: QUANTITY WORDS -->
+<section>
+  <h2>Quantity Words</h2>
+  <table class="compare">
+    <tr><th>Count nouns</th><th>Noncount nouns</th></tr>
+    <tr><td>many cookies</td><td>much water</td></tr>
+    <tr><td>a few cookies</td><td>a little water</td></tr>
+    <tr><td>some cookies</td><td>some water</td></tr>
+    <tr><td>a lot of cookies</td><td>a lot of water</td></tr>
+  </table>
+  <p class="note">How many + count noun? &nbsp; How much + noncount noun?</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 12: EX6 MC -->
+<section>
+  <h2>Exercise 6 — Choose the Correct Answer</h2>
+  <p>Click a, b, c, or d.</p>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> How ____ eggs are in the box?</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. many</button>
+      <button class="opt">b. much</button>
+      <button class="opt">c. a little</button>
+      <button class="opt">d. a lot</button>
+    </div>
+    <div class="explain" data-explain="Eggs are count nouns → how many."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> We don't have ____ time.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. many</button>
+      <button class="opt">b. a few</button>
+      <button class="opt">c. much</button>
+      <button class="opt">d. few</button>
+    </div>
+    <div class="explain" data-explain="Time here is noncount → much."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> I need ____ ice in my drink.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. a few</button>
+      <button class="opt">b. many</button>
+      <button class="opt">c. an</button>
+      <button class="opt">d. a little</button>
+    </div>
+    <div class="explain" data-explain="Ice is noncount → a little."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> ____ students were late today.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. Much</button>
+      <button class="opt">b. A few</button>
+      <button class="opt">c. A little</button>
+      <button class="opt">d. A</button>
+    </div>
+    <div class="explain" data-explain="Students are count nouns (plural) → a few."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> ____ bread is on the counter.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. A</button>
+      <button class="opt">b. Many</button>
+      <button class="opt">c. Two</button>
+      <button class="opt">d. Some</button>
+    </div>
+    <div class="explain" data-explain="Bread is noncount → some (no a, no number)."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> Kindness is ____ noun.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. an abstract</button>
+      <button class="opt">b. a proper</button>
+      <button class="opt">c. a collective</button>
+      <button class="opt">d. a plural</button>
+    </div>
+    <div class="explain" data-explain="Kindness is a feeling or idea → abstract."></div>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 13: SUMMARY -->
+<section>
+  <h2>Summary</h2>
+  <table class="compare">
+    <tr><th></th><th>Count nouns</th><th>Noncount nouns</th></tr>
+    <tr><td>a / an</td><td>yes: a lamp, an idea</td><td>no: some water</td></tr>
+    <tr><td>plural -s</td><td>yes: two lamps</td><td>no: water</td></tr>
+    <tr><td>verb</td><td>is (one) / are (two or more)</td><td>is</td></tr>
+    <tr><td>quantity</td><td>many, a few</td><td>much, a little</td></tr>
+    <tr><td>to count it</td><td>one, two, three</td><td>a glass of, a piece of</td></tr>
+  </table>
+  <p style="text-align:center; margin-top:30px; font-size:0.95em; color:var(--accent);"><strong>End of Deck — Great work!</strong></p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    controls: true,
+    progress: true,
+    center: false,
+    transition: 'slide',
+    width: 1100,
+    height: 720,
+    margin: 0.04
+  });
+
+  // Clickable multiple-choice wiring (data-correct = 0-indexed button)
+  document.querySelectorAll('.mc').forEach(mc => {
+    const correct = parseInt(mc.dataset.correct, 10);
+    const buttons = mc.querySelectorAll('button.opt');
+    const explain = mc.nextElementSibling && mc.nextElementSibling.classList.contains('explain')
+      ? mc.nextElementSibling : null;
+    const explainText = explain ? explain.dataset.explain || '' : '';
+    buttons.forEach((b, i) => {
+      b.addEventListener('click', () => {
+        // `sel` marks the clicked button so its class always changes on every
+        // click — keeps verify_html_deck.mjs from false-failing when the correct
+        // answer isn't option (a). Do not remove.
+        buttons.forEach(x => x.classList.remove('correct', 'wrong', 'sel'));
+        b.classList.add('sel');
+        if (i === correct) {
+          b.classList.add('correct');
+          if (explain) {
+            explain.textContent = '✓ Correct. ' + explainText;
+            explain.classList.remove('bad'); explain.classList.add('good');
+          }
+        } else {
+          b.classList.add('wrong');
+          buttons[correct].classList.add('correct');
+          if (explain) {
+            const answerText = buttons[correct].textContent;
+            explain.innerHTML = '✗ The answer is <strong>' + answerText + '</strong>. ' + explainText;
+            explain.classList.remove('good'); explain.classList.add('bad');
+          }
+        }
+      });
+    });
+  });
+</script>
+<!-- PENCIL DRAW OVERLAY — iPad annotation layer (additive; safe to delete this whole block) -->
+<style>
+  #drawCanvas {
+    position: fixed; inset: 0; z-index: 50; pointer-events: none; touch-action: none;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  }
+  html.draw-armed, html.draw-armed body, html.draw-armed .reveal {
+    -webkit-user-select: none !important; user-select: none !important;
+    -webkit-touch-callout: none !important;
+  }
+  html.presentation-mode, html.presentation-mode body {
+    width: 100%; height: 100%; overflow: hidden !important; overscroll-behavior: none;
+  }
+  html.presentation-mode body { position: fixed; inset: 0; }
+  html.presentation-mode .reveal { width: 100vw !important; height: 100vh !important; height: 100dvh !important; }
+  html.presentation-mode .reveal .slides section { overscroll-behavior-y: contain; }
+  #drawToggle {
+    position: fixed; top: 10px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 20px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle.armed { opacity: 1; background: #fde9c8; border-color: #e8a013; }
+  #fsToggle {
+    position: fixed; top: 62px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 19px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle, #fsToggle { transition: opacity 0.3s; }
+  html.presentation-mode #drawToggle:not(.armed), html.presentation-mode #fsToggle { opacity: 0.15; }
+  #drawBar {
+    position: fixed; top: 10px; right: 62px; z-index: 60; display: flex; gap: 8px;
+    background: #fff; border: 1px solid #bbb; border-radius: 22px; padding: 6px 10px;
+    align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  #drawBar button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ccc; background: #fff; cursor: pointer; font-size: 15px; padding: 0; }
+  #drawBar .swatch { border-width: 2px; }
+  #drawBar .swatch.on { outline: 3px solid #e8a013; }
+</style>
+<canvas id="drawCanvas"></canvas>
+<div id="drawBar" hidden>
+  <button class="swatch on" data-color="#d33333" style="background:#d33333"></button>
+  <button class="swatch" data-color="#2266cc" style="background:#2266cc"></button>
+  <button class="swatch" data-color="#1a1a1a" style="background:#1a1a1a"></button>
+  <button id="drawUndo" title="Undo">↩</button>
+  <button id="drawClear" title="Clear slide">✕</button>
+</div>
+<button id="drawToggle" title="Pencil mode (pen only; finger locked)" aria-pressed="false">✏️</button>
+<button id="fsToggle" title="Presentation mode" aria-label="Presentation mode" aria-pressed="false">⛶</button>
+<script>
+(() => {
+  const cv = document.getElementById('drawCanvas');
+  const ctx = cv.getContext('2d');
+  const bar = document.getElementById('drawBar');
+  const toggle = document.getElementById('drawToggle');
+  let armed = false, color = '#d33333', cur = null, drawPointerId = null;
+  const strokes = new Map(); // slide "h-v" -> stroke list; ink persists per slide
+  const key = () => { const i = Reveal.getIndices(); return i.h + '-' + (i.v || 0); };
+  const list = () => { const k = key(); if (!strokes.has(k)) strokes.set(k, []); return strokes.get(k); };
+
+  function size() {
+    const d = window.devicePixelRatio || 1;
+    cv.width = innerWidth * d; cv.height = innerHeight * d;
+    cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    render();
+  }
+  function seg(a, b, c, w) {
+    ctx.strokeStyle = c; ctx.lineWidth = Math.max(0.75, w * innerWidth);
+    ctx.beginPath(); ctx.moveTo(a.x * innerWidth, a.y * innerHeight);
+    ctx.lineTo(b.x * innerWidth, b.y * innerHeight); ctx.stroke();
+  }
+  function render() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const s of list())
+      for (let i = 1; i < s.pts.length; i++) seg(s.pts[i - 1], s.pts[i], s.color, s.pts[i].w);
+  }
+  const pt = (e) => ({ x: e.clientX / innerWidth, y: e.clientY / innerHeight,
+    w: (e.pointerType === 'pen' ? 1.5 + 4 * (e.pressure || 0.5) : 3) / innerWidth });
+
+  const cancel = (e) => { if (e.cancelable) e.preventDefault(); };
+  cv.addEventListener('pointerdown', (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerType === 'touch') {
+      cv.setPointerCapture(e.pointerId); // swallow the palm/finger for its full contact
+      return;
+    }
+    if ((e.pointerType !== 'pen' && e.pointerType !== 'mouse') || drawPointerId !== null) return;
+    drawPointerId = e.pointerId;
+    cur = { color, pts: [pt(e)] };
+    list().push(cur);
+    cv.setPointerCapture(e.pointerId);
+  }, { passive: false });
+  cv.addEventListener('pointermove', (e) => {
+    if (!armed) return;
+    if (e.pointerType === 'touch') { cancel(e); return; }
+    if (!cur || e.pointerId !== drawPointerId) return;
+    cancel(e);
+    const coalesced = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+    const events = coalesced && coalesced.length ? coalesced : [e];
+    for (const ev of events) {
+      const p = pt(ev);
+      seg(cur.pts[cur.pts.length - 1], p, cur.color, p.w);
+      cur.pts.push(p);
+    }
+  }, { passive: false });
+  const end = (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerId === drawPointerId) { cur = null; drawPointerId = null; }
+  };
+  cv.addEventListener('pointerup', end, { passive: false });
+  cv.addEventListener('pointercancel', end, { passive: false });
+  for (const eventName of ['touchstart', 'touchmove', 'touchend', 'touchcancel'])
+    cv.addEventListener(eventName, (e) => { if (armed) cancel(e); }, { passive: false });
+  document.addEventListener('selectstart', (e) => { if (armed) cancel(e); });
+
+  toggle.addEventListener('click', () => {
+    armed = !armed;
+    cv.style.pointerEvents = armed ? 'auto' : 'none'; // disarmed = taps/swipes reach the slides
+    bar.hidden = !armed;
+    toggle.classList.toggle('armed', armed);
+    toggle.setAttribute('aria-pressed', String(armed));
+    document.documentElement.classList.toggle('draw-armed', armed);
+    if (!armed) { cur = null; drawPointerId = null; }
+  });
+  bar.querySelectorAll('.swatch').forEach((b) => b.addEventListener('click', () => {
+    color = b.dataset.color;
+    bar.querySelectorAll('.swatch').forEach((x) => x.classList.toggle('on', x === b));
+  }));
+  document.getElementById('drawUndo').addEventListener('click', () => { list().pop(); render(); });
+  document.getElementById('drawClear').addEventListener('click', () => { strokes.set(key(), []); render(); });
+
+  Reveal.on('slidechanged', render);
+  addEventListener('resize', size);
+  size();
+
+  // Fixed presentation mode avoids iPadOS's native-fullscreen pull-down exit gesture.
+  const fsT = document.getElementById('fsToggle');
+  let presenting = false;
+  const toast = (message) => {
+    const t = document.createElement('div');
+    t.textContent = message;
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:10px;font:14px system-ui;z-index:99;max-width:46ch;text-align:center';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  };
+  fsT.addEventListener('click', () => {
+    presenting = !presenting;
+    document.documentElement.classList.toggle('presentation-mode', presenting);
+    fsT.textContent = presenting ? '\u2921' : '\u26f6';
+    fsT.setAttribute('aria-pressed', String(presenting));
+    fsT.title = presenting ? 'Exit presentation mode' : 'Presentation mode';
+    requestAnimationFrame(() => {
+      if (Reveal.layout) Reveal.layout();
+      size();
+    });
+    if (presenting) toast('Presentation mode on. For more space in Safari, tap AA, then Hide Toolbar.');
+  });
+})();
+</script>
+<!-- END PENCIL DRAW OVERLAY -->
+
+</body>
+</html>
