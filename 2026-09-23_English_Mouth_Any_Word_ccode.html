@@ -5243,10 +5243,10 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
     }
     return c;
   }
-  // c: resampled lip, mouth end first; lips: all resampled lips
+  // c: resampled lip, mouth end first; lips: all resampled lips; obst: chains of [y, z] the flesh stops at
   // -> { D: [[y, z, r, lipmask]] disc centres, RD: the red layer's discs, O: the skin point of each, mouth end first;
   //      lower: is this the lower lip }
-  function lipDiscs(c, lips) {
+  function lipDiscs(c, lips, obst) {  // obst: chains the lip's flesh must not enter (gums, front teeth)
     let kr = 0;
     c.forEach((q, k) => { if (q[4] >= 0.3 && k * STEP < 3.0) kr = k; });  // end of the red part
     const sEnd = kr * STEP + 1.3, W = 4;  // full thickness past the red part (up to the nose / the chin), then taper
@@ -5259,7 +5259,7 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
       const s = k * STEP, [py, pz] = c[k], ny = sg * nrm[k][0], nz = sg * nrm[k][1];
       let r = (LIP_R0 + (LIP_R - LIP_R0) * sm(0, 0.5, s)) * (1 - sm(sEnd - 0.5, sEnd, s));
       // a disc touching the skin at p with centre p + r n contains q when r > |q - p|^2 / (2 n.(q - p))
-      for (const other of lips) for (let j = 0; j < other.length; j++) {
+      for (const other of lips.concat(obst)) for (let j = 0; j < other.length; j++) {
         if (other === c && Math.abs(j - k) <= 3) continue;  // ignore facet-scale kinks next to p
         const dy = other[j][0] - py, dz = other[j][1] - pz, t = ny * dy + nz * dz;
         if (t > 1e-6) r = Math.min(r, (dy * dy + dz * dz) / (2 * t));
@@ -5283,7 +5283,6 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
     }
     return inside;
   }
-  const GUM_FILL = "#ecb4b7", GUM_EDGE = "#c4868e";
   // front teeth cut at x = 0.3 (through the left central incisors): fixed chains, the lower ones turned with the jaw
   function sliceChains(pos, ix, X) {  // pos: rig-space Float32Array, cut at x = X -> closed chains of (y, z)
     const key = (q) => q[0].toFixed(4) + "," + q[1].toFixed(4), nb = new Map(), pts = new Map();
@@ -5354,6 +5353,14 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
     const gumLo = GUM_LO.map(rot), teethLo = TEETH_LO.map(rot);
     const lk = Math.max(0, Math.min(1, ((shownPose.lab || 0) - 0.3) / 0.5));  // f/v emphasis
     const fc = faceChains();
+    // gums: pale, lit from above, a faint edge; drawn first, the lips' flesh stops at them (Mike 2026-09-24: the
+    // gums "look odd on the direct side view")
+    function drawGum(g) {
+      const zs = g.map((q) => q[1]), z0 = Math.min(...zs), z1 = Math.max(...zs), yc = g.reduce((a, q) => a + q[0], 0) / g.length;
+      poly(g, grad([yc, z1], [yc, z0], [[0, "#f3d6d6"], [1, "#e2b5b8"]]), "rgba(165,105,110,0.45)", 0.8 * lw);
+    }
+    const gums = GUM_UP.concat(gumLo);
+    for (const g of gums) drawGum(g);
     // lips: the discs filled as ONE shape of flesh; the red is a skin layer of one depth over the red part, wrapping
     // round the lip's free edge and fading out at the red border; light from above, so the top of each lip is
     // lighter and its underside darker
@@ -5364,26 +5371,28 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
       let y0 = Infinity, y1 = -Infinity, z0 = Infinity, z1 = -Infinity;
       for (const [y, z, r] of D) { y0 = Math.min(y0, y - r); y1 = Math.max(y1, y + r); z0 = Math.min(z0, z - r); z1 = Math.max(z1, z + r); }
       const yc = (y0 + y1) / 2, deep = lower ? lk : 0;  // f/v: the lower lip turns deep red
-      const FLESH = "#e8b9a8", RED = mix("#cf4f60", "#8f1a28", deep);
-      union(D, 0.8 * lw); ax.fillStyle = "rgba(150,78,70,0.5)"; ax.fill();  // a soft rim
+      const FLESH = "#ebc6b7", RED = mix("#cd7a83", "#b2505c", deep);  // muted (Mike 2026-09-24: "a more subtle color")
+      union(D, 0.8 * lw); ax.fillStyle = "rgba(140,80,75,0.35)"; ax.fill();  // a soft rim
       union(D, 0); ax.fillStyle = FLESH; ax.fill();
       let kr = -1; D.forEach((d, k) => { if (d[3] >= 0.3) kr = k; });
       if (kr >= 1) {
         ax.save(); union(D, 0); ax.clip();
         union(RD.slice(0, kr + 1), 0); ax.fillStyle = RED; ax.fill();  // the red skin layer, wrapping the free edge
         const m = Math.min(kr, 10);  // fade into the skin over the last 0.4 cm before the red border
-        union(RD.slice(0, kr + 1), 0); ax.fillStyle = grad(O[kr - m], O[kr], [[0, "rgba(232,185,168,0)"], [1, FLESH]]); ax.fill();
+        union(RD.slice(0, kr + 1), 0); ax.fillStyle = grad(O[kr - m], O[kr], [[0, "rgba(235,198,183,0)"], [1, FLESH]]); ax.fill();
         ax.restore();
       }
-      union(D, 0); ax.fillStyle = grad([yc, z1], [yc, z0], [[0, "rgba(255,255,255,0.25)"], [0.4, "rgba(255,255,255,0)"], [0.6, "rgba(0,0,0,0)"], [1, "rgba(0,0,0,0.2)"]]); ax.fill();
+      union(D, 0); ax.fillStyle = grad([yc, z1], [yc, z0], [[0, "rgba(255,255,255,0.2)"], [0.4, "rgba(255,255,255,0)"], [0.6, "rgba(0,0,0,0)"], [1, "rgba(0,0,0,0.15)"]]); ax.fill();
     }
-    const lips = fc.map(resampleLip);
-    for (const c of lips.slice().sort((a, b) => b[0][3] - a[0][3])) drawLip(lipDiscs(c, lips));  // lower lip first
+    const lips = fc.map(resampleLip), obst = gums.concat(teethLo, TEETH_UP);
+    for (const c of lips.slice().sort((a, b) => b[0][3] - a[0][3])) drawLip(lipDiscs(c, lips, obst));  // lower lip first
     for (const c of fc) poly(c, null, "#a8765f", 1.2 * lw, false);  // the face's outline near the lips
-    for (const c of GUM_UP.concat(gumLo)) poly(c, GUM_FILL, GUM_EDGE, lw);  // after the lips: a lip stops at the gum
+    // tongue: its cut face lit from above (lighter along the top, darker at the root), a soft edge, a sheen on top
     const cp = tongueCap.geometry.attributes.position.array, ns = cp.length / 6, top = [], bot = [];
     for (let k = 0; k < ns; k++) { top.push([cp[6 * k + 2], cp[6 * k + 1]]); bot.push([cp[6 * k + 5], cp[6 * k + 4]]); }
-    poly(top.concat(bot.reverse()), "#a3222a", "#5a0f14", lw);
+    const tp = top.concat(bot.slice().reverse()), tzs = tp.map((q) => q[1]), tz0 = Math.min(...tzs), tz1 = Math.max(...tzs), tyc = tp.reduce((a, q) => a + q[0], 0) / tp.length;
+    poly(tp, grad([tyc, tz1], [tyc, tz0], [[0, "#cd525a"], [0.45, "#a8262e"], [1, "#6c1218"]]), "rgba(70,10,15,0.55)", 0.9 * lw);
+    ax.save(); path(tp); ax.clip(); poly(top, null, "rgba(255,225,220,0.35)", 3 * lw, false); ax.restore();
     // a tooth: enamel brighter at the cutting edge, its root hidden in the gum, only the crown outlined (softly);
     // k = f/v emphasis for the upper front teeth (darker, firmer edge)
     function drawTooth(c, gums, up, k) {
@@ -5391,7 +5400,7 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
       const edge = up ? zlo : zhi, root = up ? zhi : zlo;
       path(c); ax.fillStyle = grad([yc, edge], [yc, root], [[0, mix("#fdfcf7", "#e9dfc9", k)], [0.4, mix("#f2ebdb", "#d8cbab", k)], [1, mix("#dfd0b0", "#c3b38e", k)]]); ax.fill();
       const inG = c.map((q) => gums.some((g) => pip(q, g)));
-      if (inG.some(Boolean)) { ax.save(); path(c); ax.clip(); for (const g of gums) poly(g, GUM_FILL, GUM_EDGE, lw); ax.restore(); }
+      if (inG.some(Boolean)) { ax.save(); path(c); ax.clip(); for (const g of gums) drawGum(g); ax.restore(); }
       ax.strokeStyle = mix("#a89a80", "#5a4e3c", k); ax.lineWidth = (0.9 + 0.7 * k) * lw;
       ax.beginPath(); let pen = false;
       for (let i = 0; i <= c.length; i++) { const j = i % c.length, on = !inG[j], [x, y] = prj(c[j]); if (on && pen) ax.lineTo(x, y); else if (on) ax.moveTo(x, y); pen = on; }
