@@ -4387,6 +4387,7 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
   const HINGE = [-7.8, 2.6];
   const PALATE_MID = [[-4.9, 2.30], [-4.4, 2.42], [-3.4, 2.50], [-2.4, 2.36], [-1.6, 1.95], [-1.15, 1.35], [-0.95, 0.95]];
   const BODY_RF = 2.3, BODY_RZ = 1.75;
+  const LIP_PLATE = [0.5, 2.0];  // cm from the lip opening: the boosted lip push is full up to 0.5, gone by 2.0
   const TIP_T = 0.7, TIP_R = 0.4, TIP_RW = 0.9;  // tip thickness (rig 0.45), round-end length, round-end length from above
   const ROOT_BASE_Z = -1.9, ROOT_Y = [-6.3, -7.35];
   const VELUM_UP = [[-4.85, 2.34], [-5.6, 2.40], [-6.35, 2.30], [-6.95, 2.05], [-7.25, 1.65]];
@@ -4587,9 +4588,14 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
       const r = Math.exp(-dm / 1.3), rr = Math.exp(-dm / 0.75);
       const u = Math.max(-1.6, Math.min(1.6, x / cw0));
       const x2 = x * (1 + (cwt / cw0 - 1) * r);
-      const y2 = y + 0.55 * g * rnd * rr * (1 - 0.35 * u * u) - 0.20 * g * spr * r * u * u;
+      // the teaching boost (g > 1) moves the whole lip forward as one body and fades out over the skin: boosting the
+      // rig's rim-heavy push (rr) instead stretched the lip edge into thin jagged flaps (Mike 2026-09-24, ¾ view of /u/)
+      const plate = 1 - sm(LIP_PLATE[0], LIP_PLATE[1], dm);
+      const y2 = y + 0.55 * rnd * (rr + (g - 1) * plate) * (1 - 0.35 * u * u) - 0.20 * g * spr * r * u * u;
       let z2 = z + 0.07 * g * spr * r * u * u;
-      const fo = clamp(1 - (x2 / wOpen) ** 2, 0, 1) ** e;
+      // lip parting across the mouth; the page's boosted parting (go > 1) eases out to the corners: the rig's edge is
+      // vertical (power e < 1), which boosted into saw-teeth on the lip edge (Mike 2026-09-24, ¾ view of /u/)
+      const fo = clamp(1 - (x2 / wOpen) ** 2, 0, 1) ** e * (1 - clamp(go - 1) * sm(0.55, 1.0, Math.abs(x2) / wOpen));
       z2 = z2 + go * p.hu * (1 - close) * fo * Math.exp(-dup / 0.6) * upw;
       z2 = z2 - go * p.hl * (1 - close) * fo * Math.exp(-dlo / 0.6) * low;
       let wj = low * (1 - 0.85 * sm(3.0, 6.2, Math.abs(x2)));
@@ -5026,6 +5032,23 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
     }
     return [];
   })();
+  // Lip edge smoothing: the face model's lip edge zigzags by ~2 mm, and the page's big lip moves turned that into a
+  // ragged fringe in the ¾ view (Mike 2026-09-24). Two Taubin passes (smooth, then undo the shrink) over the lip edge
+  // and the 3.5 mm next to it; edge points only follow their neighbours along the edge, so the opening keeps its shape.
+  const LIPS_SM = (() => {
+    const ix = u32(F.idx), nb = new Map(), zone = (v) => FD.dmouth[v] < 0.35, add = (a, b) => { if (zone(a)) (nb.get(a) || nb.set(a, new Set()).get(a)).add(b); };
+    for (let t = 0; t < ix.length; t += 3) for (let e = 0; e < 3; e++) { const a = ix[t + e], b = ix[t + (e + 1) % 3]; add(a, b); add(b, a); }
+    const L = MOUTH_LOOP, n = L.length, rim = new Map(L.map((v, i) => [v, [L[(i - 1 + n) % n], L[(i + 1) % n]]]));
+    const vs = [...nb.keys()];
+    return { vs, nbs: vs.map((v) => rim.get(v) || [...nb.get(v)]), lap: new Float32Array(3 * vs.length) };
+  })();
+  function smoothLips(rig) {
+    const { vs, nbs, lap } = LIPS_SM;
+    for (const f of [0.5, -0.53, 0.5, -0.53]) {
+      vs.forEach((v, i) => { const q = nbs[i]; for (let d = 0; d < 3; d++) { let a = 0; for (const u of q) a += rig[3 * u + d]; lap[3 * i + d] = a / q.length - rig[3 * v + d]; } });
+      vs.forEach((v, i) => { for (let d = 0; d < 3; d++) rig[3 * v + d] += f * lap[3 * i + d]; });
+    }
+  }
   const plug = (() => {  // fan of triangles from the opening's centre to its edge loop, moved with the lips each frame
     const n = MOUTH_LOOP.length, g = new THREE.BufferGeometry(), idx = [];
     for (let i = 0; i < n; i++) idx.push(n, i, (i + 1) % n);
@@ -5126,7 +5149,7 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
     for (let i = 0; i < velUp.length / 3; i++) put(va, i, velUp[3 * i] + (velDn[3 * i] - velUp[3 * i]) * v,
       velUp[3 * i + 1] + (velDn[3 * i + 1] - velUp[3 * i + 1]) * v, velUp[3 * i + 2] + (velDn[3 * i + 2] - velUp[3 * i + 2]) * v);
     velum.geometry.attributes.position.needsUpdate = true;
-    M.facePose(FD, p, faceRig);
+    M.facePose(FD, p, faceRig); smoothLips(faceRig);
     shownPose = p;
     const lab = Math.max(0, Math.min(1, p.lab || 0));
     if (Math.abs(lab - paintedLab) > 0.05 || (lab === 0 && paintedLab > 0)) paintFace(lab, true);
@@ -5233,7 +5256,7 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
     const hu = Math.max(0, (shownPose.hu || 0) - M.CONS.f.hu * Math.max(0, Math.min(1, shownPose.lab || 0)));
     if (hu === shownPose.hu) return faceRig;
     sideRig = sideRig || new Float32Array(faceRig.length);
-    M.facePose(FD, { ...shownPose, hu }, sideRig);
+    M.facePose(FD, { ...shownPose, hu }, sideRig); smoothLips(sideRig);
     return sideRig;
   }
   function faceChains() {
