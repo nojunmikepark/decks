@@ -4380,6 +4380,7 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
   const HINGE = [-7.8, 2.6];
   const PALATE_MID = [[-4.9, 2.30], [-4.4, 2.42], [-3.4, 2.50], [-2.4, 2.36], [-1.6, 1.95], [-1.15, 1.35], [-0.95, 0.95]];
   const BODY_RF = 2.3, BODY_RZ = 1.75;
+  const TIP_T = 0.7, TIP_R = 0.4, TIP_RW = 0.9;  // tip thickness (rig 0.45), round-end length, round-end length from above
   const ROOT_BASE_Z = -1.9, ROOT_Y = [-6.3, -7.35];
   const VELUM_UP = [[-4.85, 2.34], [-5.6, 2.40], [-6.35, 2.30], [-6.95, 2.05], [-7.25, 1.65]];
   const VELUM_DN = [[-4.85, 2.34], [-5.5, 2.10], [-6.05, 1.62], [-6.35, 1.05], [-6.45, 0.55]];
@@ -4444,7 +4445,9 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
     const th0 = best ? best[1] : PI / 2;
     const P0 = body(th0);
     const L = Math.hypot(P0[0] - T[0], P0[1] - T[1]);
-    const bulge = Math.min(0.14, 0.05 * L);
+    // the blade between tip and body bows upward (Mike 2026-09-24: the front of the tongue "more rounded" in the side
+    // view; the rig's near-straight line drew a wedge); a raised tip keeps the rig's small bow
+    const bulge = lerp(Math.min(0.42, 0.17 * L), Math.min(0.14, 0.05 * L), tw);
     let pts = [];
     for (let k = 0; k <= 20; k++) { const u = k / 20;
       pts.push([lerp(T[0], P0[0], u), lerp(T[1], P0[1], u) + bulge * 6.75 * u * (1 - u) ** 2]); }
@@ -4499,7 +4502,7 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
     const nsl = nslFixed || Math.max(24, Math.round(span / 0.1));
     const st = [], L = [];
     for (let k = 0; k <= nsl; k++) {
-      const y = ya[ya.length - 1] - span * k / nsl;
+      const y = ya[ya.length - 1] - span * (k / nsl) ** 1.5;  // slices closer together at the tip, for its round end
       st.push([y, interp(y, ya, za)]);
       L.push(interp(y, ya, La));
     }
@@ -4509,16 +4512,23 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
     });
     const floorAt = (y, z, d) => {
       const [yl, zl] = jawUnrot(y, z, jaw);
-      const fl = yl > -5.9 ? lerp(zl - 0.45, -1.65, smooth(d / 1.6)) : lerp(-1.65, -2.1, smooth((-5.9 - yl) / 1.0));
+      const fl = yl > -5.9 ? lerp(zl - TIP_T, -1.65, 1 - (1 - clamp(d / 1.6)) ** 2) : lerp(-1.65, -2.1, smooth((-5.9 - yl) / 1.0));
       return Math.min(jawRot(yl, fl, jaw)[1], z - 0.2);
     };
     const floors = st.map(([y, z], k) => floorAt(y, z, L[k]));
+    // round tip: over the last TIP_R cm the top and underside close in on their middle along a quarter circle, and
+    // the width narrows the same way over TIP_RW cm (seen from above), so the tip ends in a round nose, not a blade
+    const q = (d, r) => Math.max(0.1, Math.sqrt(Math.max(0, 1 - Math.max(0, 1 - d / r) ** 2)));
+    st.forEach((s, k) => {
+      const f = q(L[k], TIP_R), c = (s[1] + floors[k]) / 2;
+      s[1] = c + (s[1] - c) * f; floors[k] = c - (c - floors[k]) * f;
+    });
     const ns = st.length, rn = 2 * nr;
     const V = [];
     for (let k = 0; k < ns; k++) {
       const [y, z] = st[k], zf = floors[k];
       const h = st[0][0] - y;
-      let W = Math.min(2.25, widths[k] + 0.10) * lerp(0.75, 1.0, smooth(h / 2.2));
+      let W = Math.min(2.25, widths[k] + 0.10) * lerp(0.75, 1.0, smooth(h / 2.2)) * q(L[k], TIP_RW);
       W *= lerp(1.0, lerp(0.12, 1.0, smooth((z - ROOT_BASE_Z) / 1.8)), smooth((-5.6 - y) / 0.6));
       const gu = 0.55 * W * (1 - smooth(h / 3.2));
       const g = (p.groove || 0) * Math.exp(-(((L[k] - 1.4) / 1.2) ** 2));
@@ -4543,11 +4553,13 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
       const a_ = st[Math.max(end - 1, 0)], b_ = st[Math.min(end + 1, ns - 1)];
       const tl = Math.hypot(b_[0] - a_[0], b_[1] - a_[1]) || 1.0;
       const out = end === 0 ? -0.08 : 0.12;
-      V.push([0.0, ring.reduce((s, q) => s + q[1], 0) / rn + out * (b_[0] - a_[0]) / tl,
+      const cy = ring.reduce((s, q) => s + q[1], 0) / rn + out * (b_[0] - a_[0]) / tl;
+      // the tip's ring is small and bowed back at its sides: its lid's centre sits just past its front, or it dents in
+      V.push([0.0, end === 0 ? Math.max(cy, Math.max(...ring.map((q) => q[1])) + 0.01) : cy,
         ring.reduce((s, q) => s + q[2], 0) / rn + out * (b_[1] - a_[1]) / tl]);
       for (let jj = 0; jj < rn; jj++) {
         const f = [end * rn + jj, end * rn + (jj + 1) % rn, c];
-        F.push(flip ? f : f.slice().reverse());
+        F.push(flip ? f.slice().reverse() : f);  // wound like the sides (the rig's lids faced in: the tip showed the dark inside colour)
       }
     }
     return { V, F, ns, rn };
@@ -4597,9 +4609,11 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
     e: { jaw: 4.5, dy: -3.5, dz: 1.65, spread: 0.4, hu: 0.13, hl: 0.10 },
     eh: { jaw: 6.5, dy: -3.7, dz: 1.30, spread: 0.3, hu: 0.15, hl: 0.12 },
     ae: { jaw: 11.0, dy: -3.9, dz: 0.70, spread: 0.45, hu: 0.20, hl: 0.15 },
-    uh: { jaw: 7.5, dy: -4.4, dz: 0.95, spread: 0.1, hu: 0.15, hl: 0.12 },
+    // ʌ vs ɑ pulled apart (Mike 2026-09-24: "tongs" and "tongue" looked the same; rig had jaw 7.5/12.5, dz 0.95/0.45):
+    // ʌ = mouth half open, tongue relaxed in the middle; ɑ = mouth wide open, tongue low and pulled back into the throat
+    uh: { jaw: 7.5, dy: -4.6, dz: 1.20, spread: 0.1, hu: 0.13, hl: 0.10 },
     schwa: { jaw: 5.5, dy: -4.1, dz: 1.15, spread: 0.1, hu: 0.12, hl: 0.10 },
-    aa: { jaw: 12.5, dy: -5.0, dz: 0.45, spread: 0.1, hu: 0.20, hl: 0.15 },
+    aa: { jaw: 16.5, dy: -5.5, dz: 0.0, spread: 0.1, hu: 0.24, hl: 0.18 },
     aw: { jaw: 10.0, dy: -5.0, dz: 0.95, rnd: 0.45, hu: 0.18, hl: 0.14 },
     o: { jaw: 6.5, dy: -4.8, dz: 1.45, rnd: 0.75, hu: 0.22, hl: 0.12 },
     uu: { jaw: 4.5, dy: -4.6, dz: 1.80, rnd: 0.50, hu: 0.14, hl: 0.10 },
