@@ -33,11 +33,17 @@ select{font:inherit;font-size:16px;border:1px solid var(--line);border-radius:8p
 .turn{margin-top:8px}
 .turn label{display:flex;align-items:center;gap:8px;flex:1;min-width:180px}
 .turn input{flex:1;accent-color:var(--ink)}
+.cmp label{white-space:nowrap}
+.cmp input[type=text]{max-width:340px;padding:7px 12px}
+.res .slot{display:flex;flex-wrap:wrap;align-items:center;gap:10px;flex-basis:100%}
+.res .lr{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;min-width:48px}
 </style></head><body><main>
 <h1>How to Say Any English Word</h1>
-<p class="sub">Type a word or a short phrase, press <b>Play</b>. Click one sound to see the mouth hold it. Drag the model, or use the <b>Turn</b> and <b>Tilt</b> sliders, to turn it.</p>
+<p class="sub">Type a word or a short phrase, press <b>Play</b>. Click one sound to see the mouth hold it. Drag the model, or use the <b>Turn</b> and <b>Tilt</b> sliders, to turn it. To see two words side by side, type the second word in <b>Compare with</b>.</p>
 <div class="row"><input type="text" id="q" autocomplete="off" spellcheck="false" placeholder="Type any word or phrase">
 <button class="big" id="play" disabled>▶ Play</button></div>
+<div class="row cmp"><label for="q2">Compare with</label><input type="text" id="q2" autocomplete="off" spellcheck="false" placeholder="a second word (optional), e.g. tongue">
+<button class="seg" id="diff" hidden title="Both mouths hold the first sound that is different">Show the difference</button></div>
 <div class="res" id="res"></div>
 <div class="row" style="margin-top:10px">
 <span>Speed:</span><button class="seg" data-speed="1">1×</button><button class="seg" data-speed="2" aria-pressed="true">½×</button><button class="seg" data-speed="4">¼×</button>
@@ -53,6 +59,7 @@ select{font:inherit;font-size:16px;border:1px solid var(--line);border-radius:8p
 <label>Tilt <input type="range" id="tilt" min="-60" max="70" step="1" value="0"></label>
 <label>Zoom <input type="range" id="zoom" min="0" max="100" step="1" value="60"></label></div>
 <div class="try">Try: <button data-try="think">think</button><button data-try="this">this</button><button data-try="ship">ship</button><button data-try="measure">measure</button><button data-try="church">church</button><button data-try="red">red</button><button data-try="yellow">yellow</button><button data-try="world">world</button><button data-try="thought">thought</button><button data-try="rural">rural</button><button data-try="sixth">sixth</button><button data-try="pronunciation">pronunciation</button><button data-try="ice cream">ice cream</button><button data-try="good morning">good morning</button></div>
+<div class="try">Compare: <button data-pair="tongs|tongue">tongs – tongue</button><button data-pair="ship|sheep">ship – sheep</button><button data-pair="think|sink">think – sink</button><button data-pair="light|right">light – right</button><button data-pair="cat|cut">cat – cut</button><button data-pair="pull|pool">pull – pool</button></div>
 <footer><span id="count"></span> words from the CMU Pronouncing Dictionary (American English). Other words and numbers: the sounds are guessed from the spelling by eSpeak NG (free software, GPL-3.0), so check them. Red bold = the stressed vowel.
 Voice: the page carries its own voice (eSpeak NG: free software, <a href="https://github.com/espeak-ng/espeak-ng/blob/master/COPYING">GPL-3.0 license</a>, <a href="https://github.com/echogarden-project/espeak-ng-emscripten">source</a>), so it works on any computer without the internet, and the mouth follows it exactly. <b>Auto</b> uses this computer's Samantha voice instead when it has one (a Mac); <b>This computer</b> uses the computer's own English voice, which may run a little ahead of or behind the mouth.
 Blue arrows show the air (side view only): it stops where the mouth is closed and goes out through the nose for m, n and ng.
@@ -4920,7 +4927,8 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
 
   // ---------------------------------------------------------------- scene
   const view = $("view");
-  const renderer = new THREE.WebGLRenderer({ antialias: true, stencil: true });
+  // preserveDrawingBuffer: the compare view redraws only the half that moves; the other half's picture must stay
+  const renderer = new THREE.WebGLRenderer({ antialias: true, stencil: true, preserveDrawingBuffer: true });
   renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
   renderer.setClearColor(0xffffff, 1);
   renderer.localClippingEnabled = true;
@@ -5104,8 +5112,12 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
     for (let i = 0; i < n; i++) { const [y, z] = M.jawRot(rest[3 * i + 1], rest[3 * i + 2], deg); put(a, i, rest[3 * i], y, z); }
     obj.geometry.attributes.position.needsUpdate = true; obj.geometry.computeVertexNormals();
   }
+  // one posed object per sound frame, so the per-pose caches (face cut, air path) still hold when the two mouths of
+  // the compare view take turns with the same model
+  const posed = new WeakMap();
   function setPose(q) {
-    const p = { ...M.POSE0, ...q, lipx: LIPX, lipo: LIPO, labBack: 0.35, labZ: 0.12 };  // f/v: the front-teeth edge presses ~1 mm into the top of the lower lip
+    let p = posed.get(q);
+    if (!p) { p = { ...M.POSE0, ...q, lipx: LIPX, lipo: LIPO, labBack: 0.35, labZ: 0.12 }; posed.set(q, p); }  // f/v: the front-teeth edge presses ~1 mm into the top of the lower lip
     setTongue(p);
     OPEN.value = sm(4, 12, p.jaw);
     setJaw(lowerTeeth, lowerRest.teeth, p.jaw);
@@ -5133,9 +5145,10 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
   let yaw = -90, pitch = 0, dist = 21;
   const DMIN = 8, DMAX = 90;
   function placeCam() {
-    const a = yaw * Math.PI / 180, b = pitch * Math.PI / 180;
-    camera.position.set(target.x + dist * Math.cos(b) * Math.sin(a), target.y + dist * Math.sin(b), target.z + dist * Math.cos(b) * Math.cos(a));
-    camera.lookAt(target);
+    const a = yaw * Math.PI / 180, b = pitch * Math.PI / 180, d = dist * (compare ? Math.max(1, CMP_FIT / camera.aspect) : 1);
+    const tz = target.z + (compare ? CMP_BACK : 0);  // compare halves: aim further back, so the throat fits in too
+    camera.position.set(target.x + d * Math.cos(b) * Math.sin(a), target.y + d * Math.sin(b), tz + d * Math.cos(b) * Math.cos(a));
+    camera.lookAt(target.x, target.y, tz);
   }
   // Turning away from the side switches the see-through cutaway off (a solid face shows the teeth resting on the lip);
   // turning back to either side switches it on. The cutaway always drops the half nearest the camera.
@@ -5171,10 +5184,26 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
     $("see").checked = seeThrough; paintFace(); camChanged();
   }
   function resize() {
-    const w = view.clientWidth, h = Math.round(Math.min(560, Math.max(300, w * 0.62)));
-    renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix(); draw();
+    const w = view.clientWidth, h = Math.round(Math.min(560, Math.max(300, w * (compare ? 0.44 : 0.62))));
+    renderer.setSize(w, h); camera.aspect = (compare ? w / 2 : w) / h; camera.updateProjectionMatrix(); placeCam(); draw();
   }
-  const draw = () => renderer.render(scene, camera);
+  // Compare view (Mike 2026-09-24): two words side by side, one model posed and drawn twice, left half then right half
+  const CMP_FIT = 1.45, CMP_BACK = -1.3;  // a half narrower than CMP_FIT (width / height) moves the camera back until the mouth fits; aim shift (cm)
+  function draw(only) {  // only: the one half that changed (compare Play: posing a half costs ~7 ms, so the still one waits)
+    const w = renderer.domElement.clientWidth, h = renderer.domElement.clientHeight;
+    if (!compare) { renderer.setScissorTest(false); renderer.setViewport(0, 0, w, h); renderer.render(scene, camera); return; }
+    const half = w / 2;
+    renderer.setScissorTest(true);
+    sides.forEach((s, i) => {
+      if (only !== undefined && i !== only && s.snap) return;
+      setPose(s.q || M.REST);
+      const cap = tongueCap.geometry.attributes.position.array;
+      s.snap = s.snap || { rig: new Float32Array(faceRig.length), cap: new Float32Array(cap.length) };
+      s.snap.pose = shownPose; s.snap.rig.set(faceRig); s.snap.cap.set(cap);  // what this half's drawing overlay needs
+      renderer.setViewport(i * half, 0, half, h); renderer.setScissor(i * half, 0, half, h);
+      renderer.render(scene, camera);
+    });
+  }
 
   // ---------------------------------------------------------------- air flow: blue dashes along the midline air path
   // (port of draw_air in _scripts/2026-09-23_vowel_words_v2_ccode.py), drawn on a 2D canvas over the 3D view
@@ -5183,7 +5212,8 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
   airCv.style.cssText = "position:absolute;left:0;top:0;pointer-events:none";
   view.style.position = "relative"; view.appendChild(airCv);
   const ax = airCv.getContext("2d");
-  let airPose = null, airData = null, airStill = false;
+  const airMemo = new WeakMap();
+  let airStill = false;
   const V3 = new THREE.Vector3();
   function toScreen([y, z], w, h) { V3.set(0, z, y).project(camera); return [(V3.x + 1) / 2 * w, (1 - V3.y) / 2 * h]; }
   // ---------------------------------------------------------------- midline diagram (side see-through)
@@ -5195,7 +5225,7 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
   // midline cut of the posed face -> one piece per lip: [y, z, dmouth, lower, lipmask] points, from the mouth
   // opening out to 4 cm (lip, then nose base or chin). The cut is one long loop (lower lip, chin, round the head,
   // nose, upper lip), so each end that touches the mouth starts a piece.
-  let fcPose = null, fcMemo = null;
+  const fcMemo = new WeakMap();
   // The side diagram's upper lip ignores the f/v lift. The 3D face raises it (CONS.f.hu 0.45) so the top teeth show
   // from the front, but in the midline cut that lift curls the lip into a big blob (Mike 2026-09-24: "doesn't need to be there").
   let sideRig = null;
@@ -5207,8 +5237,7 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
     return sideRig;
   }
   function faceChains() {
-    if (fcPose === shownPose) return fcMemo;
-    fcPose = shownPose;
+    if (fcMemo.has(shownPose)) return fcMemo.get(shownPose);
     const V = diagramRig(), key = (q) => q[0].toFixed(4) + "," + q[1].toFixed(4), nb = new Map(), pts = new Map();
     for (let t = 0; t < FACE_IX.length; t += 3) {
       const hit = [];
@@ -5238,7 +5267,8 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
         chains.push(d.slice(0, k));
       }
     }
-    return (fcMemo = chains);
+    fcMemo.set(shownPose, chains);
+    return chains;
   }
   // A lip = solid flesh just inside the skin line: at each skin point a disc that touches the skin, small at the
   // lip's edge, about 1 cm across over the red part and on up to the nose (or down to the chin), then shrinking to
@@ -5451,26 +5481,43 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
   }
   // 1 = straight from either side; 0 = 37° or more away (the see-through switch point)
   const sideness = () => Math.max(0, Math.min(1, (Math.abs(Math.sin(yaw * Math.PI / 180)) * Math.cos(pitch * Math.PI / 180) - 0.8) / 0.15));
-  function airStrength() {
+  function airStrength(i) {  // i: which half of the compare view (undefined: the one mouth)
     if (!$("air").checked) return 0;
-    const side = sideness();
-    if (!anim) return airStill ? side : 0;
-    if (anim.hold) return side;
-    if (anim.cap === 0) return 0;
-    const pl = anim.pl, t = clipT(anim);
-    const a = pl.t1 + (pl.segs[0][0] - 0.05) * pl.st, b = pl.t1 + pl.segs[pl.segs.length - 1][1] * pl.st;
-    return side * Math.max(0, Math.min(1, (t - a) / 0.06, (b + 0.1 - t) / 0.1));
+    const side = sideness(), a = i === undefined ? anim : anim && anim.side === i ? anim : null;
+    if (!a) return (i === undefined ? airStill : sides[i].held) ? side : 0;
+    if (a.hold) return side;
+    if (a.cap === 0) return 0;
+    const pl = a.pl, t = clipT(a);
+    const t0 = pl.t1 + (pl.segs[0][0] - 0.05) * pl.st, t1 = pl.t1 + pl.segs[pl.segs.length - 1][1] * pl.st;
+    return side * Math.max(0, Math.min(1, (t - t0) / 0.06, (t1 + 0.1 - t) / 0.1));
   }
   function drawAir(now) {
     const dpr = renderer.getPixelRatio(), w = renderer.domElement.clientWidth, h = renderer.domElement.clientHeight;
-    if (airCv.width !== Math.round(w * dpr)) { airCv.width = Math.round(w * dpr); airCv.height = Math.round(h * dpr); airCv.style.width = w + "px"; airCv.style.height = h + "px"; }
+    if (airCv.width !== Math.round(w * dpr) || airCv.height !== Math.round(h * dpr)) { airCv.width = Math.round(w * dpr); airCv.height = Math.round(h * dpr); airCv.style.width = w + "px"; airCv.style.height = h + "px"; }
     ax.setTransform(dpr, 0, 0, dpr, 0, 0); ax.clearRect(0, 0, w, h);
+    if (!compare) { drawLayer(w, h, now); return; }
+    const half = w / 2;
+    sides.forEach((s, i) => {  // each half: put back that mouth's pose, then draw its diagram, cue and air
+      if (!s.snap) return;
+      shownPose = s.snap.pose; faceRig.set(s.snap.rig); tongueCap.geometry.attributes.position.array.set(s.snap.cap);
+      ax.save(); ax.beginPath(); ax.rect(i * half, 0, half, h); ax.clip(); ax.translate(i * half, 0);
+      drawLayer(half, h, now, i);
+      ax.restore();
+    });
+    ax.fillStyle = "#d9dcef"; ax.fillRect(half - 1, 0, 2, h);
+    ax.font = "600 22px system-ui, sans-serif"; ax.textAlign = "center";
+    [cur, cur2].forEach((W, i) => { if (!W) return; const x = i * half + half / 2, tw = ax.measureText(W.w).width;
+      ax.fillStyle = "rgba(255,255,255,0.85)"; ax.fillRect(x - tw / 2 - 8, 8, tw + 16, 30); ax.fillStyle = "#1a237e"; ax.fillText(W.w, x, 31); });
+    ax.textAlign = "start";
+  }
+  function drawLayer(w, h, now, i) {
     drawSection(w, h, sideness());
-    drawCloseUp(w, h, sideness());
+    if (i === undefined) drawCloseUp(w, h, sideness());
     drawCue(w, h);
-    const strength = airStrength();
+    const strength = airStrength(i);
     if (strength <= 0.02 || !shownPose) return;
-    if (airPose !== shownPose) { airPose = shownPose; airData = M.airPaths(shownPose, FD, faceRig); }
+    let airData = airMemo.get(shownPose);
+    if (!airData) { airData = M.airPaths(shownPose, FD, faceRig); airMemo.set(shownPose, airData); }
     let { P, S, sBlock, sLips, nasal, sBranch } = airData;
     const velk = Math.max(0, Math.min(1, ((shownPose.vel || 0) - 0.35) / 0.45));
     if (sBlock !== null && velk > 0.5) sBlock = sBranch;  // m, n, ng: the mouth is shut, the air goes out the nose
@@ -5513,7 +5560,9 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
   // ---------------------------------------------------------------- words
   const V = { AA: "ɑ", AE: "æ", AO: "ɔ", AW: "aʊ", AY: "aɪ", EH: "ɛ", ER: "ɚ", EY: "eɪ", IH: "ɪ", IY: "i", OW: "oʊ", OY: "ɔɪ", UH: "ʊ", UW: "u" };
   const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  let cur = null, anim = null, speed = 2, sel = -1;  // ½× by default (Mike 2026-09-24)
+  let cur = null, cur2 = null, compare = false, anim = null, speed = 2, sel = -1;  // ½× by default (Mike 2026-09-24)
+  // compare view: each half's pose (q), whether it holds a sound (held: its air shows), and its drawing snapshot
+  const sides = [{ q: null, held: false, snap: null }, { q: null, held: false, snap: null }];
   // Any text: each word from the dictionary, else eSpeak NG guesses its sounds from the spelling (numbers too).
   // A phrase plays as one run of sounds, each sound tagged with its word number (wi).
   const tokens = (text) => text.toLowerCase().replace(/[^a-z0-9'\s-]+/g, " ").split(/\s+/)
@@ -5526,47 +5575,91 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
     w.set_voice("en-us");
     return { text: t, phs: M.espeakToRig(w.synthesize_ipa(t).ipa.split("\n").join(" ")).flat(), guessed: true };
   }
-  let lookup = 0, pending = null;
-  function showWord(text) {
-    const n = ++lookup, toks = tokens(text), known = toks.map(fromDict);
-    pending = null;
-    if (known.every(Boolean)) return showWords(known);
+  const lookup = [0, 0], pendings = [null, null];  // per box: a spelling guess still coming
+  const pending = () => (pendings[0] || pendings[1] ? Promise.all(pendings) : null);
+  function showWord(text, slot = 0) {  // slot 0: the main box; 1: "Compare with"
+    const n = ++lookup[slot], toks = tokens(text), known = toks.map(fromDict);
+    pendings[slot] = null;
+    if (known.every(Boolean)) return showWords(known, slot);
     $("play").disabled = true;
     const p = Promise.all(toks.map((t, i) => known[i] || fromSpelling(t)))
-      .then((ws) => { if (n === lookup) showWords(ws); }, () => { if (n === lookup) showWords(known.filter(Boolean)); })
-      .finally(() => { if (pending === p) pending = null; });
-    pending = p;
+      .then((ws) => { if (n === lookup[slot]) showWords(ws, slot); }, () => { if (n === lookup[slot]) showWords(known.filter(Boolean), slot); })
+      .finally(() => { if (pendings[slot] === p) pendings[slot] = null; });
+    pendings[slot] = p;
   }
-  function showWords(ws) {
+  const slotHtml = ["", ""];
+  // two sounds the mouth makes the same way: only the voice differs (the throat buzzes for the second)
+  const VOICED = { f: "v", th: "dh", s: "z", sh: "zh", ch: "jh", t: "d", k: "g", p: "b" };
+  const sameShape = (a, b) => VOICED[a] === b || VOICED[b] === a;
+  function showWords(ws, slot = 0) {
     const shown = ws.filter((x) => x.phs.length);
-    if (!shown.length) {
-      $("res").innerHTML = ws.length ? '<span class="note">No English sounds found in that.</span>' : "";
-      cur = null; $("play").disabled = true; return;
+    let W = null, html = ws.length ? '<span class="note">No English sounds found in that.</span>' : "";
+    if (shown.length) {
+      let k = 0;
+      html = shown.map((x) => {
+        const nv = x.phs.filter((q) => M.isVowel(q.ph)).length;
+        return '<span class="wd"><span class="w">' + esc(x.text) + '</span><span class="ipa">/' + x.phs.map((q) =>
+          '<button class="snd' + (nv > 1 && q.stress === 1 ? " stress" : "") + '" data-i="' + k++ + '" data-side="' + slot + '" title="Show this sound">' + M.IPA[q.ph] + "</button>").join("") + "/</span></span>";
+      }).join("");
+      const guessed = shown.filter((x) => x.guessed).map((x) => "“" + esc(x.text) + "”");
+      const alts = shown.length === 1 && shown[0].alts && shown[0].alts.length ? shown[0].alts : [];
+      html += (alts.length ? '<span class="note">Also: ' + alts.map((p) => "/" + M.cmuToRig(p).map((q) => M.IPA[q.ph]).join("") + "/").join(", ") + "</span>" : "") +
+        (guessed.length ? '<span class="note">' + guessed.join(", ") + (guessed.length > 1 ? " are" : " is") +
+          " not in the dictionary: sounds guessed from the spelling, so check them.</span>" : "");
+      W = { w: shown.map((x) => x.text).join(" "), phs: shown.flatMap((x, wi) => x.phs.map((q) => ({ ...q, wi }))) };
     }
-    let k = 0;
-    const html = shown.map((x) => {
-      const nv = x.phs.filter((q) => M.isVowel(q.ph)).length;
-      return '<span class="wd"><span class="w">' + esc(x.text) + '</span><span class="ipa">/' + x.phs.map((q) =>
-        '<button class="snd' + (nv > 1 && q.stress === 1 ? " stress" : "") + '" data-i="' + k++ + '" title="Show this sound">' + M.IPA[q.ph] + "</button>").join("") + "/</span></span>";
-    }).join("");
-    const guessed = shown.filter((x) => x.guessed).map((x) => "“" + esc(x.text) + "”");
-    const alts = shown.length === 1 && shown[0].alts && shown[0].alts.length ? shown[0].alts : [];
-    $("res").innerHTML = html +
-      (alts.length ? '<span class="note">Also: ' + alts.map((p) => "/" + M.cmuToRig(p).map((q) => M.IPA[q.ph]).join("") + "/").join(", ") + "</span>" : "") +
-      (guessed.length ? '<span class="note">' + guessed.join(", ") + (guessed.length > 1 ? " are" : " is") +
-        " not in the dictionary: sounds guessed from the spelling, so check them.</span>" : "");
-    cur = { w: shown.map((x) => x.text).join(" "), phs: shown.flatMap((x, wi) => x.phs.map((q) => ({ ...q, wi }))) };
-    document.querySelectorAll(".snd").forEach((b) => (b.onclick = () => holdSound(+b.dataset.i)));
-    $("play").disabled = false;
+    slotHtml[slot] = html;
+    if (slot) cur2 = W; else cur = W;
+    const was = compare;
+    compare = !!(cur && cur2);
+    let note = "";
+    if (compare) {
+      const d = firstDiff();
+      if (d < 0) note = '<span class="note">These two words sound the same.</span>';
+      else { const a = cur.phs[Math.min(d, cur.phs.length - 1)].ph, b = cur2.phs[Math.min(d, cur2.phs.length - 1)].ph;
+        if (sameShape(a, b)) note = '<span class="note">/' + M.IPA[a] + "/ and /" + M.IPA[b] + "/ look the same in the mouth. The difference is the voice: /" +
+          M.IPA[VOICED[a] ? b : a] + "/ buzzes in the throat (touch your throat and feel it).</span>"; }
+    }
+    $("res").innerHTML = compare ? '<div class="slot"><span class="lr">Left</span>' + slotHtml[0] + '</div><div class="slot"><span class="lr">Right</span>' + slotHtml[1] + "</div>" + note
+      : slotHtml[0] + (slotHtml[1] ? '<div class="slot">' + slotHtml[1] + "</div>" : "");
+    document.querySelectorAll(".snd").forEach((b) => (b.onclick = () => holdSound(+b.dataset.i, +b.dataset.side)));
+    $("play").disabled = !cur;
+    $("diff").hidden = !compare;
+    if (compare !== was) { stop(); sides.forEach((s) => { s.q = null; s.held = false; }); if (!compare) setPose(M.REST); resize(); }
+    if (compare) showDifference();
   }
-  function mark(i) { document.querySelectorAll(".snd").forEach((b) => b.classList.toggle("on", +b.dataset.i === i)); }
-  function holdSound(i) {  // spring into one sound (with its neighbours' context) and stay there
-    stop(); sel = i; mark(i);
-    const one = [cur.phs[i]];
+  function mark(i, side) {  // side: only that half's sound buttons (undefined: all)
+    document.querySelectorAll(".snd").forEach((b) => { if (side === undefined || +b.dataset.side === side) b.classList.toggle("on", +b.dataset.i === i); });
+  }
+  function heldFrame(q) {  // the mouth settled into one sound
+    const pl = M.plan([q], 1), s = pl.segs[0];
+    return pl.frames[Math.min(pl.frames.length - 1, Math.round((pl.t1 + (s[0] + s[1]) / 2) * pl.fps))];
+  }
+  function firstDiff() {  // index of the first sound that differs (-1: the same sounds)
+    const A = cur.phs, B = cur2.phs;
+    let d = 0;
+    while (d < A.length && d < B.length && A[d].ph === B[d].ph) d++;
+    return d >= A.length && d >= B.length ? -1 : d;
+  }
+  // compare view: both mouths hold the first sound that differs (tongs /ɑ/, tongue /ʌ/)
+  function showDifference() {
+    if (!compare) return;
+    stop();
+    const d = Math.max(0, firstDiff());
+    [cur, cur2].forEach((W, s) => { const i = Math.min(d, W.phs.length - 1); sides[s].q = heldFrame(W.phs[i]); sides[s].held = true; mark(i, s); });
+    draw();
+  }
+  function holdSound(i, side = 0) {  // spring into one sound (with its neighbours' context) and stay there
+    stop(); sel = i;
+    const W = side === 1 ? cur2 : cur, sd = compare ? side : undefined;
+    if (!W) return;
+    mark(i, sd);
+    const one = [W.phs[i]];
     const pl = M.plan(one, 1);
     const k = Math.min(pl.frames.length - 1, Math.round((pl.t1 + (pl.segs[0][0] + pl.segs[0][1]) / 2) * pl.fps));
     const t0 = performance.now(), fr = pl.frames.slice(0, k + 1);
-    anim = { pl: { ...pl, frames: fr }, t0, hold: true };
+    anim = { pl: { ...pl, frames: fr }, t0, hold: true, side: sd };
+    if (compare) sides[side].held = true;
     tick();
   }
   const PRE = new Set(["f", "v", "th", "dh"]), HOLD = 1.0;  // s: slow glide in (~0.35 s) + still hold (Mike 2026-09-24: 0.4 too fast)
@@ -5670,18 +5763,21 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
     return window.EspeakNG ? "builtin" : dev ? "device" : "off";
   }
   const vname = (t) => { $("vname").textContent = t; };
-  function play() {
-    if (pending) { pending.then(play); return; }  // a spelling guess is still coming
+  // compare view: Play says the left word, then the right one (side = which half)
+  function play(side) {
+    if (pending()) { pending().then(() => play(side)); return; }  // a spelling guess is still coming
     if (!cur) return;
     stop();
+    if (compare && side === undefined) { side = 0; sides.forEach((s) => { s.q = M.REST; s.held = false; }); mark(-1); draw(); }
+    const W = side === 1 ? cur2 : cur, sd = compare ? side : undefined;
     const mode = voiceMode();
-    if (mode === "builtin") { playBuiltin(); return; }
+    if (mode === "builtin") { playBuiltin(W, sd); return; }
     const voice = mode === "device", [rate, st] = voice ? VOICE[speed] : [1, speed];
     // a word that starts with a teeth/lip contact (fan, very, think, this): the mouth takes that shape and holds it
     // before the voice starts, so the contact is easy to see (Mike 2026-09-24); the silent hold keeps the full slowness
-    const pre = PRE.has(cur.phs[0].ph) ? HOLD * speed / st : 0;
-    const pl = M.plan(cur.phs, st, 60, pre), vt = pl.t1 + pre * st;  // vt: voice start, s of clip time
-    anim = { pl, t0: performance.now() + 150 };
+    const pre = PRE.has(W.phs[0].ph) ? HOLD * speed / st : 0;
+    const pl = M.plan(W.phs, st, 60, pre), vt = pl.t1 + pre * st;  // vt: voice start, s of clip time
+    anim = { pl, t0: performance.now() + 150, side: sd };
     vname("");
     if (voice) {
       wakeAudio();
@@ -5689,12 +5785,12 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
       // page opens starts ~0.6 s after the voice's start signal (the voice loads), so sync on the word's start signal.
       const a = anim, go = (at) => { if (anim === a && a.cap !== null) { a.cap = null; a.t0 = at + (readLat() - vt) * 1000; } };
       // the computer's voice gave an error or never started: switch to the built-in voice (for the rest of the visit)
-      const fail = () => { if (anim !== a) return; deviceFailed = true; if (window.EspeakNG) play(); else go(performance.now()); };
+      const fail = () => { if (anim !== a) return; deviceFailed = true; if (window.EspeakNG) play(sd); else go(performance.now()); };
       a.cap = pre ? vt - 0.2 : 0;  // the hold is still from about 0.2 s before vt at 1× (sooner when slower)
       // no start signal 1.5 s after speak(): the voice is silent, switch (a voice that starts but never marks the
       // word runs the mouth from its start + 1.2 s, below)
       const speak = () => { if (anim !== a) return; speechSynthesis.speak(u); a.timer = setTimeout(() => { if (!a.started) fail(); }, 1500); };
-      const u = new SpeechSynthesisUtterance(cur.w), dv = devVoice();
+      const u = new SpeechSynthesisUtterance(W.w), dv = devVoice();
       if (dv) u.voice = dv;
       u.lang = "en-US"; u.rate = rate;
       vname("Voice: " + (dv ? dv.name : "this computer's"));
@@ -5706,10 +5802,10 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
     }
     tick();
   }
-  function playBuiltin() {
-    const st = speed, pre = PRE.has(cur.phs[0].ph) ? HOLD : 0, phs = cur.phs;
+  function playBuiltin(W, sd) {
+    const st = speed, pre = PRE.has(W.phs[0].ph) ? HOLD : 0, phs = W.phs;
     // the mouth waits at rest for a moment while the voice is made and the sound output wakes up
-    const a = anim = { pl: M.plan(phs, st, 60, pre), t0: performance.now(), cap: 0 };
+    const a = anim = { pl: M.plan(phs, st, 60, pre), t0: performance.now(), cap: 0, side: sd };
     vname("Voice: built-in" + (deviceFailed && vsel.value !== "builtin" ? " (this computer's voice did not play)" : ""));
     wakeAudio();
     Promise.all([builtinClip(phs, speed), ac ? ac.resume() : null]).then(([clip]) => {
@@ -5736,20 +5832,28 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
   function tick() {
     if (!anim) return;
     const a = anim, t = clipT(a), fi = Math.min(a.pl.frames.length - 1, Math.floor(t * a.pl.fps));
-    setPose(a.pl.frames[fi]);
+    if (a.side === undefined) setPose(a.pl.frames[fi]); else sides[a.side].q = a.pl.frames[fi];
     if (!a.hold) {
       const wt = (t - a.pl.t1) / a.pl.st;
-      mark(a.pl.segs.findIndex(([s, e]) => s <= wt && wt <= e));
+      mark(a.pl.segs.findIndex(([s, e]) => s <= wt && wt <= e), a.side);
     }
-    draw();
+    draw(a.side);
     if (fi < a.pl.frames.length - 1) a.raf = requestAnimationFrame(tick);
-    else if (!a.hold) { mark(-1); anim = null; if (ac) ac.suspend(); }
+    else if (!a.hold) {
+      mark(-1, a.side); anim = null; if (ac) ac.suspend();
+      if (a.side === 0 && compare) setTimeout(() => { if (!anim && compare) play(1); }, 450);  // then the right word
+    }
   }
 
   // ---------------------------------------------------------------- UI wiring
   $("q").addEventListener("input", () => showWord($("q").value));
   $("q").addEventListener("keydown", (e) => { if (e.key === "Enter") play(); });
-  $("play").onclick = play;
+  $("q2").addEventListener("input", () => showWord($("q2").value, 1));
+  $("q2").addEventListener("keydown", (e) => { if (e.key === "Enter") play(); });
+  $("diff").onclick = showDifference;
+  document.querySelectorAll("[data-pair]").forEach((b) => (b.onclick = () => { const [x, y] = b.dataset.pair.split("|");
+    $("q").value = x; $("q2").value = y; showWord(x); showWord(y, 1); }));
+  $("play").onclick = () => play();  // not play(event): play takes the compare half
   document.querySelectorAll("[data-speed]").forEach((b) => (b.onclick = () => { speed = +b.dataset.speed;
     document.querySelectorAll("[data-speed]").forEach((x) => x.setAttribute("aria-pressed", x === b)); play(); }));
   document.querySelectorAll("[data-view]").forEach((b) => (b.onclick = () => setView(b.dataset.view)));
@@ -5760,22 +5864,33 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
   if ("speechSynthesis" in window) speechSynthesis.getVoices();
   setTimeout(() => engine().catch(() => {}), 300);
   setPose(M.REST); setView("side"); resize();
-  // test hooks for headless screenshots: ?word=ship&view=front&hold=0  (hold = sound index held still)
-  const qs = new URLSearchParams(location.search);
-  $("q").value = qs.get("word") || window.START_WORD || "think"; showWord($("q").value);
-  if (qs.get("view")) setView(qs.get("view"));
-  if (qs.get("see") === "0") { seeThrough = false; $("see").checked = false; paintFace(); draw(); }
-  // ?yaw=-40&pitch=8&dist=11: any camera angle (turning past the side zone switches see-through, as a drag would)
-  if (qs.get("yaw") !== null) { yaw = +qs.get("yaw"); pitch = +(qs.get("pitch") || pitch); dist = +(qs.get("dist") || dist); camChanged(); }
-  if (qs.get("t") !== null && cur) {  // ?t=0.62 -> the frame of a normal Play at that time (s)
-    const pl = M.plan(cur.phs, +(qs.get("speed") || speed), 60, PRE.has(cur.phs[0].ph) ? HOLD : 0), fi = Math.min(pl.frames.length - 1, Math.round(+qs.get("t") * pl.fps));
-    airStill = true; setPose(pl.frames[fi]); const wt = (+qs.get("t") - pl.t1) / pl.st; mark(pl.segs.findIndex(([a, b]) => a <= wt && wt <= b)); draw();
+  // Test hooks for screenshots: ?word=ship&word2=sheep&view=front&hold=0&hold2=0&t=0.62&speed=2&yaw=-40&pitch=8&dist=11&see=0&air=0
+  // at load, or MouthPage.shot({the same keys}) on an open page: one Chrome, many pictures
+  // (_scripts/2026-09-24_mouth_shots_ccode.mjs). hold = sound index held still; t = the frame of a normal Play at t s.
+  async function applyShot(o) {
+    stop(); airStill = false;
+    if (o.word != null) { $("q").value = o.word; showWord(o.word); $("q2").value = o.word2 || ""; showWord(o.word2 || "", 1); }
+    if (pending()) await pending();
+    setView(o.view || "side");
+    if (o.see != null && !+o.see) { seeThrough = false; $("see").checked = false; paintFace(); }
+    $("air").checked = o.air == null || !!+o.air;
+    // any camera angle (turning past the side zone switches see-through, as a drag would)
+    if (o.yaw != null) { yaw = +o.yaw; pitch = +(o.pitch ?? pitch); dist = +(o.dist ?? dist); camChanged(); }
+    if (!compare) { setPose(M.REST); mark(-1); }  // each picture starts from rest (compare: the difference is held)
+    const pose = (side, q, i) => { if (compare) { sides[side].q = q; sides[side].held = true; } else { airStill = true; setPose(q); } mark(i, compare ? side : undefined); };
+    if (o.t != null && cur) {
+      const pl = M.plan(cur.phs, +(o.speed || speed), 60, PRE.has(cur.phs[0].ph) ? HOLD : 0), fi = Math.min(pl.frames.length - 1, Math.round(+o.t * pl.fps));
+      const wt = (+o.t - pl.t1) / pl.st;
+      pose(0, pl.frames[fi], pl.segs.findIndex(([a, b]) => a <= wt && wt <= b));
+    }
+    if (o.hold != null && cur) pose(0, heldFrame(cur.phs[+o.hold]), +o.hold);
+    if (o.hold2 != null && cur2) pose(1, heldFrame(cur2.phs[+o.hold2]), +o.hold2);
+    draw();
   }
-  if (qs.get("hold") !== null && cur) {
-    const pl = M.plan([cur.phs[+qs.get("hold")]], 1), s = pl.segs[0];
-    airStill = true; setPose(pl.frames[Math.round((pl.t1 + (s[0] + s[1]) / 2) * pl.fps)]); mark(+qs.get("hold")); draw();
-  }
-  window.MouthPage = { setPose, setView, play, showWord, draw, holdSound, get anim() { return anim; } };
+  const o0 = Object.fromEntries(new URLSearchParams(location.search));
+  applyShot({ ...o0, word: o0.word || window.START_WORD || "think" });
+  window.MouthPage = { setPose, setView, play, showWord, draw, holdSound, showDifference, get anim() { return anim; },
+    shot: async (o) => { await applyShot(o); drawAir(1300); } };
 })();
 </script>
 </body></html>
