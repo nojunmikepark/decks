@@ -4396,7 +4396,7 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
   const VELUM_UP = [[-4.85, 2.34], [-5.6, 2.40], [-6.35, 2.30], [-6.95, 2.05], [-7.25, 1.65]];
   const VELUM_DN = [[-4.85, 2.34], [-5.5, 2.10], [-6.05, 1.62], [-6.35, 1.05], [-6.45, 0.55]];
   const LOWER_ARCH_A = 2.33, LOWER_ARCH_B = 4.05, LOWER_ARCH_Y0 = -0.68;
-  const POSE0 = { jaw: 4.0, dy: -3.2, dz: 0.9, tip: 0.0, tipy: -1.0, tipz: 1.05, rnd: 0.0, spread: 0.0,
+  const POSE0 = { jaw: 4.0, dy: -3.2, dz: 0.9, tip: 0.0, tipy: -1.0, tipz: 1.05, tb: 0.0, tu: 0.0, rnd: 0.0, spread: 0.0,
     close: 0.0, lab: 0.0, vel: 0.0, hu: 0.12, hl: 0.10, groove: 0.0, back: 0.5 };
 
   const lerp = (a, b, t) => a + (b - a) * t;
@@ -4435,7 +4435,8 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
   function tongueTopProfile(p) {
     const jaw = p.jaw;
     const back = clamp((-p.dy - 3.2) / 2.0);
-    const tipRest = jawRot(-0.92 - 0.30 * back, -0.36, jaw);
+    // tb: the resting tip sits that much further back (cm; ʌ -0.37 = against the lower front teeth, ɑ +0.6); tu: raised (ʌ 0.24)
+    const tipRest = jawRot(-0.92 - 0.30 * back - (p.tb || 0), -0.36 + (p.tu || 0), jaw);
     const tw = clamp(p.tip);
     const tip = [lerp(tipRest[0], p.tipy, tw), lerp(tipRest[1], p.tipz, tw)];
     const T = jawUnrot(tip[0], tip[1], jaw);
@@ -4627,9 +4628,11 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
     ae: { jaw: 11.0, dy: -3.9, dz: 0.70, spread: 0.45, hu: 0.20, hl: 0.15 },
     // ʌ vs ɑ pulled apart (Mike 2026-09-24: "tongs" and "tongue" looked the same; rig had jaw 7.5/12.5, dz 0.95/0.45):
     // ʌ = mouth half open, tongue relaxed in the middle; ɑ = mouth wide open, tongue low and pulled back into the throat
-    uh: { jaw: 7.5, dy: -4.6, dz: 1.20, spread: 0.1, hu: 0.13, hl: 0.10 },
+    // 2026-09-26 (Mike: "my tongue in the word tongue is way more forward than when I say the word tongs"): ʌ tip rests
+    // against the lower front teeth, body a little forward (dy -4.6 -> -4.35); ɑ tip pulled 0.6 cm further back, body back (-5.5 -> -5.8)
+    uh: { jaw: 7.5, dy: -4.35, dz: 1.20, tb: -0.37, tu: 0.24, spread: 0.1, hu: 0.13, hl: 0.10 },
     schwa: { jaw: 5.5, dy: -4.1, dz: 1.15, spread: 0.1, hu: 0.12, hl: 0.10 },
-    aa: { jaw: 16.5, dy: -5.5, dz: 0.0, spread: 0.1, hu: 0.24, hl: 0.18 },
+    aa: { jaw: 16.5, dy: -5.8, dz: 0.0, tb: 0.6, spread: 0.1, hu: 0.24, hl: 0.18 },
     aw: { jaw: 10.0, dy: -5.0, dz: 0.95, rnd: 0.45, hu: 0.18, hl: 0.14 },
     o: { jaw: 6.5, dy: -4.8, dz: 1.45, rnd: 0.75, hu: 0.22, hl: 0.12 },
     uu: { jaw: 4.5, dy: -4.6, dz: 1.80, rnd: 0.50, hu: 0.14, hl: 0.10 },
@@ -4656,11 +4659,11 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
     y: { jaw: 2.0, dy: -3.2, dz: 2.35, spread: 0.4, hu: 0.08, hl: 0.05 },
   };
   const ACTIVE0 = { tip: 0.0, close: 0.0, lab: 0.0, vel: 0.0, groove: 0.0, contact: 0.0 };
-  const REST = { jaw: 1.2, dy: -3.9, dz: 0.6, tip: 0.0, rnd: 0.1, spread: 0.0, hu: 0.0, hl: 0.0, close: 1.0, lab: 0.0,
+  const REST = { jaw: 1.2, dy: -3.9, dz: 0.6, tip: 0.0, tb: 0.0, tu: 0.0, rnd: 0.1, spread: 0.0, hu: 0.0, hl: 0.0, close: 1.0, lab: 0.0,
     vel: 0.8, groove: 0.0, contact: 0.0, tipy: -1.0, tipz: 1.05 };
   const KEYS = Object.keys(REST);
   const GLIDES = { ei: ["e", "ih"], ou: ["o", "uu"], ai: ["a", "ih"], au: ["a", "uu"], oi: ["aw", "ih"] };
-  const OMEGA = { jaw: 38, dy: 34, dz: 34, tip: 90, tipy: 90, tipz: 90, groove: 45, contact: 90,  // tip 60 -> 90 (2026-09-24): reaches the teeth in short sounds
+  const OMEGA = { jaw: 38, dy: 34, dz: 34, tb: 34, tu: 34, tip: 90, tipy: 90, tipz: 90, groove: 45, contact: 90,  // tip 60 -> 90 (2026-09-24): reaches the teeth in short sounds
     rnd: 40, spread: 40,
     hu: 45, hl: 45, close: 55, lab: 55, vel: 28 };
   const LEAD = 0.05;
@@ -4790,7 +4793,7 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
   // tip sounds (t d n l s z th dh sh zh ch jh r) and drops for the others. Through any other sound a part keeps
   // gliding between its neighbours' shapes, so lip-only sounds (p b m f v h) leave the whole tongue alone. A weak
   // vowel (no stress) between two tip sounds gets no shape of its own: the tip stays up through it ("little").
-  const BODYK = ["dy", "dz", "contact"], TIPK = ["tip", "tipy", "tipz", "groove"];
+  const BODYK = ["dy", "dz", "tb", "tu", "contact"], TIPK = ["tip", "tipy", "tipz", "groove"];
   const LIPONLY = new Set(["p", "b", "m", "f", "v", "h"]), BODYC = new Set(["k", "g", "ng", "r", "w", "y"]);
   const TLEAD = 0.03, MAXT = 0.2;  // s of word time: the tongue is in place just before the sound; longest glide
   const ease = (x) => { x = clamp(x); return x * x * x * (10 - 15 * x + 6 * x * x); };
@@ -5008,7 +5011,7 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
         sh.uniforms.uShade = SHADE; sh.uniforms.uOpen = OPEN;
         vs = vs.replace("#include <common>", "#include <common>\nvarying float vRigY;").replace("#include <begin_vertex>", "#include <begin_vertex>\nvRigY = position.z;");
         fh += "varying float vRigY;\nuniform float uShade;\nuniform float uOpen;\n";
-        fa += "gl_FragColor.rgb *= mix(1.0, mix(mix(0.28, 0.7, uOpen), 1.0, smoothstep(-0.9, 0.1, vRigY)), uShade);\n";
+        fa += "gl_FragColor.rgb *= mix(1.0, mix(mix(0.28, 0.75, uOpen), 1.0, smoothstep(mix(-0.9, -2.2, uOpen), 0.1, vRigY)), uShade);\n";
       }
       if (o.bump || o.tint) {
         vs = vs.replace("#include <common>", "#include <common>\nattribute vec3 aRest;\nvarying vec3 vRest;").replace("#include <begin_vertex>", "#include <begin_vertex>\nvRest = aRest;");
@@ -5258,7 +5261,7 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
     let p = posed.get(q);
     if (!p) { p = { ...M.POSE0, ...q, lipx: LIPX, lipo: LIPO, labBack: 0.35, labZ: 0.12 }; posed.set(q, p); }  // f/v: the front-teeth edge presses ~1 mm into the top of the lower lip
     setTongue(p);
-    OPEN.value = sm(4, 12, p.jaw);
+    OPEN.value = sm(3, 10, p.jaw);  // 2026-09-26 (4, 12) -> (3, 10) + the dark starts deeper when open: the ʌ tongue right behind the lower teeth was black (Mike: tongue vs tongs)
     setJaw(lowerTeeth, lowerRest.teeth, p.jaw);
     setJaw(lowerGum, lowerRest.gum, p.jaw);
     const va = velum.geometry.attributes.position.array, v = Math.max(0, Math.min(1, p.vel || 0));
@@ -5592,8 +5595,8 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
     for (const c of teethLo) drawTooth(c, gumLo, false, 0);
     for (const c of TEETH_UP) drawTooth(c, GUM_UP, true, lk);
   }
-  function tongueSlice() {  // the tongue's middle slice as [y, z] points: top (back to tip), then the whole outline
-    const cp = tongueCap.geometry.attributes.position.array, ns = cp.length / 6, top = [], bot = [];
+  function tongueSlice(cp = tongueCap.geometry.attributes.position.array) {  // the tongue's middle slice as [y, z] points: top (back to tip), then the whole outline
+    const ns = cp.length / 6, top = [], bot = [];
     for (let k = 0; k < ns; k++) { top.push([cp[6 * k + 2], cp[6 * k + 1]]); bot.push([cp[6 * k + 5], cp[6 * k + 4]]); }
     return { top, tp: top.concat(bot.reverse()) };
   }
@@ -5627,7 +5630,7 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
     const [ox, oy] = toScreen([0, 0], w, h), s = Math.hypot(...(([x, y]) => [x - ox, y - oy])(toScreen([1, 0], w, h)));  // px per cm
     const dot = Math.max(5, 0.16 * s), lw = Math.max(2, 0.05 * s);
     const tip = tipOf(tongueCap.geometry.attributes.position.array);
-    const o = i === undefined ? null : sides[1 - i].snap && (sides[1 - i].held || anim) ? tipOf(sides[1 - i].snap.cap) : null;
+    const ocp = i === undefined ? null : sides[1 - i].snap && (sides[1 - i].held || anim) ? sides[1 - i].snap.cap : null, o = ocp && tipOf(ocp);
     const zTop = 1.4, zBot = Math.min(-2.6, tip[1] - 0.6, o ? o[1] - 0.6 : 0);
     const [tx0, ty0] = toScreen([TEETH_Y, zTop], w, h), [tx1, ty1] = toScreen([TEETH_Y, zBot], w, h);
     ax.save(); ax.globalAlpha = k; ax.lineCap = "round";
@@ -5640,11 +5643,15 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
     };
     label("front teeth", tx0, ty0 - 6, "#1a237e", "center");
     const fwd = Math.sign(toScreen([1, 0], w, h)[0] - ox) || 1;  // +1: forward is to the right
-    if (o) {  // the other word's tip: hollow ring + its name
+    if (o) {  // the other word's tongue: dashed blue outline, its tip a hollow ring + its name
+      const op = tongueSlice(ocp).tp.map((q) => toScreen(q, w, h));
+      ax.beginPath(); op.forEach(([x, y], j) => (j ? ax.lineTo(x, y) : ax.moveTo(x, y))); ax.closePath();
+      ax.strokeStyle = "rgba(255,255,255,0.9)"; ax.lineWidth = lw + 3; ax.stroke();
+      ax.setLineDash([0.16 * s, 0.1 * s]); ax.strokeStyle = "#1d4ed8"; ax.lineWidth = lw; ax.stroke(); ax.setLineDash([]);
       const [rx, ry] = toScreen(o, w, h);
       ax.strokeStyle = "#fff"; ax.lineWidth = lw + 3; ax.beginPath(); ax.arc(rx, ry, dot, 0, 2 * Math.PI); ax.stroke();
-      ax.strokeStyle = "#374151"; ax.lineWidth = lw + 1; ax.setLineDash([0.09 * s, 0.06 * s]); ax.beginPath(); ax.arc(rx, ry, dot, 0, 2 * Math.PI); ax.stroke(); ax.setLineDash([]);
-      label([cur, cur2][1 - i].w + " tip", rx, ry + dot + 20, "#4b5563", "center");
+      ax.strokeStyle = "#1d4ed8"; ax.lineWidth = lw + 1; ax.setLineDash([0.09 * s, 0.06 * s]); ax.beginPath(); ax.arc(rx, ry, dot, 0, 2 * Math.PI); ax.stroke(); ax.setLineDash([]);
+      label("dashed: " + [cur, cur2][1 - i].w, rx, ry + dot + 20, "#1d4ed8", "center");
     }
     const [px, py] = toScreen(tip, w, h), [qx, qy] = toScreen([TEETH_Y, tip[1]], w, h), gap = TEETH_Y - tip[0];
     ax.strokeStyle = "#b45309"; ax.lineWidth = lw; ax.beginPath(); ax.moveTo(px + fwd * dot, py); ax.lineTo(qx, qy); ax.stroke();
