@@ -44,7 +44,7 @@ select{font:inherit;font-size:16px;border:1px solid var(--line);border-radius:8p
 <button class="big" id="play" disabled>▶ Play</button>
 <button class="seg" id="sbs" disabled title="The mouth holds each sound while the voice says it alone, then the whole word plays">Sound by sound</button></div>
 <div class="row cmp"><label for="q2">Compare with</label><input type="text" id="q2" autocomplete="off" spellcheck="false" placeholder="a second word (optional), e.g. tongue">
-<button class="seg" id="diff" hidden title="Both mouths hold the first sound that is different">Show the difference</button></div>
+<button class="seg" id="diff" hidden title="Both mouths show where the tongue starts, as each word is spoken">Show the difference</button></div>
 <div class="res" id="res"></div>
 <div class="row" style="margin-top:10px">
 <span>Speed:</span><button class="seg" data-speed="1">1×</button><button class="seg" data-speed="2" aria-pressed="true">½×</button><button class="seg" data-speed="4">¼×</button><button class="seg" data-speed="8">⅛×</button>
@@ -4798,13 +4798,13 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
   const TLEAD = 0.03, MAXT = 0.2;  // s of word time: the tongue is in place just before the sound; longest glide
   const ease = (x) => { x = clamp(x); return x * x * x * (10 - 15 * x + 6 * x * x); };
   const tonguePose = (ph, first = true) => (ph in GLIDES || ph in VOWELS ? vowelTarget(ph, first) : { ...REST, ...ACTIVE0, ...CONS[ph] });
-  function track(segs, t1, st, pre, total, keys, uses, post) {
+  function track(segs, t1, st, pre, total, keys, uses, post, poseOf = (ph, i, first) => tonguePose(ph, first)) {
     const K = [{ hs: -Infinity, he: t1 - 0.08 * st, p: REST }];  // hs..he: the shape is held still (clip time)
     segs.forEach(([a, b, ph], i) => {
       const A = t1 + (a - TLEAD) * st, B = t1 + (b - TLEAD) * st, L = B - A, held = i === 0 && pre > 0;
       if (!uses(ph, i)) { if (held) K[0].he = A + pre * st; return; }  // through a held first sound this part rests
-      const k = { hs: held ? A + 0.6 * pre * st : A + 0.15 * L, p: tonguePose(ph), from: held ? A : undefined };
-      if (ph in GLIDES) K.push({ ...k, he: A + 0.35 * L }, { hs: A + 0.75 * L, he: B - 0.1 * L, p: tonguePose(ph, false) });
+      const k = { hs: held ? A + 0.6 * pre * st : A + 0.15 * L, p: poseOf(ph, i, true), from: held ? A : undefined };
+      if (ph in GLIDES) K.push({ ...k, he: A + 0.35 * L }, { hs: A + 0.75 * L, he: B - 0.1 * L, p: poseOf(ph, i, false) });
       else K.push({ ...k, he: TOUCH.has(ph) ? B : B - 0.25 * L });  // a touch stays on to the end of its sound
     });
     const end = t1 + (segs[segs.length - 1][1] + 0.06) * st + post;
@@ -4825,8 +4825,21 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
   function tongueTrack(segs, t1, st, pre, total, phs, post = 0) {  // the tongue keys at clip time t
     const up = (i) => i >= 0 && i < segs.length && tonguePose(segs[i][2]).tip > 0 && !isVowel(segs[i][2]);
     const weak = (i) => isVowel(segs[i][2]) && phs[i] && phs[i].stress === 0 && up(i - 1) && up(i + 1);
-    const body = track(segs, t1, st, pre, total, BODYK, (ph, i) => (isVowel(ph) || BODYC.has(ph)) && !weak(i), post);
-    const tip = track(segs, t1, st, pre, total, TIPK, (ph, i) => !LIPONLY.has(ph) && !weak(i), post);
+    // a tip consonant right before a vowel (the t in tongue, tongs): the body is already in that vowel's shape while
+    // the tip touches (Mike 2026-09-26: "the tongue placement at the start of each word is different"); only its
+    // contact (the sides against the teeth) stays the consonant's
+    const cv = (ph, i) => !isVowel(ph) && !BODYC.has(ph) && !LIPONLY.has(ph) && i + 1 < segs.length && isVowel(segs[i + 1][2]) && !weak(i + 1);
+    const body = track(segs, t1, st, pre, total, BODYK, (ph, i) => ((isVowel(ph) || BODYC.has(ph)) && !weak(i)) || cv(ph, i), post,
+      (ph, i, first) => (cv(ph, i) ? { ...vowelTarget(segs[i + 1][2], true), contact: CONS[ph].contact || 0 } : tonguePose(ph, first)));
+    // ...and a touch (t d n l) lands where that vowel puts the tongue: further forward before ʌ (tb < 0), further back
+    // on the ridge before ɑ (tb > 0); the tip stays on the roof (palate + 0.1 as in T_)
+    const tipPose = (ph, i, first) => {
+      const p = tonguePose(ph, first);
+      if (!cv(ph, i) || !CONS[ph].contact || !CONS[ph].tip) return p;
+      const y = p.tipy + clamp(-0.5 * (vowelTarget(segs[i + 1][2], true).tb || 0), -0.3, 0.15);
+      return { ...p, tipy: y, tipz: palateZ(y) + 0.1 };
+    };
+    const tip = track(segs, t1, st, pre, total, TIPK, (ph, i) => !LIPONLY.has(ph) && !weak(i), post, tipPose);
     return (t) => { const out = {}; body(t, out); tip(t, out); return out; };
   }
 
@@ -5615,49 +5628,18 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
     ax.strokeStyle = "#7d0f1d"; ax.lineWidth = lw; ax.stroke();
     ax.globalAlpha = 1;
   }
-  // side views: the tongue tip as a gold dot, a dashed line at the upper front teeth's edge, and the gap between them
-  // in cm; in Compare, the other word's tip as a hollow ring on the same spot of this mouth (Mike 2026-09-26, tongs vs
-  // tongue: "The tongue is more forward on tong and it's slightly less forward on the word tongue… more clearly delineated")
-  const TEETH_Y = -0.12;  // the upper front teeth's cutting edge (y -0.12, z -0.10)
-  function tipOf(cp) {  // the tongue's most forward point in its middle slice (cap: top and underside rows)
-    let b = null;
-    for (let k = 0; k < cp.length; k += 3) if (!b || cp[k + 2] > b[0]) b = [cp[k + 2], cp[k + 1]];
-    return b;
-  }
-  function drawTipMark(w, h, i) {
-    const k = sideness();
-    if (k <= 0.02 || !shownPose) return;
-    const [ox, oy] = toScreen([0, 0], w, h), s = Math.hypot(...(([x, y]) => [x - ox, y - oy])(toScreen([1, 0], w, h)));  // px per cm
-    const dot = Math.max(5, 0.16 * s), lw = Math.max(2, 0.05 * s);
-    const tip = tipOf(tongueCap.geometry.attributes.position.array);
-    const ocp = i === undefined ? null : sides[1 - i].snap && (sides[1 - i].held || anim) ? sides[1 - i].snap.cap : null, o = ocp && tipOf(ocp);
-    const zTop = 1.4, zBot = Math.min(-2.6, tip[1] - 0.6, o ? o[1] - 0.6 : 0);
-    const [tx0, ty0] = toScreen([TEETH_Y, zTop], w, h), [tx1, ty1] = toScreen([TEETH_Y, zBot], w, h);
-    ax.save(); ax.globalAlpha = k; ax.lineCap = "round";
-    ax.setLineDash([0.18 * s, 0.14 * s]); ax.strokeStyle = "#1a237e"; ax.lineWidth = lw;
-    ax.beginPath(); ax.moveTo(tx0, ty0); ax.lineTo(tx1, ty1); ax.stroke(); ax.setLineDash([]);
-    const label = (t, x, y, col, align) => {
-      ax.font = "600 " + Math.round(Math.max(12, Math.min(17, 0.3 * s))) + "px system-ui, sans-serif"; ax.textAlign = align;
-      const tw = ax.measureText(t).width, x0 = align === "center" ? x - tw / 2 : align === "right" ? x - tw : x;
-      ax.fillStyle = "rgba(255,255,255,0.88)"; ax.fillRect(x0 - 5, y - 15, tw + 10, 21); ax.fillStyle = col; ax.fillText(t, x, y);
-    };
-    label("front teeth", tx0, ty0 - 6, "#1a237e", "center");
-    const fwd = Math.sign(toScreen([1, 0], w, h)[0] - ox) || 1;  // +1: forward is to the right
-    if (o) {  // the other word's tongue: dashed blue outline, its tip a hollow ring + its name
-      const op = tongueSlice(ocp).tp.map((q) => toScreen(q, w, h));
-      ax.beginPath(); op.forEach(([x, y], j) => (j ? ax.lineTo(x, y) : ax.moveTo(x, y))); ax.closePath();
-      ax.strokeStyle = "rgba(255,255,255,0.9)"; ax.lineWidth = lw + 3; ax.stroke();
-      ax.setLineDash([0.16 * s, 0.1 * s]); ax.strokeStyle = "#1d4ed8"; ax.lineWidth = lw; ax.stroke(); ax.setLineDash([]);
-      const [rx, ry] = toScreen(o, w, h);
-      ax.strokeStyle = "#fff"; ax.lineWidth = lw + 3; ax.beginPath(); ax.arc(rx, ry, dot, 0, 2 * Math.PI); ax.stroke();
-      ax.strokeStyle = "#1d4ed8"; ax.lineWidth = lw + 1; ax.setLineDash([0.09 * s, 0.06 * s]); ax.beginPath(); ax.arc(rx, ry, dot, 0, 2 * Math.PI); ax.stroke(); ax.setLineDash([]);
-      label("dashed: " + [cur, cur2][1 - i].w, rx, ry + dot + 20, "#1d4ed8", "center");
-    }
-    const [px, py] = toScreen(tip, w, h), [qx, qy] = toScreen([TEETH_Y, tip[1]], w, h), gap = TEETH_Y - tip[0];
-    ax.strokeStyle = "#b45309"; ax.lineWidth = lw; ax.beginPath(); ax.moveTo(px + fwd * dot, py); ax.lineTo(qx, qy); ax.stroke();
-    ax.fillStyle = "#fbbf24"; ax.strokeStyle = "#78350f"; ax.lineWidth = lw; ax.beginPath(); ax.arc(px, py, dot, 0, 2 * Math.PI); ax.fill(); ax.stroke();
-    label(Math.abs(gap) < 0.05 ? "tip at the teeth" : "tip " + Math.abs(gap).toFixed(1) + (gap > 0 ? " cm back" : " cm past the teeth"), px - fwd * (dot + 4), py - dot - 6, "#92400e", fwd > 0 ? "right" : "left");
-    ax.restore(); ax.textAlign = "start";
+  // Compare, side views: the other word's tongue as a dashed blue outline on this mouth, so "more forward" shows in
+  // one picture (Mike 2026-09-26: tongue vs tongs; the gold tip dot, cm labels and teeth line were "too much happening")
+  function drawOtherTongue(w, h, i) {
+    const k = sideness(), o = i === undefined ? null : sides[1 - i];
+    if (k <= 0.02 || !shownPose || !o || !o.snap || !(o.held || anim)) return;
+    const [ox, oy] = toScreen([0, 0], w, h), [x1, y1] = toScreen([1, 0], w, h), s = Math.hypot(x1 - ox, y1 - oy), lw = Math.max(2, 0.06 * s);
+    const op = tongueSlice(o.snap.cap).tp.map((q) => toScreen(q, w, h));
+    ax.save(); ax.globalAlpha = k; ax.lineJoin = "round";
+    ax.beginPath(); op.forEach(([x, y], j) => (j ? ax.lineTo(x, y) : ax.moveTo(x, y))); ax.closePath();
+    ax.strokeStyle = "rgba(255,255,255,0.9)"; ax.lineWidth = lw + 3; ax.stroke();
+    ax.setLineDash([0.18 * s, 0.11 * s]); ax.strokeStyle = "#1d4ed8"; ax.lineWidth = lw; ax.stroke();
+    ax.restore();
   }
   function drawSection(w, h, side) {
     if (!cutaway() || side <= 0.02 || !shownPose) return;
@@ -5713,13 +5695,19 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
     ax.fillStyle = "#d9dcef"; ax.fillRect(half - 1, 0, 2, h);
     ax.font = "600 22px system-ui, sans-serif"; ax.textAlign = "center";
     [cur, cur2].forEach((W, i) => { if (!W) return; const x = i * half + half / 2, tw = ax.measureText(W.w).width;
-      ax.fillStyle = "rgba(255,255,255,0.85)"; ax.fillRect(x - tw / 2 - 8, 8, tw + 16, 30); ax.fillStyle = "#1a237e"; ax.fillText(W.w, x, 31); });
+      ax.fillStyle = "rgba(255,255,255,0.85)"; ax.fillRect(x - tw / 2 - 8, 8, tw + 16, 30); ax.fillStyle = "#1a237e"; ax.fillText(W.w, x, 31);
+      const O = [cur, cur2][1 - i];
+      if (O && sideness() > 0.02) {  // the key for drawOtherTongue's dashed line
+        ax.font = "600 14px system-ui, sans-serif"; const t = "dashed = " + O.w, t2 = ax.measureText(t).width;
+        ax.fillStyle = "rgba(255,255,255,0.85)"; ax.fillRect(x - t2 / 2 - 6, 40, t2 + 12, 20); ax.fillStyle = "#1d4ed8"; ax.fillText(t, x, 55);
+        ax.font = "600 22px system-ui, sans-serif";
+      } });
     ax.textAlign = "start";
   }
   function drawLayer(w, h, now, i) {
     drawSection(w, h, sideness());
     drawTongueLine(w, h);
-    drawTipMark(w, h, i);
+    drawOtherTongue(w, h, i);
     if (i === undefined) drawCloseUp(w, h, sideness());
     drawCue(w, h);
     drawIpa(w, h, i);
@@ -6000,12 +5988,17 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
     while (d < A.length && d < B.length && A[d].ph === B[d].ph) d++;
     return d >= A.length && d >= B.length ? -1 : d;
   }
-  // compare view: both mouths hold the first sound that differs (tongs /ɑ/, tongue /ʌ/)
+  // compare view: both mouths hold the START of their word, as it is spoken (the first sound with the tongue already
+  // shaped for the next one), not the first sound on its own (Mike 2026-09-26: "It should show where the tongue start
+  // when the word is being spoken"; the old view held the first sound that differs, the vowel)
+  function startFrame(W) {
+    const pl = M.plan(W.phs, 1, 60, 1.0), s = pl.segs[0];
+    return pl.frames[Math.min(pl.frames.length - 1, Math.round((pl.t1 + (s[0] + 0.95) * pl.st) * pl.fps))];
+  }
   function showDifference() {
     if (!compare) return;
     stop();
-    const d = Math.max(0, firstDiff());
-    [cur, cur2].forEach((W, s) => { const i = Math.min(d, W.phs.length - 1); sides[s].q = heldFrame(W.phs[i]); sides[s].held = true; mark(i, s); });
+    [cur, cur2].forEach((W, s) => { sides[s].q = startFrame(W); sides[s].held = true; mark(0, s); });
     draw();
   }
   function holdSound(i, side = 0) {  // spring into one sound (with its neighbours' context) and stay there
