@@ -47,7 +47,7 @@ select{font:inherit;font-size:16px;border:1px solid var(--line);border-radius:8p
 <button class="seg" id="diff" hidden title="Both mouths hold the first sound that is different">Show the difference</button></div>
 <div class="res" id="res"></div>
 <div class="row" style="margin-top:10px">
-<span>Speed:</span><button class="seg" data-speed="1">1×</button><button class="seg" data-speed="2" aria-pressed="true">½×</button><button class="seg" data-speed="4">¼×</button>
+<span>Speed:</span><button class="seg" data-speed="1">1×</button><button class="seg" data-speed="2" aria-pressed="true">½×</button><button class="seg" data-speed="4">¼×</button><button class="seg" data-speed="8">⅛×</button>
 <span style="margin-left:14px">View:</span><button class="seg" data-view="side" aria-pressed="true">Side</button><button class="seg" data-view="quarter" title="Front-left corner, close on the lips">¾</button><button class="seg" data-view="front">Front</button><button class="seg" data-view="draw" title="A drawing of the mouth cut down the middle, seen from the side, with a close-up of the lips">Drawing</button>
 <label style="margin-left:14px" title="See-through: look through the face at the tongue. Hidden: teeth, gums and tongue only">Face <select id="face"><option value="see">See-through</option><option value="solid">Solid</option><option value="none">Hidden</option></select></label>
 <label style="margin-left:14px">Voice <select id="voice" title="Auto: Bella, a natural voice (the 20,000 most common words); other words: this computer's Samantha voice if it has one, otherwise the voice built into this page">
@@ -62,7 +62,7 @@ select{font:inherit;font-size:16px;border:1px solid var(--line);border-radius:8p
 <div class="try">Try: <button data-try="think">think</button><button data-try="this">this</button><button data-try="ship">ship</button><button data-try="measure">measure</button><button data-try="church">church</button><button data-try="red">red</button><button data-try="yellow">yellow</button><button data-try="world">world</button><button data-try="thought">thought</button><button data-try="rural">rural</button><button data-try="sixth">sixth</button><button data-try="pronunciation">pronunciation</button><button data-try="ice cream">ice cream</button><button data-try="good morning">good morning</button></div>
 <div class="try">Compare: <button data-pair="tongs|tongue">tongs – tongue</button><button data-pair="ship|sheep">ship – sheep</button><button data-pair="think|sink">think – sink</button><button data-pair="light|right">light – right</button><button data-pair="cat|cut">cat – cut</button><button data-pair="pull|pool">pull – pool</button></div>
 <footer><span id="count"></span> words from the CMU Pronouncing Dictionary (American English). Other words and numbers: the sounds are guessed from the spelling by eSpeak NG (free software, GPL-3.0), so check them. Red bold = the stressed vowel.
-Voice: <b>Bella</b> is a natural voice (Kokoro, voice af_bella, <a href="https://huggingface.co/hexgrad/Kokoro-82M">Apache-2.0 license</a>) recorded ahead of time for the 20,000 most common words, at normal speed and said slowly (for ½× and ¼×), plus each single sound said alone; the recordings sit in the <b>voice_bella_ccode</b> folder next to this page, so copy the folder with the page. Other words use the page's built-in voice (eSpeak NG: free software, <a href="https://github.com/espeak-ng/espeak-ng/blob/master/COPYING">GPL-3.0 license</a>, <a href="https://github.com/echogarden-project/espeak-ng-emscripten">source</a>), which works on any computer without the internet, and the mouth follows it exactly. <b>Auto</b> uses Bella, and for other words this computer's Samantha voice when it has one (a Mac); <b>This computer</b> uses the computer's own English voice, which may run a little ahead of or behind the mouth.
+Voice: <b>Bella</b> is a natural voice (Kokoro, voice af_bella, <a href="https://huggingface.co/hexgrad/Kokoro-82M">Apache-2.0 license</a>) recorded ahead of time for the 20,000 most common words, at normal speed and said slowly (for ½×, ¼× and ⅛×), plus each single sound said alone; the recordings sit in the <b>voice_bella_ccode</b> folder next to this page, so copy the folder with the page. Other words use the page's built-in voice (eSpeak NG: free software, <a href="https://github.com/espeak-ng/espeak-ng/blob/master/COPYING">GPL-3.0 license</a>, <a href="https://github.com/echogarden-project/espeak-ng-emscripten">source</a>), which works on any computer without the internet, and the mouth follows it exactly. <b>Auto</b> uses Bella, and for other words this computer's Samantha voice when it has one (a Mac); <b>This computer</b> uses the computer's own English voice, which may run a little ahead of or behind the mouth. A computer's own voice cannot go slower than about ½×, so at ¼× and ⅛× <b>Auto</b> uses the built-in voice for words Bella doesn't have.
 Blue dots show the air: it stops where the mouth is closed and goes out through the nose for m, n and ng. The card in the corner shows the sound being made and, in red, where the tongue touches the roof of the mouth: the typical pattern for that sound from electropalatography studies (a plate of 62 sensors on the roof of the mouth), not a measurement of this model. Face: <b>See-through</b> shows the tongue through a clear face and upper teeth, <b>Solid</b> shows the lips, <b>Hidden</b> shows only the teeth, gums and tongue. <b>Drawing</b> = the mouth cut down the middle and drawn from the side, with a close-up of the lips and teeth.
 The mouth is a teaching model with hand-placed shapes, not a scan of a real mouth.</footer>
 </main>
@@ -4749,7 +4749,7 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
 
   const vowelTarget = (ph, first = true) => ({ ...REST, ...ACTIVE0, ...(ph in GLIDES ? VOWELS[GLIDES[ph][first ? 0 : 1]] : VOWELS[ph]) });
 
-  function targetEvents(segs, t0, st) {
+  function targetEvents(segs, t0, st, post = 0) {
     const ev = [];
     const vidx = segs.map((s, i) => (isVowel(s[2]) ? i : -1)).filter((i) => i >= 0);
     const TIPK = new Set(["tip", "tipy", "tipz", "contact"]);
@@ -4777,7 +4777,7 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
       }
       KEYS.forEach((k) => ev.push([at(k), k, tgt[k]]));
     });
-    const end = t0 + (segs[segs.length - 1][1] + 0.06) * st;
+    const end = t0 + (segs[segs.length - 1][1] + 0.06) * st + post;
     KEYS.forEach((k) => ev.push([end, k, REST[k]]));
     return ev;
   }
@@ -4795,7 +4795,7 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
   const TLEAD = 0.03, MAXT = 0.2;  // s of word time: the tongue is in place just before the sound; longest glide
   const ease = (x) => { x = clamp(x); return x * x * x * (10 - 15 * x + 6 * x * x); };
   const tonguePose = (ph, first = true) => (ph in GLIDES || ph in VOWELS ? vowelTarget(ph, first) : { ...REST, ...ACTIVE0, ...CONS[ph] });
-  function track(segs, t1, st, pre, total, keys, uses) {
+  function track(segs, t1, st, pre, total, keys, uses, post) {
     const K = [{ hs: -Infinity, he: t1 - 0.08 * st, p: REST }];  // hs..he: the shape is held still (clip time)
     segs.forEach(([a, b, ph], i) => {
       const A = t1 + (a - TLEAD) * st, B = t1 + (b - TLEAD) * st, L = B - A, held = i === 0 && pre > 0;
@@ -4804,7 +4804,7 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
       if (ph in GLIDES) K.push({ ...k, he: A + 0.35 * L }, { hs: A + 0.75 * L, he: B - 0.1 * L, p: tonguePose(ph, false) });
       else K.push({ ...k, he: TOUCH.has(ph) ? B : B - 0.25 * L });  // a touch stays on to the end of its sound
     });
-    const end = t1 + (segs[segs.length - 1][1] + 0.06) * st;
+    const end = t1 + (segs[segs.length - 1][1] + 0.06) * st + post;
     K.push({ hs: Math.max(end, Math.min(end + 0.2 * st, total - 0.1)), he: Infinity, p: REST, from: end });
     K.forEach((k, i) => { if (i) k.g0 = Math.min(k.hs, Math.max(K[i - 1].he, k.from ?? k.hs - MAXT * st)); });
     return (t, out) => {
@@ -4819,23 +4819,24 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
       }
     };
   }
-  function tongueTrack(segs, t1, st, pre, total, phs) {  // the tongue keys at clip time t
+  function tongueTrack(segs, t1, st, pre, total, phs, post = 0) {  // the tongue keys at clip time t
     const up = (i) => i >= 0 && i < segs.length && tonguePose(segs[i][2]).tip > 0 && !isVowel(segs[i][2]);
     const weak = (i) => isVowel(segs[i][2]) && phs[i] && phs[i].stress === 0 && up(i - 1) && up(i + 1);
-    const body = track(segs, t1, st, pre, total, BODYK, (ph, i) => (isVowel(ph) || BODYC.has(ph)) && !weak(i));
-    const tip = track(segs, t1, st, pre, total, TIPK, (ph, i) => !LIPONLY.has(ph) && !weak(i));
+    const body = track(segs, t1, st, pre, total, BODYK, (ph, i) => (isVowel(ph) || BODYC.has(ph)) && !weak(i), post);
+    const tip = track(segs, t1, st, pre, total, TIPK, (ph, i) => !LIPONLY.has(ph) && !weak(i), post);
     return (t) => { const out = {}; body(t, out); tip(t, out); return out; };
   }
 
   // One pass of the word at speed factor st (1 = normal, 2 = half speed...). Returns {fps, frames[], t1, total, segs}.
   // pre (s of word time): the first sound starts `pre` earlier and is held that long before the voice (teaching hold)
   // segsIn: sound times from the voice itself ([start, end, sound] in s of word time), used instead of the fitted lengths
-  function plan(phs, st = 1, fps = 60, pre = 0, segsIn = null) {
+  // post (s of clip time): the last sound's shape stays still that long after the word, before the mouth rests
+  function plan(phs, st = 1, fps = 60, pre = 0, segsIn = null, post = 0) {
     const segs = (segsIn || segments(phs)).map(([a, b, ph], i) => (i === 0 ? [a, b + pre, ph] : [a + pre, b + pre, ph]));
     const wordLen = segs[segs.length - 1][1] * st;
     const t1 = 0.35 + 0.2 * st;
-    const total = t1 + wordLen + 0.6;
-    const ev = targetEvents(segs, t1, st).sort((a, b) => a[0] - b[0]);
+    const total = t1 + wordLen + 0.6 + post;
+    const ev = targetEvents(segs, t1, st, post).sort((a, b) => a[0] - b[0]);
     const win = [t1 + (segs[0][0] - LEAD) * st, t1 + segs[segs.length - 1][1] * st];
     const x = { ...REST }, v = {}, tgt = { ...REST };
     KEYS.forEach((k) => (v[k] = 0));
@@ -4854,9 +4855,9 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
       }
     }
     while (frames.length < nfr) frames.push({ ...x });
-    const tongue = tongueTrack(segs, t1, st, pre, total, phs);
+    const tongue = tongueTrack(segs, t1, st, pre, total, phs, post);
     frames.forEach((f, i) => Object.assign(f, tongue(i / fps)));
-    return { fps, frames, t1, total, segs, st, pre };
+    return { fps, frames, t1, total, segs, st, pre, post };
   }
 
   // ------------------------------------------------------------ air path (port of air_paths in
@@ -5572,9 +5573,7 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
     for (const c of lips.slice().sort((a, b) => b[0][3] - a[0][3])) drawLip(lipDiscs(c, lips, obst));  // lower lip first
     for (const c of fc) poly(c, null, "#a8765f", 1.2 * lw, false);  // the face's outline near the lips
     // tongue: its cut face lit from above (lighter along the top, darker at the root), a soft edge, a sheen on top
-    const cp = tongueCap.geometry.attributes.position.array, ns = cp.length / 6, top = [], bot = [];
-    for (let k = 0; k < ns; k++) { top.push([cp[6 * k + 2], cp[6 * k + 1]]); bot.push([cp[6 * k + 5], cp[6 * k + 4]]); }
-    const tp = top.concat(bot.slice().reverse()), tzs = tp.map((q) => q[1]), tz0 = Math.min(...tzs), tz1 = Math.max(...tzs), tyc = tp.reduce((a, q) => a + q[0], 0) / tp.length;
+    const { top, tp } = tongueSlice(), tzs = tp.map((q) => q[1]), tz0 = Math.min(...tzs), tz1 = Math.max(...tzs), tyc = tp.reduce((a, q) => a + q[0], 0) / tp.length;
     poly(tp, grad([tyc, tz1], [tyc, tz0], [[0, "#cd525a"], [0.45, "#a8262e"], [1, "#6c1218"]]), "rgba(70,10,15,0.55)", 0.9 * lw);
     ax.save(); path(tp); ax.clip(); poly(top, null, "rgba(255,225,220,0.35)", 3 * lw, false); ax.restore();
     // a tooth: enamel brighter at the cutting edge, its root hidden in the gum, only the crown outlined (softly);
@@ -5592,6 +5591,26 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
     }
     for (const c of teethLo) drawTooth(c, gumLo, false, 0);
     for (const c of TEETH_UP) drawTooth(c, GUM_UP, true, lk);
+  }
+  function tongueSlice() {  // the tongue's middle slice as [y, z] points: top (back to tip), then the whole outline
+    const cp = tongueCap.geometry.attributes.position.array, ns = cp.length / 6, top = [], bot = [];
+    for (let k = 0; k < ns; k++) { top.push([cp[6 * k + 2], cp[6 * k + 1]]); bot.push([cp[6 * k + 5], cp[6 * k + 4]]); }
+    return { top, tp: top.concat(bot.reverse()) };
+  }
+  // 3D side view: the tongue's middle slice drawn over the model. From the side the 3D tongue is a red lump behind
+  // the side teeth, and its tip hides behind the top teeth, so its shape never showed (Mike 2026-09-25: "a hard time
+  // seeing the difference in the tongue movement for the words tongs vs tongue")
+  function drawTongueLine(w, h) {
+    const k = Math.max(0, Math.min(1, (Math.abs(Math.sin(yaw * Math.PI / 180)) * Math.cos(pitch * Math.PI / 180) - 0.8) / 0.12));  // side only: in ¾ the slanted slice crossed the teeth and confused
+    if (cutaway() || k <= 0.02 || !shownPose) return;
+    const pts = tongueSlice().tp.map((q) => toScreen(q, w, h));
+    const [x0, y0] = toScreen([0, 0], w, h), [x1, y1] = toScreen([0, 1], w, h), lw = Math.max(2.5, 0.08 * Math.hypot(x1 - x0, y1 - y0));
+    ax.beginPath(); pts.forEach(([x, y], i) => (i ? ax.lineTo(x, y) : ax.moveTo(x, y))); ax.closePath();
+    ax.lineJoin = "round"; ax.globalAlpha = k;
+    ax.fillStyle = "rgba(200,40,55,0.30)"; ax.fill();
+    ax.strokeStyle = "rgba(255,255,255,0.9)"; ax.lineWidth = 2.2 * lw; ax.stroke();
+    ax.strokeStyle = "#7d0f1d"; ax.lineWidth = lw; ax.stroke();
+    ax.globalAlpha = 1;
   }
   function drawSection(w, h, side) {
     if (!cutaway() || side <= 0.02 || !shownPose) return;
@@ -5652,6 +5671,7 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
   }
   function drawLayer(w, h, now, i) {
     drawSection(w, h, sideness());
+    drawTongueLine(w, h);
     if (i === undefined) drawCloseUp(w, h, sideness());
     drawCue(w, h);
     drawIpa(w, h, i);
@@ -5996,12 +6016,19 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
     await new Promise((r) => setTimeout(r, 250));
     if (anim === a && cur === W) play();
   }
+  // END_HOLD: the last sound's shape stays still after the voice stops (Mike 2026-09-25, tongs vs tongue: "The front
+  // of the tongue curls up different between the words. I don't see that." The tip rises for the z at the end of tongs,
+  // which lasts ~0.1 s, and the tongue went straight back to rest)
+  const END_HOLD = 0.6;
   const PRE = new Set(["f", "v", "th", "dh"]), HOLD = 1.0;  // s: slow glide in (~0.35 s) + still hold (Mike 2026-09-24: 0.4 too fast)
   // Voice rate for each speed button, and how much longer that rate makes a word. Measured 2026-09-24 in Chrome 153
   // with Samantha: below rate 1 Chrome halves the rate it hands to the Mac voice, and a word gets only 1.30× longer
   // at rate 0.5, 1.50× at 0.25, 1.70× at 0.1 (Chrome's slowest). So with the voice on, the sounds move at the voice's
   // pace; the old 2× / 4× mouth ran far behind the voice.
-  const VOICE = { 1: [1, 1], 2: [0.25, 1.5], 4: [0.1, 1.7] };
+  const VOICE = { 1: [1, 1], 2: [0.25, 1.5], 4: [0.1, 1.7], 8: [0.1, 1.7] };
+  // so at ¼× and ⅛× Auto skips the computer's voice (Mike 2026-09-25: "tongs can go by way too fast. I need to be
+  // able to play it slower"; tongs is not one of Bella's words, and Samantha made ¼× only 1.7× longer)
+  const devSlowOk = () => speed < 4;
   // Speakers play sound late (AirPods Pro: 0.168 s; Bluetooth is the big one). Web Audio reports that delay; the
   // context only runs around a played word, and keeps reporting the last delay while asleep.
   let ac = null, lat = 0;
@@ -6028,7 +6055,7 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
   // eSpeak phoneme input: [[...]], ' and , = stress, | keeps two sounds apart (t|S is t + sh, not ch), space = new word
   const espeakCode = (phs) => "[[" + phs.map((q, i) => (i ? (q.wi !== phs[i - 1].wi ? " " : "|") : "") +
     (q.stress === 1 ? "'" : q.stress === 2 ? "," : "") + (q.ph === "er" && q.stress === 0 ? "3" : ESPK[q.ph])).join("") + "]]";
-  const RATE = { 1: [175, 1], 2: [88, 1], 4: [88, 2] };  // eSpeak words per minute + extra slow-down (its slowest is 80)
+  const RATE = { 1: [175, 1], 2: [88, 1], 4: [88, 2], 8: [88, 4] };  // eSpeak words per minute + extra slow-down (its slowest is 80)
   function stretch(x, k, sr) {  // k times longer at the same pitch (overlap-add with waveform matching, WSOLA)
     const N = Math.round(0.03 * sr), H = N >> 1, tol = Math.round(0.008 * sr), n = Math.ceil(x.length * k);
     if (x.length < 2 * N) return x;
@@ -6161,7 +6188,7 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
     const v = vsel.value, dev = "speechSynthesis" in window && !deviceFailed;
     if (v === "off") return "off";
     if ((v === "bella" || v === "auto") && !bellaGone && AC) return "bella";
-    if (dev && (v === "device" || (v === "auto" && samantha()))) return "device";
+    if (dev && (v === "device" || (v === "auto" && samantha() && devSlowOk()))) return "device";
     return window.EspeakNG ? "builtin" : dev ? "device" : "off";
   }
   const vname = (t) => { $("vname").textContent = t; };
@@ -6181,7 +6208,7 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
     // a word that starts with a teeth/lip contact (fan, very, think, this): the mouth takes that shape and holds it
     // before the voice starts, so the contact is easy to see (Mike 2026-09-24); the silent hold keeps the full slowness
     const pre = PRE.has(W.phs[0].ph) ? HOLD * speed / st : 0;
-    const pl = M.plan(W.phs, st, 60, pre), vt = pl.t1 + pre * st;  // vt: voice start, s of clip time
+    const pl = M.plan(W.phs, st, 60, pre, null, END_HOLD), vt = pl.t1 + pre * st;  // vt: voice start, s of clip time
     anim = { pl, t0: performance.now() + 150, side: sd };
     vname("");
     if (voice) {
@@ -6210,14 +6237,14 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
   function playBuiltin(W, sd, bella) {  // a voice made inside the page: Bella's recordings, or eSpeak NG
     const st = speed, pre = PRE.has(W.phs[0].ph) ? HOLD : 0, phs = W.phs;
     // the mouth waits at rest for a moment while the voice is made and the sound output wakes up
-    const a = anim = { pl: M.plan(phs, st, 60, pre), t0: performance.now(), cap: 0, side: sd };
+    const a = anim = { pl: M.plan(phs, st, 60, pre, null, END_HOLD), t0: performance.now(), cap: 0, side: sd };
     let name = "Voice: built-in" + (deviceFailed && vsel.value !== "builtin" ? " (this computer's voice did not play)" : "");
     vname(bella ? "" : name);
     wakeAudio();
     // Bella first; a word Bella doesn't have: Auto on a Mac -> Samantha, otherwise the built-in voice
     const made = !bella ? builtinClip(phs, speed) : bellaClip(W, speed).catch(() => null).then((clip) => {
       if (clip) { name = "Voice: Bella"; return clip; }
-      if (vsel.value === "auto" && samantha() && !deviceFailed) return "device";
+      if (vsel.value === "auto" && samantha() && !deviceFailed && devSlowOk()) return "device";
       name = "Voice: built-in (" + (bellaGone ? "the voice_bella_ccode folder is missing" : "Bella doesn't have this word") + ")";
       return builtinClip(phs, speed);
     });
@@ -6226,7 +6253,7 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
       if (clip === "device") { cancelAnimationFrame(a.raf); anim = null; playDevice(W, sd, true); return; }
       vname(name);
       // the voice's own sound times (voice time / st = word time), so the mouth follows this voice exactly
-      a.pl = M.plan(phs, st, 60, pre, clip.segs.map(([s0, s1, q]) => [s0 / st, s1 / st, q]));
+      a.pl = M.plan(phs, st, 60, pre, clip.segs.map(([s0, s1, q]) => [s0 / st, s1 / st, q]), END_HOLD);
       const vt = a.pl.t1 + pre * st, now = performance.now(), L = readLat();  // the voice starts at clip time vt
       a.t0 = now + Math.max(0, 0.05 + L - vt) * 1000;
       if (ac) {
@@ -6249,8 +6276,9 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
     const a = anim, t = clipT(a), fi = Math.min(a.pl.frames.length - 1, Math.floor(t * a.pl.fps));
     if (a.side === undefined) setPose(a.pl.frames[fi]); else sides[a.side].q = a.pl.frames[fi];
     if (!a.hold) {
-      const wt = (t - a.pl.t1) / a.pl.st;
-      mark(a.pl.segs.findIndex(([s, e]) => s <= wt && wt <= e), a.side);
+      const wt = (t - a.pl.t1) / a.pl.st, last = a.pl.segs[a.pl.segs.length - 1][1];
+      const k = a.pl.segs.findIndex(([s, e]) => s <= wt && wt <= e);
+      mark(k < 0 && wt > last && t < a.pl.t1 + (last + 0.06) * a.pl.st + a.pl.post ? a.pl.segs.length - 1 : k, a.side);  // the end hold keeps the last sound lit
     }
     draw(a.side);
     if (fi < a.pl.frames.length - 1) a.raf = requestAnimationFrame(tick);
@@ -6300,9 +6328,9 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
     if (!compare) { setPose(M.REST); mark(-1); }  // each picture starts from rest (compare: the difference is held)
     const pose = (side, q, i) => { if (compare) { sides[side].q = q; sides[side].held = true; } else { airStill = true; setPose(q); } mark(i, compare ? side : undefined); };
     if (o.t != null && cur) {
-      const pl = M.plan(cur.phs, +(o.speed || speed), 60, PRE.has(cur.phs[0].ph) ? HOLD : 0), fi = Math.min(pl.frames.length - 1, Math.round(+o.t * pl.fps));
-      const wt = (+o.t - pl.t1) / pl.st;
-      pose(0, pl.frames[fi], pl.segs.findIndex(([a, b]) => a <= wt && wt <= b));
+      const pl = M.plan(cur.phs, +(o.speed || speed), 60, PRE.has(cur.phs[0].ph) ? HOLD : 0, null, END_HOLD), fi = Math.min(pl.frames.length - 1, Math.round(+o.t * pl.fps));
+      const wt = (+o.t - pl.t1) / pl.st, last = pl.segs[pl.segs.length - 1][1], k = pl.segs.findIndex(([a, b]) => a <= wt && wt <= b);
+      pose(0, pl.frames[fi], k < 0 && wt > last && +o.t < pl.t1 + (last + 0.06) * pl.st + pl.post ? pl.segs.length - 1 : k);
     }
     if (o.hold != null && cur) pose(0, heldFrame(cur.phs[+o.hold]), +o.hold);
     if (o.hold2 != null && cur2) pose(1, heldFrame(cur2.phs[+o.hold2]), +o.hold2);
