@@ -6109,13 +6109,13 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
     for (let i = segs.length - 1; i > 0; i--) if (segs[i][1] - segs[i][0] < 0.03) { segs[i][0] = segs[i][1] - 0.03; segs[i - 1][1] = segs[i][0]; }
     return { pcm, sr, segs, exact: T.length === phs.length && j === real.length };
   }
-  // Bella (Mike 2026-09-25: "Female bella works best."): a natural voice, made ahead of time for the 20,000 most common
-  // words (Kokoro af_bella, Apache-2.0; _scripts/2026-09-25_make_bella_words_ccode.mjs + 2026-09-25_pack_bella_ccode.py).
-  // The words sit in the voice_bella_ccode/ folder next to the page, 256 small script files (a script loads from a USB
+  // Bella (Mike 2026-09-25: "Female bella works best."): a natural voice, made ahead of time for all 49,240 listed
+  // words (first 20,000 on the Mac, the rest on a RunPod CPU pod 2026-09-25; Kokoro af_bella, Apache-2.0; _scripts/2026-09-25_make_bella_words_ccode.mjs + 2026-09-25_pack_bella_ccode.py).
+  // The words sit in the voice_bella_ccode/ folder next to the page, 512 small script files (a script loads from a USB
   // stick too, where a page may not fetch files). Each word keeps its sound times, so the mouth follows the voice.
   // ½× and ¼× (Mike 2026-09-25, "switch"): Bella said the word slowly herself, inside "Listen. (word).", and the word
   // was cut out (files bella_s_NNN_ccode.js); ¼× stretches that ×2. A word without a slow recording: the normal one, stretched.
-  const BELLA_DIR = "voice_bella_ccode/", BELLA_N = 256, bchunks = new Map(), bwords = new Map();
+  const BELLA_DIR = "voice_bella_ccode/", BELLA_N = 512, bchunks = new Map(), bwords = new Map();
   let bellaGone = false;  // the folder is missing (the page was copied without it): use the other voices
   window.BELLA = (i, words, set = "") => { const c = bchunks.get(set + i); if (c) c.words = words; };
   const bhash = (w) => { let h = 0; for (const ch of w) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return h % BELLA_N; };
