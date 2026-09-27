@@ -37,9 +37,17 @@ select{font:inherit;font-size:16px;border:1px solid var(--line);border-radius:8p
 .cmp input[type=text]{max-width:340px;padding:7px 12px}
 .res .slot{display:flex;flex-wrap:wrap;align-items:center;gap:10px;flex-basis:100%}
 .res .lr{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;min-width:48px}
+.sset{margin-top:10px;border:1px solid var(--line);border-radius:12px;padding:8px 12px}
+.sset .srow{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:3px 0}
+.sset .lr{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;min-width:96px}
+.one{border:1px solid var(--line);background:#fff;border-radius:8px;padding:2px 8px;font-size:15px;color:var(--muted)}
+.one b{font-size:20px;color:var(--ink);font-weight:600}
+.one.on{background:#fde8ea;border-color:var(--red)}.one.on b{color:var(--red)}
+.how{margin:6px 0 2px;min-height:1.45em}
+.how .seg{font-size:15px;margin-left:6px}
 </style></head><body><main>
 <h1>How to Say Any English Word</h1>
-<p class="sub">Type a word or a short phrase, press <b>Play</b>. Click one sound to see the mouth hold it and hear it, or press <b>Sound by sound</b>. Drag the model, or use the <b>Turn</b> and <b>Tilt</b> sliders, to turn it. To see two words side by side, type the second word in <b>Compare with</b>.</p>
+<p class="sub">Type a word or a short phrase, press <b>Play</b>. Click one sound to see the mouth hold it and hear it, or press <b>Sound by sound</b>. Drag the model, or use the <b>Turn</b> and <b>Tilt</b> sliders, to turn it. To see two words side by side, type the second word in <b>Compare with</b>. To learn one sound, click it under <b>Single sounds</b>, below the model.</p>
 <div class="row"><input type="text" id="q" autocomplete="off" spellcheck="false" placeholder="Type any word or phrase">
 <button class="big" id="play" disabled>▶ Play</button>
 <button class="seg" id="sbs" disabled title="The mouth holds each sound while the voice says it alone, then the whole word plays">Sound by sound</button></div>
@@ -59,6 +67,7 @@ select{font:inherit;font-size:16px;border:1px solid var(--line);border-radius:8p
 <div class="row turn"><label>Turn <input type="range" id="turn" min="-180" max="180" step="1" value="-90"></label>
 <label>Tilt <input type="range" id="tilt" min="-60" max="70" step="1" value="0"></label>
 <label>Zoom <input type="range" id="zoom" min="0" max="100" step="1" value="60"></label></div>
+<div class="sset" id="sset"><div class="srow"><b>Single sounds</b></div></div>
 <div class="try">Try: <button data-try="think">think</button><button data-try="this">this</button><button data-try="ship">ship</button><button data-try="measure">measure</button><button data-try="church">church</button><button data-try="red">red</button><button data-try="yellow">yellow</button><button data-try="world">world</button><button data-try="thought">thought</button><button data-try="rural">rural</button><button data-try="sixth">sixth</button><button data-try="pronunciation">pronunciation</button><button data-try="ice cream">ice cream</button><button data-try="good morning">good morning</button></div>
 <div class="try">Compare: <button data-pair="tongs|tongue">tongs – tongue</button><button data-pair="ship|sheep">ship – sheep</button><button data-pair="think|sink">think – sink</button><button data-pair="light|right">light – right</button><button data-pair="cat|cut">cat – cut</button><button data-pair="pull|pool">pull – pool</button></div>
 <footer><span id="count"></span> words from the CMU Pronouncing Dictionary (American English). Other words and numbers: the sounds are guessed from the spelling by eSpeak NG (free software, GPL-3.0), so check them. Red bold = the stressed vowel.
@@ -5846,7 +5855,7 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
   let epgT = 0;
   const rrect = (x, y, w, h, r) => { ax.beginPath(); if (ax.roundRect) ax.roundRect(x, y, w, h, r); else ax.rect(x, y, w, h); };
   function drawIpa(w, h, i) {
-    const W = i === 1 ? cur2 : cur, side = i || 0, k = marked[side];
+    const side = i || 0, W = side === 1 ? cur2 : solo || cur, k = solo && !side ? 0 : marked[side];
     if (!W || !W.phs.length) return;
     const ph = k >= 0 && k < W.phs.length ? W.phs[k].ph : null;
     // the grid eases to the new sound in about 0.1 s (screenshots: at once)
@@ -5907,6 +5916,7 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
   const V = { AA: "ɑ", AE: "æ", AO: "ɔ", AW: "aʊ", AY: "aɪ", EH: "ɛ", ER: "ɚ", EY: "eɪ", IH: "ɪ", IY: "i", OW: "oʊ", OY: "ɔɪ", UH: "ʊ", UW: "u" };
   const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   let cur = null, cur2 = null, compare = false, anim = null, speed = 2, sel = -1;  // ½× by default (Mike 2026-09-24)
+  let solo = null;  // the sound held from the Single sounds panel (the left or only mouth), else null
   // compare view: each half's pose (q), whether it holds a sound (held: its air shows), and its drawing snapshot
   const sides = [{ q: null, held: false, snap: null }, { q: null, held: false, snap: null }];
   // Any text: each word from the dictionary, else eSpeak NG guesses its sounds from the spelling (numbers too).
@@ -6001,11 +6011,12 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
     [cur, cur2].forEach((W, s) => { sides[s].q = startFrame(W); sides[s].held = true; mark(0, s); });
     draw();
   }
-  function holdSound(i, side = 0) {  // spring into one sound (with its neighbours' context) and stay there
-    stop(); sel = i;
-    const W = side === 1 ? cur2 : cur, sd = compare ? side : undefined;
+  function holdSound(i, side = 0, pick = null) {  // spring into one sound (with its neighbours' context) and stay there
+    stop(); sel = i;                            // pick: a single sound from the Single sounds panel, not the typed word
+    const W = pick || (side === 1 ? cur2 : cur), sd = compare ? side : undefined;
     if (!W) return;
-    mark(i, sd);
+    solo = pick;
+    mark(pick ? -1 : i, sd);
     const one = [W.phs[i]];
     const pl = M.plan(one, 1);
     const k = Math.min(pl.frames.length - 1, Math.round((pl.t1 + (pl.segs[0][0] + pl.segs[0][1]) / 2) * pl.fps));
@@ -6309,7 +6320,7 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
     }, () => { if (anim === a) { a.cap = null; a.t0 = performance.now(); vname("Voice: none (the built-in voice did not load)"); } });
     tick();
   }
-  function stop() { airStill = false; if (anim) [anim.timer, anim.fb, anim.speak].forEach(clearTimeout); if (ac) ac.suspend();
+  function stop() { airStill = false; solo = null; $("sset").querySelectorAll(".on").forEach((b) => b.classList.remove("on")); if (anim) [anim.timer, anim.fb, anim.speak].forEach(clearTimeout); if (ac) ac.suspend();
     if (anim && anim.src) try { anim.src.stop(); } catch (e) { /* already stopped */ }
     if ("speechSynthesis" in window) speechSynthesis.cancel(); if (anim && anim.raf) cancelAnimationFrame(anim.raf); anim = null; }
   function tick() {
@@ -6345,6 +6356,65 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
   // Face menu: See-through (the icSpeech look), Solid, Hidden (teeth, gums and tongue only: the LinguaView look)
   $("face").onchange = () => { const v = $("face").value; faceOff = v === "none"; seeThrough = v !== "solid"; if (!seeThrough && cutaway()) look = "3d"; paintFace(); draw(); };
   document.querySelectorAll("[data-try]").forEach((b) => (b.onclick = () => { $("q").value = b.dataset.try; showWord(b.dataset.try); play(); }));
+  // Single sounds (Mike 2026-09-26: "a way to play individual sounds, vowel or consonant, and show how to make those
+  // sounds with the 3d model"): a button per sound; the mouth springs into it and Bella says it alone (holdSound), and
+  // the line below says how to make it. [sound, example word, how]; each word has the sound in the CMU dictionary.
+  const VOICE_ON = " Voice on: the throat buzzes (touch your throat and feel it).", VOICE_OFF = " No voice: only air.";
+  const SOUNDS = [
+    ["i", "see", "Lips spread in a small smile. Tongue high and forward, mouth almost closed. A long sound."],
+    ["ih", "sit", "Like /i/ but relaxed: the tongue a little lower, the mouth a little more open. A short sound."],
+    ["ei", "day", "Two shapes in one: start with the tongue forward in the middle, then glide up toward /ɪ/."],
+    ["eh", "bed", "Mouth half open, lips relaxed. Tongue forward, in the middle."],
+    ["ae", "cat", "Jaw down, mouth wide open. Tongue low and forward, lips pulled a little to the sides."],
+    ["uh", "cup", "Mouth half open, everything relaxed. Tongue in the middle, tip resting behind the lower front teeth. A short sound."],
+    ["schwa", "about", "The weakest vowel (the first sound of about): jaw a little open, lips and tongue relaxed. Very short, never stressed."],
+    ["aa", "hot", "Jaw down, mouth wide open. Tongue low and pulled back. Lips not round."],
+    ["aw", "law", "Jaw open, lips a little round. Tongue low and back. (Many Americans say /ɑ/ here.)"],
+    ["ou", "go", "Two shapes in one: start with round lips and the tongue back, then close the lips more toward /ʊ/."],
+    ["uu", "book", "Lips a little round and loose. Tongue high-ish and back, relaxed. A short sound."],
+    ["u", "food", "Lips small, very round and pushed forward. Tongue high and back. A long sound."],
+    ["er", "bird", "Tongue tip lifted and pulled back, touching nothing. Lips a little round. The whole vowel sounds like r."],
+    ["ai", "my", "Two shapes in one: start with the mouth open and the tongue low, then glide up and forward toward /ɪ/."],
+    ["au", "now", "Two shapes in one: start with the mouth open, then close and round the lips toward /ʊ/."],
+    ["oi", "boy", "Two shapes in one: start with round lips and the tongue back, then glide forward and up toward /ɪ/."],
+    ["p", "pen", "Press the lips together, hold the air behind them, then let it pop out." + VOICE_OFF],
+    ["b", "bed", "The same lips as /p/, with a smaller puff of air." + VOICE_ON],
+    ["t", "top", "Press the tongue tip on the ridge just behind the upper front teeth, hold the air, then let it go." + VOICE_OFF],
+    ["d", "dog", "The same tongue as /t/." + VOICE_ON],
+    ["k", "cat", "Press the back of the tongue on the soft back part of the roof of the mouth, hold the air, then let it go." + VOICE_OFF],
+    ["g", "go", "The same tongue as /k/." + VOICE_ON],
+    ["f", "fish", "Rest the upper front teeth lightly on the lower lip and blow air between them." + VOICE_OFF],
+    ["v", "very", "The same teeth and lip as /f/; the lip buzzes." + VOICE_ON],
+    ["th", "think", "Put the tongue tip just under the edge of the upper front teeth and blow air out over it." + VOICE_OFF],
+    ["dh", "this", "The same tongue as /θ/." + VOICE_ON],
+    ["s", "sun", "Teeth close together. The tongue tip comes close to the ridge behind the upper teeth, without touching, and a thin stream of air hisses through." + VOICE_OFF],
+    ["z", "zoo", "The same mouth as /s/; it buzzes." + VOICE_ON],
+    ["sh", "she", "The tongue a little further back than for /s/, lips round and pushed forward. A wider stream of air." + VOICE_OFF],
+    ["zh", "measure", "The same mouth as /ʃ/." + VOICE_ON],
+    ["h", "hat", "Just breathe out through an open mouth. In a word, the mouth already has the shape of the next vowel." + VOICE_OFF],
+    ["ch", "chair", "Start like /t/ with the tongue a little further back and the lips round, then open into /ʃ/." + VOICE_OFF],
+    ["jh", "jam", "The same mouth as /tʃ/." + VOICE_ON],
+    ["m", "man", "Lips closed; the air goes out through the nose." + VOICE_ON],
+    ["n", "no", "Tongue tip on the ridge, as for /t/; the air goes out through the nose." + VOICE_ON],
+    ["ng", "sing", "The back of the tongue on the roof of the mouth, as for /k/; the air goes out through the nose. English words never start with it." + VOICE_ON],
+    ["l", "leg", "Tongue tip on the ridge behind the upper teeth; the air flows out around the sides of the tongue." + VOICE_ON],
+    ["r", "red", "Lift the tongue tip and pull it back, touching nothing. Lips a little round." + VOICE_ON],
+    ["w", "we", "Lips very round and pushed forward, tongue high and back; then open into the next vowel." + VOICE_ON],
+    ["y", "yes", "Tongue high and forward, as for /i/; then glide into the next vowel." + VOICE_ON],
+  ];
+  const oneRow = (label, list) => '<div class="srow"><span class="lr">' + label + "</span>" + list.map(([ph, w]) =>
+    '<button class="one" data-ph="' + ph + '" title="/' + M.IPA[ph] + "/ as in " + w + '"><b>' + M.IPA[ph] + "</b> " + w + "</button>").join("") + "</div>";
+  $("sset").insertAdjacentHTML("beforeend", oneRow("Vowels", SOUNDS.filter((s) => M.isVowel(s[0]))) +
+    oneRow("Consonants", SOUNDS.filter((s) => !M.isVowel(s[0]))) + '<p class="how" id="how">Click a sound: the mouth makes it and the voice says it.</p>');
+  function oneSound(ph) {
+    const [, w, how] = SOUNDS.find((s) => s[0] === ph);
+    if (compare) { $("q2").value = ""; showWord("", 1); }  // one sound: one mouth, not the compare view's word labels
+    holdSound(0, 0, { w: ph, phs: [{ ph, stress: 1 }] });
+    $("sset").querySelector('[data-ph="' + ph + '"]').classList.add("on");
+    $("how").innerHTML = "<b>/" + M.IPA[ph] + "/</b> as in <b>" + w + "</b>. " + esc(how) + ' <button class="seg">▶ Hear it in “' + w + "”</button>";
+    $("how").querySelector("button").onclick = () => { $("q").value = w; showWord(w); play(); };
+  }
+  $("sset").querySelectorAll(".one").forEach((b) => (b.onclick = () => oneSound(b.dataset.ph)));
   $("count").textContent = DICT.size.toLocaleString();
   window.addEventListener("resize", resize);
   if ("speechSynthesis" in window) speechSynthesis.getVoices();
