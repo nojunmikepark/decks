@@ -6013,7 +6013,7 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
     [cur, cur2].forEach((W, s) => { sides[s].q = startFrame(W); sides[s].held = true; mark(0, s); });
     draw();
   }
-  function holdSound(i, side = 0, pick = null) {  // spring into one sound (with its neighbours' context) and stay there
+  function holdSound(i, side = 0, pick = null) {  // spring into one sound, hold it while it is said, then close to rest
     stop(); sel = i;                            // pick: a single sound from the Single sounds panel, not the typed word
     const W = pick || (side === 1 ? cur2 : cur), sd = compare ? side : undefined;
     if (!W) return;
@@ -6023,15 +6023,16 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
     const pl = M.plan(one, 1);
     const k = Math.min(pl.frames.length - 1, Math.round((pl.t1 + (pl.segs[0][0] + pl.segs[0][1]) / 2) * pl.fps));
     const t0 = performance.now(), fr = pl.frames.slice(0, k + 1);
-    const a = anim = { pl: { ...pl, frames: fr }, t0, hold: true, side: sd, cap: null, solo: !!pick };
+    const a = anim = { pl: { ...pl, frames: fr }, t0, hold: true, side: sd, cap: null, one: true };
     if (compare) sides[side].held = true;
     // Bella says the sound alone (Mike 2026-09-25: "the sound alone") as the mouth arrives at it; a.until = when done
     const arrive = k / pl.fps;
-    // a sound from the Single sounds panel: once it has been said, the mouth closes back to rest (Mike 2026-09-27:
-    // "the mouth stays open after the sound and it shouldn't. It should open and close."); a sound of the typed word stays held
-    const close = () => { if (!pick || anim !== a) return; a.pl = pl; a.hold = false; a.t0 = performance.now() - arrive * 1000; tick(); };
+    // once the sound has been said, the mouth closes back to rest (Mike 2026-09-27: "the mouth stays open after the
+    // sound and it shouldn't. It should open and close."; then "yes" to the typed word's sounds too); a.until = closed
+    const shut = (pl.frames.length - 1 - k) / pl.fps;
+    const close = () => { if (anim !== a) return; a.pl = pl; a.hold = false; a.t0 = performance.now() - arrive * 1000; tick(); };
     a.until = new Promise((fin) => {
-      const done = () => { close(); fin(); };
+      const done = () => { close(); setTimeout(fin, shut * 1000); };
       if (vsel.value === "off") { setTimeout(done, (arrive + 0.4) * 1000); return; }
       wakeAudio();
       Promise.all([soundClip(W.phs[i].ph, speed > 1), ac ? ac.resume() : null]).then(([c]) => {
@@ -6058,7 +6059,7 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
     }
     return sdec.get(key);
   }
-  // "Sound by sound": the mouth holds each sound in turn while Bella says it alone, then the whole word plays.
+  // "Sound by sound": the mouth makes each sound in turn (open, hold while Bella says it alone, close), then the whole word plays.
   // Anything else the user does (Play, a sound, a new word) stops it.
   async function soundBySound() {
     if (pending()) await pending();
@@ -6334,13 +6335,14 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
     if (!anim) return;
     const a = anim, t = clipT(a), fi = Math.min(a.pl.frames.length - 1, Math.floor(t * a.pl.fps));
     if (a.side === undefined) setPose(a.pl.frames[fi]); else sides[a.side].q = a.pl.frames[fi];
-    if (!a.hold && !a.solo) {
+    if (!a.hold && !a.one) {
       const wt = (t - a.pl.t1) / a.pl.st, last = a.pl.segs[a.pl.segs.length - 1][1];
       const k = a.pl.segs.findIndex(([s, e]) => s <= wt && wt <= e);
       mark(k < 0 && wt > last && t < a.pl.t1 + (last + 0.06) * a.pl.st + a.pl.post ? a.pl.segs.length - 1 : k, a.side);  // the end hold keeps the last sound lit
     }
     draw(a.side);
     if (fi < a.pl.frames.length - 1) a.raf = requestAnimationFrame(tick);
+    else if (a.one) { if (a.side !== undefined) sides[a.side].held = false; }  // one sound, closed: its button stays lit
     else if (!a.hold) {
       mark(-1, a.side); anim = null; if (ac) ac.suspend();
       if (a.side === 0 && compare) setTimeout(() => { if (!anim && compare) play(1); }, 450);  // then the right word
