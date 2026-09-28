@@ -6023,11 +6023,15 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
     const pl = M.plan(one, 1);
     const k = Math.min(pl.frames.length - 1, Math.round((pl.t1 + (pl.segs[0][0] + pl.segs[0][1]) / 2) * pl.fps));
     const t0 = performance.now(), fr = pl.frames.slice(0, k + 1);
-    const a = anim = { pl: { ...pl, frames: fr }, t0, hold: true, side: sd, cap: null };
+    const a = anim = { pl: { ...pl, frames: fr }, t0, hold: true, side: sd, cap: null, solo: !!pick };
     if (compare) sides[side].held = true;
     // Bella says the sound alone (Mike 2026-09-25: "the sound alone") as the mouth arrives at it; a.until = when done
     const arrive = k / pl.fps;
-    a.until = new Promise((done) => {
+    // a sound from the Single sounds panel: once it has been said, the mouth closes back to rest (Mike 2026-09-27:
+    // "the mouth stays open after the sound and it shouldn't. It should open and close."); a sound of the typed word stays held
+    const close = () => { if (!pick || anim !== a) return; a.pl = pl; a.hold = false; a.t0 = performance.now() - arrive * 1000; tick(); };
+    a.until = new Promise((fin) => {
+      const done = () => { close(); fin(); };
       if (vsel.value === "off") { setTimeout(done, (arrive + 0.4) * 1000); return; }
       wakeAudio();
       Promise.all([soundClip(W.phs[i].ph, speed > 1), ac ? ac.resume() : null]).then(([c]) => {
@@ -6330,7 +6334,7 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
     if (!anim) return;
     const a = anim, t = clipT(a), fi = Math.min(a.pl.frames.length - 1, Math.floor(t * a.pl.fps));
     if (a.side === undefined) setPose(a.pl.frames[fi]); else sides[a.side].q = a.pl.frames[fi];
-    if (!a.hold) {
+    if (!a.hold && !a.solo) {
       const wt = (t - a.pl.t1) / a.pl.st, last = a.pl.segs[a.pl.segs.length - 1][1];
       const k = a.pl.segs.findIndex(([s, e]) => s <= wt && wt <= e);
       mark(k < 0 && wt > last && t < a.pl.t1 + (last + 0.06) * a.pl.st + a.pl.post ? a.pl.segs.length - 1 : k, a.side);  // the end hold keeps the last sound lit
