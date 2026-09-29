@@ -4769,10 +4769,22 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
   }
 
   const vowelTarget = (ph, first = true) => ({ ...REST, ...ACTIVE0, ...(ph in GLIDES ? VOWELS[GLIDES[ph][first ? 0 : 1]] : VOWELS[ph]) });
+  // one sound's whole-mouth shape: a consonant keeps the lips and jaw of the vowel after it (at the end: before it);
+  // over = push close/tip/lab/contact past 1 so a spring gets all the way there
+  function soundTarget(segs, i, first = true, over = false) {
+    const ph = segs[i][2];
+    if (isVowel(ph)) return vowelTarget(ph, first);
+    let nxt = -1, prev = -1;
+    segs.forEach((s, j) => { if (isVowel(s[2])) { if (j > i && nxt < 0) nxt = j; if (j < i) prev = j; } });
+    const base = nxt >= 0 ? vowelTarget(segs[nxt][2], true)
+      : prev >= 0 ? vowelTarget(segs[prev][2], false) : { ...REST, ...ACTIVE0, close: 0 };
+    const c = {};
+    for (const [k, v] of Object.entries(CONS[ph])) c[k] = over && v >= 1.0 && k in OVERSHOOT ? OVERSHOOT[k] : v;
+    return { ...base, ...ACTIVE0, ...c };
+  }
 
   function targetEvents(segs, t0, st, post = 0) {
     const ev = [];
-    const vidx = segs.map((s, i) => (isVowel(s[2]) ? i : -1)).filter((i) => i >= 0);
     const TIPK = new Set(["tip", "tipy", "tipz", "contact"]);
     segs.forEach(([a, b, ph], i) => {
       const ta = t0 + (a - LEAD) * st;
@@ -4785,17 +4797,7 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
         KEYS.forEach((k) => ev.push([t0 + (a + 0.45 * (b - a)) * st, k, B[k]]));
         return;
       }
-      let tgt;
-      if (ph in VOWELS) tgt = vowelTarget(ph);
-      else {
-        const nxt = vidx.find((j) => j > i);
-        const prev = vidx.filter((j) => j < i).pop();
-        const base = nxt !== undefined ? vowelTarget(segs[nxt][2], true)
-          : prev !== undefined ? vowelTarget(segs[prev][2], false) : { ...REST, ...ACTIVE0, close: 0 };
-        const c = {};
-        for (const [k, v] of Object.entries(CONS[ph])) c[k] = v >= 1.0 && k in OVERSHOOT ? OVERSHOOT[k] : v;
-        tgt = { ...base, ...ACTIVE0, ...c };
-      }
+      const tgt = soundTarget(segs, i, true, true);
       KEYS.forEach((k) => ev.push([at(k), k, tgt[k]]));
     });
     const end = t0 + (segs[segs.length - 1][1] + 0.06) * st + post;
@@ -4816,14 +4818,14 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
   const TLEAD = 0.03, MAXT = 0.2;  // s of word time: the tongue is in place just before the sound; longest glide
   const ease = (x) => { x = clamp(x); return x * x * x * (10 - 15 * x + 6 * x * x); };
   const tonguePose = (ph, first = true) => (ph in GLIDES || ph in VOWELS ? vowelTarget(ph, first) : { ...REST, ...ACTIVE0, ...CONS[ph] });
-  function track(segs, t1, st, pre, total, keys, uses, post, poseOf = (ph, i, first) => tonguePose(ph, first)) {
+  function track(segs, t1, st, pre, total, keys, uses, post, poseOf = (ph, i, first) => tonguePose(ph, first), stay = TOUCH) {
     const K = [{ hs: -Infinity, he: t1 - 0.08 * st, p: REST }];  // hs..he: the shape is held still (clip time)
     segs.forEach(([a, b, ph], i) => {
       const A = t1 + (a - TLEAD) * st, B = t1 + (b - TLEAD) * st, L = B - A, held = i === 0 && pre > 0;
       if (!uses(ph, i)) { if (held) K[0].he = A + pre * st; return; }  // through a held first sound this part rests
       const k = { hs: held ? A + 0.6 * pre * st : A + 0.15 * L, p: poseOf(ph, i, true), from: held ? A : undefined };
       if (ph in GLIDES) K.push({ ...k, he: A + 0.35 * L }, { hs: A + 0.75 * L, he: B - 0.1 * L, p: poseOf(ph, i, false) });
-      else K.push({ ...k, he: TOUCH.has(ph) ? B : B - 0.25 * L });  // a touch stays on to the end of its sound
+      else K.push({ ...k, he: stay.has(ph) ? B : B - 0.25 * L });  // a touch stays on to the end of its sound
     });
     const end = t1 + (segs[segs.length - 1][1] + 0.06) * st + post;
     K.push({ hs: Math.max(end, Math.min(end + 0.2 * st, total - 0.1)), he: Infinity, p: REST, from: end });
@@ -4861,6 +4863,15 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
     return (t) => { const out = {}; body(t, out); tip(t, out); return out; };
   }
 
+  // Lips and jaw (Mike 2026-09-29: "I'd like the lips to move more deliberately, even mildly exaggerated for students
+  // to see the way the mouth and lips have to move"): on springs they eased from shape to shape and never held one
+  // still. Now, like the tongue, they reach each sound's shape early in the sound, hold it, and glide (smooth start and
+  // stop) to the next. Every sound has a lip shape (a consonant takes its vowel's, see soundTarget); a lip touch
+  // (p b m f v) holds to the end of its sound. The nose (vel) stays on its spring.
+  const LIPK = ["jaw", "rnd", "spread", "hu", "hl", "close", "lab"], LIPHOLD = new Set(["p", "b", "m", "f", "v"]);
+  const lipTrack = (segs, t1, st, pre, total, post) =>
+    track(segs, t1, st, pre, total, LIPK, () => true, post, (ph, i, first) => soundTarget(segs, i, first), LIPHOLD);
+
   // One pass of the word at speed factor st (1 = normal, 2 = half speed...). Returns {fps, frames[], t1, total, segs}.
   // pre (s of word time): the first sound starts `pre` earlier and is held that long before the voice (teaching hold)
   // segsIn: sound times from the voice itself ([start, end, sound] in s of word time), used instead of the fitted lengths
@@ -4889,8 +4900,8 @@ g=J;r(s);var va=e([null,pf,Nd,of,qf,Ld,nf,tg,sg,id,jg,ig,hg,gg,Lb,ag,$f,_f,Yf,Wf
       }
     }
     while (frames.length < nfr) frames.push({ ...x });
-    const tongue = tongueTrack(segs, t1, st, pre, total, phs, post);
-    frames.forEach((f, i) => Object.assign(f, tongue(i / fps)));
+    const tongue = tongueTrack(segs, t1, st, pre, total, phs, post), lips = lipTrack(segs, t1, st, pre, total, post);
+    frames.forEach((f, i) => { lips(i / fps, f); Object.assign(f, tongue(i / fps)); });
     return { fps, frames, t1, total, segs, st, pre, post };
   }
 
@@ -5303,8 +5314,11 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
   const syncFace = () => { $("face").value = faceOff ? "none" : seeThrough ? "see" : "solid"; };
   const cutaway = () => look === "draw", milky = () => look === "3d" && seeThrough;
   // lip moves exaggerated for teaching (Mike 2026-09-24, 'turn this up a lot'): LIPX = rounding, pushing forward,
-  // spreading; LIPO = how far the lips part from each other
-  const LIPX = 4.0, LIPO = 2.5;
+  // spreading; LIPO = how far the lips part from each other; JAWX = how far the jaw opens (2026-09-29, Mike: "mildly
+  // exaggerated for students to see the way the mouth and lips have to move": LIPX 4.0 -> 4.5, JAWX 1.2; LIPO 3.0 pushed the upper gum through the skin under the nose, so it stays 2.5)
+  const LIPX = 4.5, LIPO = 2.5, JAWX = 1.2;
+  // the widest opening (ɑ, 16.5°) is not made wider: at 19.8° pink specks came through the skin beside the nostrils
+  const jawShown = (j) => Math.min(JAWX * j, Math.max(j, 16.5));
   let paintedLab = 0;
   const FLOW = Float32Array.from(FD.lipw, (v) => (v >= 0.5 ? 1 : 0));  // 1 = lower-lip side of the face
   function paintFace(lab = paintedLab, colorsOnly = false) {  // colorsOnly: per-frame lip repaint, no material rebuild
@@ -5387,7 +5401,7 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
   const posed = new WeakMap();
   function setPose(q) {
     let p = posed.get(q);
-    if (!p) { p = { ...M.POSE0, ...q, lipx: LIPX, lipo: LIPO, labBack: 0.35, labZ: 0.12 }; posed.set(q, p); }  // f/v: the front-teeth edge presses ~1 mm into the top of the lower lip
+    if (!p) { p = { ...M.POSE0, ...q, jaw: jawShown(q.jaw ?? M.POSE0.jaw), lipx: LIPX, lipo: LIPO, labBack: 0.35, labZ: 0.12 }; posed.set(q, p); }  // f/v: the front-teeth edge presses ~1 mm into the top of the lower lip
     setTongue(p);
     OPEN.value = sm(3, 10, p.jaw);  // 2026-09-26 (4, 12) -> (3, 10) + the dark starts deeper when open: the ʌ tongue right behind the lower teeth was black (Mike: tongue vs tongs)
     setJaw(lowerTeeth, lowerRest.teeth, p.jaw);
