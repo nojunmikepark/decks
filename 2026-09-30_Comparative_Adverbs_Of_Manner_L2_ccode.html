@@ -1,0 +1,692 @@
+<!-- generator: _lib/school_deck_scaffold.py -->
+<!DOCTYPE html>
+<!--
+  ESL reveal.js DECK TEMPLATE — copy this file, rename to
+  YYYY-MM-DD_Title_Case_Topic_L<level>_ccode.html in the School Stuff root,
+  and fill the Edit.
+
+  LEVEL SWAP: this template ships L2 colors (green). For L4, change the
+  three lines in :root marked  /* L4: ... */  and swap theme to white
+  (already white). L2 accent 2E6B3A / light D9E9D3.  L4 accent 1F4E79 /
+  light D6E4F2.
+
+  All canonical contracts (invisible scrollbar, 80vh bottom spacer per
+  section, no font-size on .reveal, table.compare last-child border,
+  reveal init config) are baked in. Run the linter after editing:
+      node _lib/verify_html_deck.mjs <deck.html>            # rendered check
+      python3 _lib/verify_html_deck_static.py <deck.html>   # fast source lint
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Comparative Adverbs of Manner — Level 2</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/theme/white.css">
+<style>
+  :root { --accent: #2E6B3A; --accent-light: #D9E9D3; --gray: #555555;
+          /* L4: --accent: #1F4E79; --accent-light: #D6E4F2; */
+          --good: #15803D; --bad: #B91C1C; --muted: #777; }
+
+  /* TYPOGRAPHY CANON — never put font-size on .reveal itself */
+  .reveal { font-family: Arial, sans-serif; }
+  .reveal h1, .reveal h2, .reveal h3 { color: var(--accent); font-family: Arial, sans-serif; text-transform: none; letter-spacing: 0; }
+  .reveal h1 { font-size: 2.2em; }
+  .reveal h2 { font-size: 1.6em; }
+  .reveal h3 { font-size: 1.15em; }
+  .reveal h4 { font-size: 1.05em; }
+  .reveal p, .reveal li { font-size: 0.85em; line-height: 1.5; }
+
+  /* SCROLLABLE SLIDES WITH INVISIBLE SCROLLBAR */
+  .reveal .slides section {
+    overflow-y: auto !important;
+    max-height: 92vh !important;
+    text-align: left;
+    padding: 20px 40px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .reveal .slides section::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* Title slide */
+  .title-slide { text-align: center !important; }
+  .title-slide h1 { font-size: 2.6em; margin-bottom: 0.3em; }
+  .title-slide .subtitle { font-size: 1.2em; color: var(--gray); }
+
+  /* Pattern / example / note / tip */
+  .pattern-box {
+    background: var(--accent-light);
+    border-left: 6px solid var(--accent);
+    padding: 14px 20px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+  .pattern-box code {
+    background: white; padding: 2px 8px; border-radius: 3px;
+    color: var(--accent); font-weight: bold;
+  }
+  .example {
+    background: #FAFAFA; border: 1px solid #DDD;
+    padding: 10px 16px; margin: 8px 0; border-radius: 3px; font-size: 0.9em;
+  }
+  .example .key { color: var(--accent); font-weight: bold; }
+  .note { font-style: italic; color: var(--gray); font-size: 0.85em; margin-top: 10px; }
+  .check-tip {
+    background: #FFF8E1; border-left: 6px solid #F5A623;
+    padding: 12px 18px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+
+  /* Comparison tables — borders need !important (reveal theme strips them) */
+  table.compare {
+    border-collapse: collapse !important; margin: 14px 0;
+    font-size: 0.82em; width: 100%; border: 1px solid var(--accent) !important;
+  }
+  table.compare th, table.compare td {
+    border: 1px solid var(--accent) !important; padding: 8px 12px; text-align: left;
+  }
+  table.compare tr:last-child td { border-bottom: 1px solid var(--accent) !important; }
+  table.compare th { background: var(--accent); color: white; }
+  table.compare td:first-child { font-weight: bold; color: var(--accent); }
+
+  /* Click-to-reveal exercise (single-answer reveal) */
+  .exercise {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .exercise .question { font-size: 0.9em; margin: 0 0 10px 0; }
+  .exercise .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .exercise button.reveal-btn {
+    background: var(--accent); color: white; border: none; padding: 6px 14px;
+    border-radius: 4px; font-family: Arial; font-size: 0.8em; cursor: pointer;
+  }
+  .exercise button.reveal-btn:hover { filter: brightness(0.85); }
+  .exercise .answer {
+    display: none; margin-top: 10px; padding: 10px 14px;
+    background: var(--accent-light); border-left: 4px solid var(--accent); font-size: 0.9em;
+  }
+  .exercise .answer .key { color: var(--accent); font-weight: bold; }
+  .exercise .answer.shown { display: block; }
+
+  /* Clickable multiple choice */
+  .mc-q {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .mc-q .stem { font-size: 0.9em; margin: 0 0 10px 0; }
+  .mc-q .stem .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .mc { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .mc button.opt {
+    font-family: inherit; font-size: 0.8em; padding: 10px 12px;
+    border: 2px solid #d0d8e4; background: white; border-radius: 8px;
+    cursor: pointer; transition: all .15s; font-weight: 600;
+  }
+  .mc button.opt:hover { border-color: var(--accent); background: var(--accent-light); }
+  .mc button.opt.correct { background: #DCFCE7; border-color: var(--good); color: var(--good); }
+  .mc button.opt.wrong   { background: #FEE2E2; border-color: var(--bad);  color: var(--bad); }
+  .explain { margin-top: 10px; font-size: 0.78em; color: var(--muted); font-style: italic; min-height: 1.2em; }
+  .explain.good { color: var(--good); font-style: normal; }
+  .explain.bad  { color: var(--bad); }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1: TITLE -->
+<section class="title-slide">
+  <h1>Comparative Adverbs of Manner</h1>
+  <p class="subtitle">Compare HOW two people or things do something.</p>
+  <p class="subtitle" style="margin-top: 1.5em;">Level 2 — Grammar Review</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 2: CONCEPT -->
+<section>
+  <h2>Core Idea</h2>
+  <p>An <strong>adverb of manner</strong> tells <strong>HOW</strong> someone does something. It comes after an action verb.</p>
+  <div class="example">Kate is a <span class="key">clear</span> speaker. <em>(adjective — describes a person or thing)</em></div>
+  <div class="example">Kate speaks <span class="key">clearly</span>. <em>(adverb — tells HOW she speaks)</em></div>
+  <div class="pattern-box">
+    <strong>Compare two people:</strong> action verb + <code>comparative adverb</code> + <code>than</code><br>
+    <em>Kate speaks more clearly than Paul.</em>
+  </div>
+  <p class="note">Look for <strong>than</strong>. It tells you: compare two people or two things.</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 3: REFERENCE TABLE -->
+<section>
+  <h2>How to Make the Comparative</h2>
+  <table class="compare">
+    <tr><th>Adverb</th><th>Comparative</th><th>Example</th></tr>
+    <tr><td>most -ly adverbs</td><td>more + adverb + than</td><td>slowly → more slowly than</td></tr>
+    <tr><td>fast, hard</td><td>adverb + -er + than</td><td>fast → faster than<br>hard → harder than</td></tr>
+    <tr><td>irregular</td><td>a new word + than</td><td>well → better than<br>badly → worse than</td></tr>
+  </table>
+  <div class="check-tip"><strong>Watch out:</strong> Use only one form: NOT <em>more faster</em>. Do not add -er to a -ly adverb: NOT <em>slowlier</em>.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 4: EXERCISE 1 — more + -ly -->
+<section>
+  <h2>Exercise 1 — more + -ly adverb</h2>
+  <p>Use the word in ( ). Say the comparative form. Then click to check.</p>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> Last night it rained ____ than the night before. Water came into our basement. (heavily)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">more heavily</span> — -ly adverb → more + adverb.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> The twins played ____ at the beach than at home. They laughed all afternoon. (happily)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">more happily</span> — -ly adverb → more + adverb. NOT <em>happilier</em>.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> Ahmed greeted the guests ____ than his brother. He hugged everyone and smiled. (warmly)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">more warmly</span> — -ly adverb → more + adverb.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> Please close the door ____ next time. Grandpa is taking a nap. (gently)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">more gently</span> — -ly adverb → more + adverb.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> Victor spoke ____ than his coworker during the fire drill. He helped everyone walk outside. (calmly)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">more calmly</span> — -ly adverb → more + adverb.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> The young firefighter acted ____ than the older ones. He ran back into the burning house. (bravely)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">more bravely</span> — -ly adverb → more + adverb.</p>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 5: RULE — fast, hard, well, badly -->
+<section>
+  <h2>Special Adverbs: fast, hard, well, badly</h2>
+  <p>These four adverbs do NOT use <em>more</em>.</p>
+  <div class="example">fast → <span class="key">faster</span>: A plane flies faster than a bird.</div>
+  <div class="example">hard → <span class="key">harder</span>: Tomas kicks the ball harder than his friend.</div>
+  <div class="example">well → <span class="key">better</span>: A cat sees better at night than a person.</div>
+  <div class="example">badly → <span class="key">worse</span>: I slept worse on the plane than in my bed.</div>
+  <div class="check-tip"><strong>Careful:</strong> <em>hardly</em> means "almost not." It is NOT the comparative of <em>hard</em>.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 6: EXERCISE 2 — MC fast/hard/well/badly -->
+<section>
+  <h2>Exercise 2 — Choose the Correct Answer</h2>
+  <p>Click a, b, c, or d. The correct button turns green; a wrong button turns red and the correct one is highlighted.</p>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> It is raining ____ now than this morning. Take an umbrella.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. more hard</button>
+      <button class="opt">b. hardly</button>
+      <button class="opt">c. harder</button>
+      <button class="opt">d. hardest</button>
+    </div>
+    <div class="explain" data-explain="hard → harder. No more."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> Your English is great! You speak ____ now than last year.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. better</button>
+      <button class="opt">b. more well</button>
+      <button class="opt">c. best</button>
+      <button class="opt">d. more better</button>
+    </div>
+    <div class="explain" data-explain="well → better (a new word)."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> I had a sore foot, so I played tennis ____ than usual.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. more bad</button>
+      <button class="opt">b. badlier</button>
+      <button class="opt">c. worst</button>
+      <button class="opt">d. worse</button>
+    </div>
+    <div class="explain" data-explain="badly → worse (a new word)."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> At first, the rabbit ran ____ than the turtle.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. most fast</button>
+      <button class="opt">b. faster</button>
+      <button class="opt">c. fastest</button>
+      <button class="opt">d. more faster</button>
+    </div>
+    <div class="explain" data-explain="fast → faster. Use only one form."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> The printer works ____ than before. Half the pages come out blank.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. worse</button>
+      <button class="opt">b. badder</button>
+      <button class="opt">c. worst</button>
+      <button class="opt">d. more bad</button>
+    </div>
+    <div class="explain" data-explain="badly → worse (a new word)."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> The second video call worked ____ than the first one. Nobody's screen froze.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. more good</button>
+      <button class="opt">b. gooder</button>
+      <button class="opt">c. better</button>
+      <button class="opt">d. well</button>
+    </div>
+    <div class="explain" data-explain="well → better (a new word)."></div>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 7: EXERCISE 3 — Mixed MC -->
+<section>
+  <h2>Exercise 3 — Mixed Practice</h2>
+  <p>Read the whole sentence. Click the correct comparative adverb.</p>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> Zoe waited for the bus ____ than the other people. She read a book and didn't look at her watch.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. more calm</button>
+      <button class="opt">b. calmer</button>
+      <button class="opt">c. calmlier</button>
+      <button class="opt">d. more calmly</button>
+    </div>
+    <div class="explain" data-explain="calmly is a -ly adverb → more calmly."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> Nora trains ____ than the other players. She runs every morning before work.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. more hard</button>
+      <button class="opt">b. harder</button>
+      <button class="opt">c. hardly</button>
+      <button class="opt">d. most hard</button>
+    </div>
+    <div class="explain" data-explain="hard → harder. hardly means &quot;almost not.&quot;"></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> The second test went ____ than the first one. I got a low score again.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. badder</button>
+      <button class="opt">b. worst</button>
+      <button class="opt">c. worse</button>
+      <button class="opt">d. more bad</button>
+    </div>
+    <div class="explain" data-explain="badly → worse (a new word)."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> Jae-min and Pablo both run marathons. Jae-min runs ____ than Pablo. He finishes an hour earlier.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. faster</button>
+      <button class="opt">b. more fastly</button>
+      <button class="opt">c. fastest</button>
+      <button class="opt">d. more fast</button>
+    </div>
+    <div class="explain" data-explain="fast → faster. There is no word fastly."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> Our soccer team played ____ in the second half than in the first half. We scored three goals.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. gooder</button>
+      <button class="opt">b. better</button>
+      <button class="opt">c. more well</button>
+      <button class="opt">d. best</button>
+    </div>
+    <div class="explain" data-explain="well → better (a new word)."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> After the race, Tom smiled ____ than his teammates. He came in first.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. more proud</button>
+      <button class="opt">b. proudlier</button>
+      <button class="opt">c. proudly</button>
+      <button class="opt">d. more proudly</button>
+    </div>
+    <div class="explain" data-explain="proudly is a -ly adverb → more proudly."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">7.</span> Please pack the dishes ____ than last time. Two plates broke.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. more carefully</button>
+      <button class="opt">b. most careful</button>
+      <button class="opt">c. carefullier</button>
+      <button class="opt">d. more careful</button>
+    </div>
+    <div class="explain" data-explain="carefully is a -ly adverb → more carefully."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">8.</span> After a year in Los Angeles, Paolo uses English ____ than before. He doesn't stop to think.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. naturaller</button>
+      <button class="opt">b. more natural</button>
+      <button class="opt">c. more naturally</button>
+      <button class="opt">d. naturally</button>
+    </div>
+    <div class="explain" data-explain="naturally is a -ly adverb → more naturally."></div>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 8: EXERCISE 4 — Fix the mistake -->
+<section>
+  <h2>Exercise 4 — Fix the Mistake</h2>
+  <p>The CAPITALIZED word or words are wrong. Say the correct word or words. Then click to check.</p>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> Anna types MORE FASTLY than her manager.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">faster</span> — fast → faster. There is no word fastly.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> The kids in my class behave WORSER than last year.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">worse</span> — badly → worse. Do not add -er.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> The new dentist cleans teeth MORE GENTLE than the old dentist.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">more gently</span> — cleans is an action verb, so use the adverb.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> My neighbor practices the guitar HARDLY than me.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">harder</span> — hard → harder. hardly means "almost not."</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> Dad drove MORE CALM than Mom in the heavy traffic.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">more calmly</span> — drove is an action verb, so use the adverb.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> I play the drums MORE WELL than my cousin.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">better</span> — well → better (a new word).</p>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 9: EXERCISE 5 — Say it another way -->
+<section>
+  <h2>Exercise 5 — Say It Another Way</h2>
+  <p>Change the sentence. Use the action verb and a comparative adverb. Then click to check.</p>
+  <div class="example">Hugo is a clearer speaker than Max. → Hugo <span class="key">speaks more clearly</span> than Max.</div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> Luis is a better cook than his brother. → Luis ____ than his brother.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Luis <span class="key">cooks better</span> than his brother. — good cook → cooks well → cooks better.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> Emma is a faster reader than me. → Emma ____ than me.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Emma <span class="key">reads faster</span> than me. — fast → faster.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> Jun is a harder worker than his roommate. → Jun ____ than his roommate.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Jun <span class="key">works harder</span> than his roommate. — hard → harder.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> Tara is a more honest player than Sam. → Tara ____ than Sam.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Tara <span class="key">plays more honestly</span> than Sam. — honest → honestly → more honestly.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> My neighbor is a worse singer than his wife. → My neighbor ____ than his wife.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">My neighbor <span class="key">sings worse</span> than his wife. — bad singer → sings badly → sings worse.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> Yasmin is a more confident swimmer than her brother. → Yasmin ____ than her brother.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Yasmin <span class="key">swims more confidently</span> than her brother. — confident → confidently → more confidently.</p>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 10: SUMMARY -->
+<section>
+  <h2>Summary — Main Takeaways</h2>
+  <table class="compare">
+    <tr><th>Adverb</th><th>Comparative</th><th>Remember</th></tr>
+    <tr><td>most -ly adverbs</td><td>more + adverb + than</td><td>NOT slowlier</td></tr>
+    <tr><td>fast, hard</td><td>faster, harder + than</td><td>NOT more faster · hardly = "almost not"</td></tr>
+    <tr><td>well, badly</td><td>better, worse + than</td><td>NOT more well · NOT worser</td></tr>
+  </table>
+  <table class="compare">
+    <tr><th>Adjective (after be)</th><th>Adverb (after an action verb)</th></tr>
+    <tr><td>Kate is a clear speaker.</td><td>Kate speaks clearly.</td></tr>
+    <tr><td>Kate is clearer than Paul.</td><td>Kate speaks more clearly than Paul.</td></tr>
+  </table>
+  <p style="text-align:center; margin-top:30px; font-size:0.95em; color:var(--accent);"><strong>End of Deck — Great work!</strong></p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    controls: true,
+    progress: true,
+    center: false,
+    transition: 'slide',
+    width: 1100,
+    height: 720,
+    margin: 0.04
+  });
+
+  // Clickable multiple-choice wiring (data-correct = 0-indexed button)
+  document.querySelectorAll('.mc').forEach(mc => {
+    const correct = parseInt(mc.dataset.correct, 10);
+    const buttons = mc.querySelectorAll('button.opt');
+    const explain = mc.nextElementSibling && mc.nextElementSibling.classList.contains('explain')
+      ? mc.nextElementSibling : null;
+    const explainText = explain ? explain.dataset.explain || '' : '';
+    buttons.forEach((b, i) => {
+      b.addEventListener('click', () => {
+        // `sel` marks the clicked button so its class always changes on every
+        // click — keeps verify_html_deck.mjs from false-failing when the correct
+        // answer isn't option (a). Do not remove.
+        buttons.forEach(x => x.classList.remove('correct', 'wrong', 'sel'));
+        b.classList.add('sel');
+        if (i === correct) {
+          b.classList.add('correct');
+          if (explain) {
+            explain.textContent = '✓ Correct. ' + explainText;
+            explain.classList.remove('bad'); explain.classList.add('good');
+          }
+        } else {
+          b.classList.add('wrong');
+          buttons[correct].classList.add('correct');
+          if (explain) {
+            const answerText = buttons[correct].textContent;
+            explain.innerHTML = '✗ The answer is <strong>' + answerText + '</strong>. ' + explainText;
+            explain.classList.remove('good'); explain.classList.add('bad');
+          }
+        }
+      });
+    });
+  });
+</script>
+<!-- PENCIL DRAW OVERLAY — iPad annotation layer (additive; safe to delete this whole block) -->
+<style>
+  #drawCanvas {
+    position: fixed; inset: 0; z-index: 50; pointer-events: none; touch-action: none;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  }
+  html.draw-armed, html.draw-armed body, html.draw-armed .reveal {
+    -webkit-user-select: none !important; user-select: none !important;
+    -webkit-touch-callout: none !important;
+  }
+  html.presentation-mode, html.presentation-mode body {
+    width: 100%; height: 100%; overflow: hidden !important; overscroll-behavior: none;
+  }
+  html.presentation-mode body { position: fixed; inset: 0; }
+  html.presentation-mode .reveal { width: 100vw !important; height: 100vh !important; height: 100dvh !important; }
+  html.presentation-mode .reveal .slides section { overscroll-behavior-y: contain; }
+  #drawToggle {
+    position: fixed; top: 10px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 20px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle.armed { opacity: 1; background: #fde9c8; border-color: #e8a013; }
+  #fsToggle {
+    position: fixed; top: 62px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 19px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle, #fsToggle { transition: opacity 0.3s; }
+  html.presentation-mode #drawToggle:not(.armed), html.presentation-mode #fsToggle { opacity: 0.15; }
+  #drawBar {
+    position: fixed; top: 10px; right: 62px; z-index: 60; display: flex; gap: 8px;
+    background: #fff; border: 1px solid #bbb; border-radius: 22px; padding: 6px 10px;
+    align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  #drawBar button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ccc; background: #fff; cursor: pointer; font-size: 15px; padding: 0; }
+  #drawBar .swatch { border-width: 2px; }
+  #drawBar .swatch.on { outline: 3px solid #e8a013; }
+</style>
+<canvas id="drawCanvas"></canvas>
+<div id="drawBar" hidden>
+  <button class="swatch on" data-color="#d33333" style="background:#d33333"></button>
+  <button class="swatch" data-color="#2266cc" style="background:#2266cc"></button>
+  <button class="swatch" data-color="#1a1a1a" style="background:#1a1a1a"></button>
+  <button id="drawUndo" title="Undo">↩</button>
+  <button id="drawClear" title="Clear slide">✕</button>
+</div>
+<button id="drawToggle" title="Pencil mode (pen only; finger locked)" aria-pressed="false">✏️</button>
+<button id="fsToggle" title="Presentation mode" aria-label="Presentation mode" aria-pressed="false">⛶</button>
+<script>
+(() => {
+  const cv = document.getElementById('drawCanvas');
+  const ctx = cv.getContext('2d');
+  const bar = document.getElementById('drawBar');
+  const toggle = document.getElementById('drawToggle');
+  let armed = false, color = '#d33333', cur = null, drawPointerId = null;
+  const strokes = new Map(); // slide "h-v" -> stroke list; ink persists per slide
+  const key = () => { const i = Reveal.getIndices(); return i.h + '-' + (i.v || 0); };
+  const list = () => { const k = key(); if (!strokes.has(k)) strokes.set(k, []); return strokes.get(k); };
+
+  function size() {
+    const d = window.devicePixelRatio || 1;
+    cv.width = innerWidth * d; cv.height = innerHeight * d;
+    cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    render();
+  }
+  function seg(a, b, c, w) {
+    ctx.strokeStyle = c; ctx.lineWidth = Math.max(0.75, w * innerWidth);
+    ctx.beginPath(); ctx.moveTo(a.x * innerWidth, a.y * innerHeight);
+    ctx.lineTo(b.x * innerWidth, b.y * innerHeight); ctx.stroke();
+  }
+  function render() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const s of list())
+      for (let i = 1; i < s.pts.length; i++) seg(s.pts[i - 1], s.pts[i], s.color, s.pts[i].w);
+  }
+  const pt = (e) => ({ x: e.clientX / innerWidth, y: e.clientY / innerHeight,
+    w: (e.pointerType === 'pen' ? 1.5 + 4 * (e.pressure || 0.5) : 3) / innerWidth });
+
+  const cancel = (e) => { if (e.cancelable) e.preventDefault(); };
+  cv.addEventListener('pointerdown', (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerType === 'touch') {
+      cv.setPointerCapture(e.pointerId); // swallow the palm/finger for its full contact
+      return;
+    }
+    if ((e.pointerType !== 'pen' && e.pointerType !== 'mouse') || drawPointerId !== null) return;
+    drawPointerId = e.pointerId;
+    cur = { color, pts: [pt(e)] };
+    list().push(cur);
+    cv.setPointerCapture(e.pointerId);
+  }, { passive: false });
+  cv.addEventListener('pointermove', (e) => {
+    if (!armed) return;
+    if (e.pointerType === 'touch') { cancel(e); return; }
+    if (!cur || e.pointerId !== drawPointerId) return;
+    cancel(e);
+    const coalesced = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+    const events = coalesced && coalesced.length ? coalesced : [e];
+    for (const ev of events) {
+      const p = pt(ev);
+      seg(cur.pts[cur.pts.length - 1], p, cur.color, p.w);
+      cur.pts.push(p);
+    }
+  }, { passive: false });
+  const end = (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerId === drawPointerId) { cur = null; drawPointerId = null; }
+  };
+  cv.addEventListener('pointerup', end, { passive: false });
+  cv.addEventListener('pointercancel', end, { passive: false });
+  for (const eventName of ['touchstart', 'touchmove', 'touchend', 'touchcancel'])
+    cv.addEventListener(eventName, (e) => { if (armed) cancel(e); }, { passive: false });
+  document.addEventListener('selectstart', (e) => { if (armed) cancel(e); });
+
+  toggle.addEventListener('click', () => {
+    armed = !armed;
+    cv.style.pointerEvents = armed ? 'auto' : 'none'; // disarmed = taps/swipes reach the slides
+    bar.hidden = !armed;
+    toggle.classList.toggle('armed', armed);
+    toggle.setAttribute('aria-pressed', String(armed));
+    document.documentElement.classList.toggle('draw-armed', armed);
+    if (!armed) { cur = null; drawPointerId = null; }
+  });
+  bar.querySelectorAll('.swatch').forEach((b) => b.addEventListener('click', () => {
+    color = b.dataset.color;
+    bar.querySelectorAll('.swatch').forEach((x) => x.classList.toggle('on', x === b));
+  }));
+  document.getElementById('drawUndo').addEventListener('click', () => { list().pop(); render(); });
+  document.getElementById('drawClear').addEventListener('click', () => { strokes.set(key(), []); render(); });
+
+  Reveal.on('slidechanged', render);
+  addEventListener('resize', size);
+  size();
+
+  // Fixed presentation mode avoids iPadOS's native-fullscreen pull-down exit gesture.
+  const fsT = document.getElementById('fsToggle');
+  let presenting = false;
+  const toast = (message) => {
+    const t = document.createElement('div');
+    t.textContent = message;
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:10px;font:14px system-ui;z-index:99;max-width:46ch;text-align:center';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  };
+  fsT.addEventListener('click', () => {
+    presenting = !presenting;
+    document.documentElement.classList.toggle('presentation-mode', presenting);
+    fsT.textContent = presenting ? '\u2921' : '\u26f6';
+    fsT.setAttribute('aria-pressed', String(presenting));
+    fsT.title = presenting ? 'Exit presentation mode' : 'Presentation mode';
+    requestAnimationFrame(() => {
+      if (Reveal.layout) Reveal.layout();
+      size();
+    });
+    if (presenting) toast('Presentation mode on. For more space in Safari, tap AA, then Hide Toolbar.');
+  });
+})();
+</script>
+<!-- END PENCIL DRAW OVERLAY -->
+
+</body>
+</html>
