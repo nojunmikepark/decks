@@ -1,0 +1,673 @@
+<!-- generator: _lib/school_deck_scaffold.py -->
+<!DOCTYPE html>
+<!--
+  ESL reveal.js DECK TEMPLATE — copy this file, rename to
+  YYYY-MM-DD_Title_Case_Topic_L<level>_ccode.html in the School Stuff root,
+  and fill the Edit.
+
+  LEVEL SWAP: this template ships L2 colors (green). For L4, change the
+  three lines in :root marked  /* L4: ... */  and swap theme to white
+  (already white). L2 accent 2E6B3A / light D9E9D3.  L4 accent 1F4E79 /
+  light D6E4F2.
+
+  All canonical contracts (invisible scrollbar, 80vh bottom spacer per
+  section, no font-size on .reveal, table.compare last-child border,
+  reveal init config) are baked in. Run the linter after editing:
+      node _lib/verify_html_deck.mjs <deck.html>            # rendered check
+      python3 _lib/verify_html_deck_static.py <deck.html>   # fast source lint
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Adverbs of Manner — Level 2</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/theme/white.css">
+<style>
+  :root { --accent: #2E6B3A; --accent-light: #D9E9D3; --gray: #555555;
+          /* L4: --accent: #1F4E79; --accent-light: #D6E4F2; */
+          --good: #15803D; --bad: #B91C1C; --muted: #777; }
+
+  /* TYPOGRAPHY CANON — never put font-size on .reveal itself */
+  .reveal { font-family: Arial, sans-serif; }
+  .reveal h1, .reveal h2, .reveal h3 { color: var(--accent); font-family: Arial, sans-serif; text-transform: none; letter-spacing: 0; }
+  .reveal h1 { font-size: 2.2em; }
+  .reveal h2 { font-size: 1.6em; }
+  .reveal h3 { font-size: 1.15em; }
+  .reveal h4 { font-size: 1.05em; }
+  .reveal p, .reveal li { font-size: 0.85em; line-height: 1.5; }
+
+  /* SCROLLABLE SLIDES WITH INVISIBLE SCROLLBAR */
+  .reveal .slides section {
+    overflow-y: auto !important;
+    max-height: 92vh !important;
+    text-align: left;
+    padding: 20px 40px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .reveal .slides section::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* Title slide */
+  .title-slide { text-align: center !important; }
+  .title-slide h1 { font-size: 2.6em; margin-bottom: 0.3em; }
+  .title-slide .subtitle { font-size: 1.2em; color: var(--gray); }
+
+  /* Pattern / example / note / tip */
+  .pattern-box {
+    background: var(--accent-light);
+    border-left: 6px solid var(--accent);
+    padding: 14px 20px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+  .pattern-box code {
+    background: white; padding: 2px 8px; border-radius: 3px;
+    color: var(--accent); font-weight: bold;
+  }
+  .example {
+    background: #FAFAFA; border: 1px solid #DDD;
+    padding: 10px 16px; margin: 8px 0; border-radius: 3px; font-size: 0.9em;
+  }
+  .example .key { color: var(--accent); font-weight: bold; }
+  .note { font-style: italic; color: var(--gray); font-size: 0.85em; margin-top: 10px; }
+  .check-tip {
+    background: #FFF8E1; border-left: 6px solid #F5A623;
+    padding: 12px 18px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+
+  /* Comparison tables — borders need !important (reveal theme strips them) */
+  table.compare {
+    border-collapse: collapse !important; margin: 14px 0;
+    font-size: 0.82em; width: 100%; border: 1px solid var(--accent) !important;
+  }
+  table.compare th, table.compare td {
+    border: 1px solid var(--accent) !important; padding: 8px 12px; text-align: left;
+  }
+  table.compare tr:last-child td { border-bottom: 1px solid var(--accent) !important; }
+  table.compare th { background: var(--accent); color: white; }
+  table.compare td:first-child { font-weight: bold; color: var(--accent); }
+
+  /* Click-to-reveal exercise (single-answer reveal) */
+  .exercise {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .exercise .question { font-size: 0.9em; margin: 0 0 10px 0; }
+  .exercise .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .exercise button.reveal-btn {
+    background: var(--accent); color: white; border: none; padding: 6px 14px;
+    border-radius: 4px; font-family: Arial; font-size: 0.8em; cursor: pointer;
+  }
+  .exercise button.reveal-btn:hover { filter: brightness(0.85); }
+  .exercise .answer {
+    display: none; margin-top: 10px; padding: 10px 14px;
+    background: var(--accent-light); border-left: 4px solid var(--accent); font-size: 0.9em;
+  }
+  .exercise .answer .key { color: var(--accent); font-weight: bold; }
+  .exercise .answer.shown { display: block; }
+
+  /* Clickable multiple choice */
+  .mc-q {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .mc-q .stem { font-size: 0.9em; margin: 0 0 10px 0; }
+  .mc-q .stem .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .mc { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .mc button.opt {
+    font-family: inherit; font-size: 0.8em; padding: 10px 12px;
+    border: 2px solid #d0d8e4; background: white; border-radius: 8px;
+    cursor: pointer; transition: all .15s; font-weight: 600;
+  }
+  .mc button.opt:hover { border-color: var(--accent); background: var(--accent-light); }
+  .mc button.opt.correct { background: #DCFCE7; border-color: var(--good); color: var(--good); }
+  .mc button.opt.wrong   { background: #FEE2E2; border-color: var(--bad);  color: var(--bad); }
+  .explain { margin-top: 10px; font-size: 0.78em; color: var(--muted); font-style: italic; min-height: 1.2em; }
+  .explain.good { color: var(--good); font-style: normal; }
+  .explain.bad  { color: var(--bad); }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1: TITLE -->
+<section class="title-slide">
+  <h1>Adverbs of Manner</h1>
+  <p class="subtitle">How do you do it?</p>
+  <p class="subtitle" style="margin-top: 1.5em;">Level 2 — Grammar</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 2: CONCEPT -->
+<section>
+  <h2>What Is an Adverb of Manner?</h2>
+  <p>An <strong>adverb of manner</strong> tells <strong>HOW</strong> someone does something. It describes a <strong>verb</strong> (an action).</p>
+  <div class="pattern-box">
+    <strong>Ask:</strong> <code>How?</code><br>
+    <em>Hana speaks softly.</em> → How does Hana speak? → <strong>softly</strong>
+  </div>
+  <div class="example">The boys laugh <span class="key">loudly</span>. → How do they laugh? → <span class="key">loudly</span></div>
+  <div class="example">Kenji paints <span class="key">slowly</span>. → How does Kenji paint? → <span class="key">slowly</span></div>
+  <div class="example">My aunt dances <span class="key">beautifully</span>. → How does she dance? → <span class="key">beautifully</span></div>
+  <p class="note">Many adverbs of manner end in <strong>-ly</strong>.</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 3: WHERE -->
+<section>
+  <h2>Where Does the Adverb Go?</h2>
+  <div class="pattern-box">
+    <strong>After the verb:</strong> <code>verb + adverb</code><br>
+    <em>Hana speaks <strong>softly</strong>.</em>
+  </div>
+  <div class="pattern-box">
+    <strong>After the object:</strong> <code>verb + object + adverb</code><br>
+    <em>Kenji paints the wall <strong>slowly</strong>.</em>
+  </div>
+  <div class="example">✓ Kenji paints the wall slowly.</div>
+  <div class="example">✗ Kenji paints slowly the wall.</div>
+  <div class="check-tip"><strong>Remember:</strong> Do not put the adverb between the verb and its object.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 4: HOW TO MAKE -->
+<section>
+  <h2>How to Make an Adverb</h2>
+  <table class="compare">
+    <tr><th>Adjective ends in…</th><th>Rule</th><th>Examples</th></tr>
+    <tr><td>most words</td><td>add <strong>-ly</strong></td><td>slow → slowly, kind → kindly, brave → bravely</td></tr>
+    <tr><td>consonant + y</td><td>y → <strong>ily</strong></td><td>noisy → noisily, lazy → lazily</td></tr>
+    <tr><td>consonant + le</td><td>le → <strong>ly</strong></td><td>simple → simply, comfortable → comfortably</td></tr>
+    <tr><td>special words</td><td>different word or no change</td><td>good → <strong>well</strong>, fast → <strong>fast</strong>, hard → <strong>hard</strong></td></tr>
+  </table>
+  <div class="check-tip"><strong>Watch out:</strong> No <em>fastly</em>, no <em>goodly</em>.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 5: EXERCISE 1 -->
+<section>
+  <h2>Exercise 1 — Make the Adverb</h2>
+  <p>Change the word in ( ) to an adverb. Then click to check.</p>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> Farid carried the eggs ______ to the car. (gentle)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Farid carried the eggs <span class="key">gently</span> to the car. — gentle ends in -le → gently.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> Grace waved ______ at her friends from the train window. (happy)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Grace waved <span class="key">happily</span> at her friends from the train window. — happy: y → ily.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> “Good morning! How can I help you?” Olga answered ______. (polite)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Olga answered <span class="key">politely</span>. — Most words: add -ly.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> My grandmother is 90, but she still hears ______. (good)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">She still hears <span class="key">well</span>. — good → well (special word).</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> After the long hike, the boys ate their sandwiches ______. (hungry)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">The boys ate their sandwiches <span class="key">hungrily</span>. — hungry: y → ily.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> The new tour guide spoke ______, so everyone understood her. (clear)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">The new tour guide spoke <span class="key">clearly</span>. — Most words: add -ly.</p>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 6: EXERCISE 2 -->
+<section>
+  <h2>Exercise 2 — Choose the Correct Adverb</h2>
+  <p>Read the first sentence. Then choose the best word. Click a, b, c, or d.</p>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> Mom is on an important phone call. Please play ______.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. quietly</button>
+      <button class="opt">b. loud</button>
+      <button class="opt">c. loudly</button>
+      <button class="opt">d. quiet</button>
+    </div>
+    <div class="explain" data-explain="Mom is on the phone, so play quietly. play = action → adverb."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> Marco's bedroom is always clean. He folds his clothes ______.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. messy</button>
+      <button class="opt">b. messily</button>
+      <button class="opt">c. neatly</button>
+      <button class="opt">d. neat</button>
+    </div>
+    <div class="explain" data-explain="A clean room → neatly. folds = action → adverb."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> Tariq's hands were shaking before the big test. He waited ______ outside the classroom.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. calm</button>
+      <button class="opt">b. nervous</button>
+      <button class="opt">c. calmly</button>
+      <button class="opt">d. nervously</button>
+    </div>
+    <div class="explain" data-explain="Shaking hands → nervously. waited = action → adverb."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> Elena never says “please” or “thank you.” She talks to people ______.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. polite</button>
+      <button class="opt">b. rudely</button>
+      <button class="opt">c. politely</button>
+      <button class="opt">d. rude</button>
+    </div>
+    <div class="explain" data-explain="No please, no thank you → rudely."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> Nadia got 100% on her English test. She did very ______.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. good</button>
+      <button class="opt">b. bad</button>
+      <button class="opt">c. badly</button>
+      <button class="opt">d. well</button>
+    </div>
+    <div class="explain" data-explain="100% → well. good → well."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> The dog broke Victor's favorite cup. Victor shouted ______.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. angrily</button>
+      <button class="opt">b. calm</button>
+      <button class="opt">c. calmly</button>
+      <button class="opt">d. angry</button>
+    </div>
+    <div class="explain" data-explain="A broken cup → angrily. shouted = action → adverb."></div>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 7: ADJECTIVE OR ADVERB -->
+<section>
+  <h2>Adjective or Adverb?</h2>
+  <table class="compare">
+    <tr><th></th><th>Adjective</th><th>Adverb of manner</th></tr>
+    <tr><td>Describes</td><td>a noun (person or thing)</td><td>a verb (action)</td></tr>
+    <tr><td>Question</td><td>What kind?</td><td>How?</td></tr>
+    <tr><td>Example</td><td>Paulo is a <strong>quiet</strong> worker.</td><td>Paulo works <strong>quietly</strong>.</td></tr>
+  </table>
+  <div class="check-tip"><strong>Special verbs:</strong> <em>be, look, feel, taste, smell, sound, seem</em> + <strong>adjective</strong> when they describe the subject (how it is, looks, feels, tastes, smells, sounds).</div>
+  <div class="example">✓ This coffee tastes <span class="key">bitter</span>. &nbsp;&nbsp; ✗ This coffee tastes bitterly.</div>
+  <div class="example">✓ Your new haircut looks <span class="key">nice</span>. &nbsp;&nbsp; ✗ Your new haircut looks nicely.</div>
+  <div class="example">✓ The bath water feels <span class="key">hot</span>. &nbsp;&nbsp; ✗ The bath water feels hotly.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 8: EXERCISE 3 -->
+<section>
+  <h2>Exercise 3 — Adjective or Adverb?</h2>
+  <p>Look at the verb. Action → adverb. <em>be, look, feel, taste, smell, sound, seem</em> describing the subject → adjective.</p>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> Everyone loves the flowers in Ahmed's garden. They smell ______.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. terrible</button>
+      <button class="opt">b. wonderfully</button>
+      <button class="opt">c. wonderful</button>
+      <button class="opt">d. terribly</button>
+    </div>
+    <div class="explain" data-explain="smell is a special verb → adjective."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> Nadia sews ______. Her dresses look like dresses from a store.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. beautifully</button>
+      <button class="opt">b. beautiful</button>
+      <button class="opt">c. bad</button>
+      <button class="opt">d. badly</button>
+    </div>
+    <div class="explain" data-explain="sews = action → adverb."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> The children listened to the story ______. Nobody talked.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. noisy</button>
+      <button class="opt">b. noisily</button>
+      <button class="opt">c. careful</button>
+      <button class="opt">d. carefully</button>
+    </div>
+    <div class="explain" data-explain="listened = action → adverb. Nobody talked → carefully."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> This lemon tastes ______. Mei made a funny face.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. sweet</button>
+      <button class="opt">b. sour</button>
+      <button class="opt">c. sourly</button>
+      <button class="opt">d. sweetly</button>
+    </div>
+    <div class="explain" data-explain="taste is a special verb → adjective."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> Pedro worked for twelve hours. He feels ______.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. energetic</button>
+      <button class="opt">b. tiredly</button>
+      <button class="opt">c. tired</button>
+      <button class="opt">d. energetically</button>
+    </div>
+    <div class="explain" data-explain="feel describes Pedro → adjective. Twelve hours of work → tired."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> Paulo said goodbye to his family ______ at the airport. He was crying.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. happy</button>
+      <button class="opt">b. sadly</button>
+      <button class="opt">c. sad</button>
+      <button class="opt">d. happily</button>
+    </div>
+    <div class="explain" data-explain="said goodbye = action → adverb. crying → sadly."></div>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 9: EXERCISE 4 -->
+<section>
+  <h2>Exercise 4 — Find the Mistake</h2>
+  <p>The CAPITALIZED part has a mistake. Say the correct sentence. Then click to check.</p>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> Grandpa smiled WARM at his grandchildren.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Grandpa smiled <span class="key">warmly</span> at his grandchildren. — smiled = action → adverb.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> The bank sent a QUICKLY reply to my email.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">The bank sent a <span class="key">quick</span> reply to my email. — It describes a noun (reply) → adjective.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> The little boy solved the math problem EASYLY.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">The little boy solved the math problem <span class="key">easily</span>. — easy: y → ily.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> The kitchen smells FRESHLY after Hana cleans it.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">The kitchen smells <span class="key">fresh</span> after Hana cleans it. — smell is a special verb → adjective.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> Olga signed CAREFULLY the papers.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Olga signed <span class="key">the papers carefully</span>. (or: Olga <span class="key">carefully signed</span> the papers.) — verb + object + adverb, or adverb before the verb.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> This new medicine works GOOD. I feel much better.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">This new medicine works <span class="key">well</span>. — works = action → adverb. good → well.</p>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 10: SUMMARY -->
+<section>
+  <h2>Summary — Adverbs of Manner</h2>
+  <table class="compare">
+    <tr><th>Remember</th><th>Example</th></tr>
+    <tr><td>Adverb of manner = HOW</td><td>The boys laugh loudly.</td></tr>
+    <tr><td>Most words + -ly</td><td>slow → slowly, kind → kindly</td></tr>
+    <tr><td>y → ily, le → ly</td><td>noisy → noisily, simple → simply</td></tr>
+    <tr><td>Special words</td><td>good → well, fast → fast, hard → hard</td></tr>
+    <tr><td>Where it goes</td><td>verb + adverb · verb + object + adverb</td></tr>
+    <tr><td>be, look, feel, taste, smell, sound, seem (describing the subject)</td><td>+ adjective: The bath water feels hot.</td></tr>
+  </table>
+  <p style="text-align:center; margin-top:30px; font-size:0.95em; color:var(--accent);"><strong>End of Deck — Great work!</strong></p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    controls: true,
+    progress: true,
+    center: false,
+    transition: 'slide',
+    width: 1100,
+    height: 720,
+    margin: 0.04
+  });
+
+  // Clickable multiple-choice wiring (data-correct = 0-indexed button)
+  document.querySelectorAll('.mc').forEach(mc => {
+    const correct = parseInt(mc.dataset.correct, 10);
+    const buttons = mc.querySelectorAll('button.opt');
+    const explain = mc.nextElementSibling && mc.nextElementSibling.classList.contains('explain')
+      ? mc.nextElementSibling : null;
+    const explainText = explain ? explain.dataset.explain || '' : '';
+    buttons.forEach((b, i) => {
+      b.addEventListener('click', () => {
+        // `sel` marks the clicked button so its class always changes on every
+        // click — keeps verify_html_deck.mjs from false-failing when the correct
+        // answer isn't option (a). Do not remove.
+        buttons.forEach(x => x.classList.remove('correct', 'wrong', 'sel'));
+        b.classList.add('sel');
+        if (i === correct) {
+          b.classList.add('correct');
+          if (explain) {
+            explain.textContent = '✓ Correct. ' + explainText;
+            explain.classList.remove('bad'); explain.classList.add('good');
+          }
+        } else {
+          b.classList.add('wrong');
+          buttons[correct].classList.add('correct');
+          if (explain) {
+            const answerText = buttons[correct].textContent;
+            explain.innerHTML = '✗ The answer is <strong>' + answerText + '</strong>. ' + explainText;
+            explain.classList.remove('good'); explain.classList.add('bad');
+          }
+        }
+      });
+    });
+  });
+</script>
+<!-- PENCIL DRAW OVERLAY — iPad annotation layer (additive; safe to delete this whole block) -->
+<style>
+  #drawCanvas {
+    position: fixed; inset: 0; z-index: 50; pointer-events: none; touch-action: none;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  }
+  html.draw-armed, html.draw-armed body, html.draw-armed .reveal {
+    -webkit-user-select: none !important; user-select: none !important;
+    -webkit-touch-callout: none !important;
+  }
+  html.presentation-mode, html.presentation-mode body {
+    width: 100%; height: 100%; overflow: hidden !important; overscroll-behavior: none;
+  }
+  html.presentation-mode body { position: fixed; inset: 0; }
+  html.presentation-mode .reveal { width: 100vw !important; height: 100vh !important; height: 100dvh !important; }
+  html.presentation-mode .reveal .slides section { overscroll-behavior-y: contain; }
+  #drawToggle {
+    position: fixed; top: 10px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 20px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle.armed { opacity: 1; background: #fde9c8; border-color: #e8a013; }
+  #fsToggle {
+    position: fixed; top: 62px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 19px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle, #fsToggle { transition: opacity 0.3s; }
+  html.presentation-mode #drawToggle:not(.armed), html.presentation-mode #fsToggle { opacity: 0.15; }
+  #drawBar {
+    position: fixed; top: 10px; right: 62px; z-index: 60; display: flex; gap: 8px;
+    background: #fff; border: 1px solid #bbb; border-radius: 22px; padding: 6px 10px;
+    align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  #drawBar button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ccc; background: #fff; cursor: pointer; font-size: 15px; padding: 0; }
+  #drawBar .swatch { border-width: 2px; }
+  #drawBar .swatch.on { outline: 3px solid #e8a013; }
+</style>
+<canvas id="drawCanvas"></canvas>
+<div id="drawBar" hidden>
+  <button class="swatch on" data-color="#d33333" style="background:#d33333"></button>
+  <button class="swatch" data-color="#2266cc" style="background:#2266cc"></button>
+  <button class="swatch" data-color="#1a1a1a" style="background:#1a1a1a"></button>
+  <button id="drawUndo" title="Undo">↩</button>
+  <button id="drawClear" title="Clear slide">✕</button>
+</div>
+<button id="drawToggle" title="Pencil mode (pen only; finger locked)" aria-pressed="false">✏️</button>
+<button id="fsToggle" title="Presentation mode" aria-label="Presentation mode" aria-pressed="false">⛶</button>
+<script>
+(() => {
+  const cv = document.getElementById('drawCanvas');
+  const ctx = cv.getContext('2d');
+  const bar = document.getElementById('drawBar');
+  const toggle = document.getElementById('drawToggle');
+  let armed = false, color = '#d33333', cur = null, drawPointerId = null;
+  const strokes = new Map(); // slide "h-v" -> stroke list; ink persists per slide
+  const key = () => { const i = Reveal.getIndices(); return i.h + '-' + (i.v || 0); };
+  const list = () => { const k = key(); if (!strokes.has(k)) strokes.set(k, []); return strokes.get(k); };
+
+  function size() {
+    const d = window.devicePixelRatio || 1;
+    cv.width = innerWidth * d; cv.height = innerHeight * d;
+    cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    render();
+  }
+  function seg(a, b, c, w) {
+    ctx.strokeStyle = c; ctx.lineWidth = Math.max(0.75, w * innerWidth);
+    ctx.beginPath(); ctx.moveTo(a.x * innerWidth, a.y * innerHeight);
+    ctx.lineTo(b.x * innerWidth, b.y * innerHeight); ctx.stroke();
+  }
+  function render() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const s of list())
+      for (let i = 1; i < s.pts.length; i++) seg(s.pts[i - 1], s.pts[i], s.color, s.pts[i].w);
+  }
+  const pt = (e) => ({ x: e.clientX / innerWidth, y: e.clientY / innerHeight,
+    w: (e.pointerType === 'pen' ? 1.5 + 4 * (e.pressure || 0.5) : 3) / innerWidth });
+
+  const cancel = (e) => { if (e.cancelable) e.preventDefault(); };
+  cv.addEventListener('pointerdown', (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerType === 'touch') {
+      cv.setPointerCapture(e.pointerId); // swallow the palm/finger for its full contact
+      return;
+    }
+    if ((e.pointerType !== 'pen' && e.pointerType !== 'mouse') || drawPointerId !== null) return;
+    drawPointerId = e.pointerId;
+    cur = { color, pts: [pt(e)] };
+    list().push(cur);
+    cv.setPointerCapture(e.pointerId);
+  }, { passive: false });
+  cv.addEventListener('pointermove', (e) => {
+    if (!armed) return;
+    if (e.pointerType === 'touch') { cancel(e); return; }
+    if (!cur || e.pointerId !== drawPointerId) return;
+    cancel(e);
+    const coalesced = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+    const events = coalesced && coalesced.length ? coalesced : [e];
+    for (const ev of events) {
+      const p = pt(ev);
+      seg(cur.pts[cur.pts.length - 1], p, cur.color, p.w);
+      cur.pts.push(p);
+    }
+  }, { passive: false });
+  const end = (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerId === drawPointerId) { cur = null; drawPointerId = null; }
+  };
+  cv.addEventListener('pointerup', end, { passive: false });
+  cv.addEventListener('pointercancel', end, { passive: false });
+  for (const eventName of ['touchstart', 'touchmove', 'touchend', 'touchcancel'])
+    cv.addEventListener(eventName, (e) => { if (armed) cancel(e); }, { passive: false });
+  document.addEventListener('selectstart', (e) => { if (armed) cancel(e); });
+
+  toggle.addEventListener('click', () => {
+    armed = !armed;
+    cv.style.pointerEvents = armed ? 'auto' : 'none'; // disarmed = taps/swipes reach the slides
+    bar.hidden = !armed;
+    toggle.classList.toggle('armed', armed);
+    toggle.setAttribute('aria-pressed', String(armed));
+    document.documentElement.classList.toggle('draw-armed', armed);
+    if (!armed) { cur = null; drawPointerId = null; }
+  });
+  bar.querySelectorAll('.swatch').forEach((b) => b.addEventListener('click', () => {
+    color = b.dataset.color;
+    bar.querySelectorAll('.swatch').forEach((x) => x.classList.toggle('on', x === b));
+  }));
+  document.getElementById('drawUndo').addEventListener('click', () => { list().pop(); render(); });
+  document.getElementById('drawClear').addEventListener('click', () => { strokes.set(key(), []); render(); });
+
+  Reveal.on('slidechanged', render);
+  addEventListener('resize', size);
+  size();
+
+  // Fixed presentation mode avoids iPadOS's native-fullscreen pull-down exit gesture.
+  const fsT = document.getElementById('fsToggle');
+  let presenting = false;
+  const toast = (message) => {
+    const t = document.createElement('div');
+    t.textContent = message;
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:10px;font:14px system-ui;z-index:99;max-width:46ch;text-align:center';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  };
+  fsT.addEventListener('click', () => {
+    presenting = !presenting;
+    document.documentElement.classList.toggle('presentation-mode', presenting);
+    fsT.textContent = presenting ? '\u2921' : '\u26f6';
+    fsT.setAttribute('aria-pressed', String(presenting));
+    fsT.title = presenting ? 'Exit presentation mode' : 'Presentation mode';
+    requestAnimationFrame(() => {
+      if (Reveal.layout) Reveal.layout();
+      size();
+    });
+    if (presenting) toast('Presentation mode on. For more space in Safari, tap AA, then Hide Toolbar.');
+  });
+})();
+</script>
+<!-- END PENCIL DRAW OVERLAY -->
+
+</body>
+</html>
