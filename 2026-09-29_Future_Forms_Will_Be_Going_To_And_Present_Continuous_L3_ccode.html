@@ -1,0 +1,624 @@
+<!-- generator: _lib/school_deck_scaffold.py -->
+<!DOCTYPE html>
+<!--
+  ESL reveal.js DECK TEMPLATE — copy this file, rename to
+  YYYY-MM-DD_Title_Case_Topic_L<level>_ccode.html in the School Stuff root,
+  and fill the Edit.
+
+  LEVEL SWAP: this template ships L2 colors (green). For L4, change the
+  three lines in :root marked  /* L4: ... */  and swap theme to white
+  (already white). L2 accent 2E6B3A / light D9E9D3.  L4 accent 1F4E79 /
+  light D6E4F2.
+
+  All canonical contracts (invisible scrollbar, 80vh bottom spacer per
+  section, no font-size on .reveal, table.compare last-child border,
+  reveal init config) are baked in. Run the linter after editing:
+      node _lib/verify_html_deck.mjs <deck.html>            # rendered check
+      python3 _lib/verify_html_deck_static.py <deck.html>   # fast source lint
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Future Forms: Will, Be Going To, and Present Continuous — Level 3</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/theme/white.css">
+<style>
+  :root { --accent: #1F6B6B; --accent-light: #D6E8E8; --gray: #555555;
+          /* L4: --accent: #1F4E79; --accent-light: #D6E4F2; */
+          --good: #15803D; --bad: #B91C1C; --muted: #777; }
+
+  /* TYPOGRAPHY CANON — never put font-size on .reveal itself */
+  .reveal { font-family: Arial, sans-serif; }
+  .reveal h1, .reveal h2, .reveal h3 { color: var(--accent); font-family: Arial, sans-serif; text-transform: none; letter-spacing: 0; }
+  .reveal h1 { font-size: 2.2em; }
+  .reveal h2 { font-size: 1.6em; }
+  .reveal h3 { font-size: 1.15em; }
+  .reveal h4 { font-size: 1.05em; }
+  .reveal p, .reveal li { font-size: 0.85em; line-height: 1.5; }
+
+  /* SCROLLABLE SLIDES WITH INVISIBLE SCROLLBAR */
+  .reveal .slides section {
+    overflow-y: auto !important;
+    max-height: 92vh !important;
+    text-align: left;
+    padding: 20px 40px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .reveal .slides section::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* Title slide */
+  .title-slide { text-align: center !important; }
+  .title-slide h1 { font-size: 2.6em; margin-bottom: 0.3em; }
+  .title-slide .subtitle { font-size: 1.2em; color: var(--gray); }
+
+  /* Pattern / example / note / tip */
+  .pattern-box {
+    background: var(--accent-light);
+    border-left: 6px solid var(--accent);
+    padding: 14px 20px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+  .pattern-box code {
+    background: white; padding: 2px 8px; border-radius: 3px;
+    color: var(--accent); font-weight: bold;
+  }
+  .example {
+    background: #FAFAFA; border: 1px solid #DDD;
+    padding: 10px 16px; margin: 8px 0; border-radius: 3px; font-size: 0.9em;
+  }
+  .example .key { color: var(--accent); font-weight: bold; }
+  .note { font-style: italic; color: var(--gray); font-size: 0.85em; margin-top: 10px; }
+  .check-tip {
+    background: #FFF8E1; border-left: 6px solid #F5A623;
+    padding: 12px 18px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+
+  /* Comparison tables — borders need !important (reveal theme strips them) */
+  table.compare {
+    border-collapse: collapse !important; margin: 14px 0;
+    font-size: 0.82em; width: 100%; border: 1px solid var(--accent) !important;
+  }
+  table.compare th, table.compare td {
+    border: 1px solid var(--accent) !important; padding: 8px 12px; text-align: left;
+  }
+  table.compare tr:last-child td { border-bottom: 1px solid var(--accent) !important; }
+  table.compare th { background: var(--accent); color: white; }
+  table.compare td:first-child { font-weight: bold; color: var(--accent); }
+
+  /* Click-to-reveal exercise (single-answer reveal) */
+  .exercise {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .exercise .question { font-size: 0.9em; margin: 0 0 10px 0; }
+  .exercise .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .exercise button.reveal-btn {
+    background: var(--accent); color: white; border: none; padding: 6px 14px;
+    border-radius: 4px; font-family: Arial; font-size: 0.8em; cursor: pointer;
+  }
+  .exercise button.reveal-btn:hover { filter: brightness(0.85); }
+  .exercise .answer {
+    display: none; margin-top: 10px; padding: 10px 14px;
+    background: var(--accent-light); border-left: 4px solid var(--accent); font-size: 0.9em;
+  }
+  .exercise .answer .key { color: var(--accent); font-weight: bold; }
+  .exercise .answer.shown { display: block; }
+
+  /* Clickable multiple choice */
+  .mc-q {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .mc-q .stem { font-size: 0.9em; margin: 0 0 10px 0; }
+  .mc-q .stem .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .mc { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .mc button.opt {
+    font-family: inherit; font-size: 0.8em; padding: 10px 12px;
+    border: 2px solid #d0d8e4; background: white; border-radius: 8px;
+    cursor: pointer; transition: all .15s; font-weight: 600;
+  }
+  .mc button.opt:hover { border-color: var(--accent); background: var(--accent-light); }
+  .mc button.opt.correct { background: #DCFCE7; border-color: var(--good); color: var(--good); }
+  .mc button.opt.wrong   { background: #FEE2E2; border-color: var(--bad);  color: var(--bad); }
+  .explain { margin-top: 10px; font-size: 0.78em; color: var(--muted); font-style: italic; min-height: 1.2em; }
+  .explain.good { color: var(--good); font-style: normal; }
+  .explain.bad  { color: var(--bad); }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1: TITLE -->
+<section class="title-slide">
+  <h1>Future Forms: Will, Be Going To, and Present Continuous</h1>
+  <p class="subtitle">Three ways to talk about the future</p>
+  <p class="subtitle" style="margin-top: 1.5em;">Level 3 — Grammar Review</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 2: CORE IDEA -->
+<section>
+  <h2>Three Ways to Talk About the Future</h2>
+  <p>English has three common future forms. Each one has its own job.</p>
+  <table class="compare">
+    <tr><th>Form</th><th>Main job</th></tr>
+    <tr><td><strong>will</strong> + verb</td><td>decision now, offer, promise, opinion</td></tr>
+    <tr><td><strong>be going to</strong> + verb</td><td>plan (decided before now), evidence</td></tr>
+    <tr><td><strong>am / is / are</strong> + verb-ing</td><td>arrangement (a fixed plan: set up with other people or at a set time)</td></tr>
+  </table>
+  <p class="note">Ask: When did I decide? Can I see it coming? Is it on my calendar?</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 3: WILL -->
+<section>
+  <h2>will + verb</h2>
+  <div class="pattern-box"><strong>Form:</strong> <code>will + base verb</code> &nbsp;•&nbsp; <code>won't + base verb</code> &nbsp;•&nbsp; <code>Will + subject + base verb?</code></div>
+  <div class="example"><strong>Decision now:</strong> The door is locked? I'll get the key.</div>
+  <div class="example"><strong>Offer:</strong> You cooked. I'll wash the dishes.</div>
+  <div class="example"><strong>Promise:</strong> I won't be late again.</div>
+  <div class="example"><strong>Opinion:</strong> I think you'll love this book.</div>
+  <div class="check-tip"><strong>Watch out:</strong> no <em>to</em> and no <em>-s</em> after <em>will</em>. She will <strong>go</strong>. (not <em>will to go</em>, not <em>will goes</em>)</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 4: BE GOING TO -->
+<section>
+  <h2>be going to + verb</h2>
+  <div class="pattern-box"><strong>Form:</strong> <code>am / is / are + going to + base verb</code></div>
+  <div class="example"><strong>Plan:</strong> We're going to repaint the living room next month.</div>
+  <div class="example"><strong>Evidence:</strong> The score is 7 to 0. Our team is going to win.</div>
+  <div class="example"><strong>Negative:</strong> He isn't going to change jobs.</div>
+  <div class="example"><strong>Question:</strong> Are they going to buy a new TV?</div>
+  <div class="check-tip"><strong>Watch out:</strong> keep <em>be</em>. She <strong>is</strong> going to call. (not <em>She going to call</em>)</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 5: PRESENT CONTINUOUS FOR FUTURE -->
+<section>
+  <h2>am / is / are + verb-ing</h2>
+  <div class="pattern-box"><strong>Form:</strong> <code>am / is / are + verb-ing</code> + a future time</div>
+  <div class="example"><strong>Arrangement:</strong> I'm flying to Seattle on Tuesday. I have my ticket.</div>
+  <div class="example"><strong>Arrangement:</strong> Jin and Rosa are getting married in June.</div>
+  <div class="example"><strong>Question:</strong> Are you working this Saturday?</div>
+  <div class="check-tip"><strong>Watch out:</strong> do not use it for weather or for <em>be</em>. <em>It's being cold next week</em> ✗ &nbsp;→&nbsp; It will be cold next week. ✓</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 6: PLANS -->
+<section>
+  <h2>Plans: going to or -ing?</h2>
+  <p>For plans, both forms are often correct.</p>
+  <div class="example">I'm going to see my aunt on Sunday. = I'm seeing my aunt on Sunday.</div>
+  <p><strong>-ing</strong> sounds more fixed: the plan is set up with other people or at a set time.</p>
+  <p><strong>going to</strong> works for any plan, even with no time.</p>
+  <div class="example">Someday, I'm going to write a book. ✓ &nbsp;&nbsp; Someday, I'm writing a book. ✗</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 7: MC FORM -->
+<section>
+  <h2>Exercise 1 — Choose the Correct Form</h2>
+  <p>Click a, b, c, or d. The correct button turns green; a wrong button turns red and the correct one is highlighted.</p>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> The laptop battery is at 2%. It ____ die soon.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. is going to</button>
+      <button class="opt">b. is going</button>
+      <button class="opt">c. going to</button>
+      <button class="opt">d. will to</button>
+    </div>
+    <div class="explain" data-explain="Evidence (2%): is going to + base verb."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> I ____ you a postcard from Mexico. I promise!</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. will sending</button>
+      <button class="opt">b. will send</button>
+      <button class="opt">c. am send</button>
+      <button class="opt">d. will sends</button>
+    </div>
+    <div class="explain" data-explain="Promise: will + base verb."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> Nora ____ a birthday party on Sunday. She sent the invitations yesterday.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. are having</button>
+      <button class="opt">b. having</button>
+      <button class="opt">c. is have</button>
+      <button class="opt">d. is having</button>
+    </div>
+    <div class="explain" data-explain="Arrangement: is + verb-ing (Nora = is)."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> ____ Tom going to sell his motorcycle?</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. Does</button>
+      <button class="opt">b. Are</button>
+      <button class="opt">c. Is</button>
+      <button class="opt">d. Will</button>
+    </div>
+    <div class="explain" data-explain="Question: Is + Tom + going to + base verb?"></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> The kids ____ to school tomorrow. It's a holiday.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. aren't going</button>
+      <button class="opt">b. aren't go</button>
+      <button class="opt">c. not going</button>
+      <button class="opt">d. don't going</button>
+    </div>
+    <div class="explain" data-explain="Negative arrangement: aren't + verb-ing."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> I ____ learn to swim this summer. I signed up for lessons.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. am going</button>
+      <button class="opt">b. going to</button>
+      <button class="opt">c. am going to</button>
+      <button class="opt">d. will going to</button>
+    </div>
+    <div class="explain" data-explain="Plan: am going to + base verb."></div>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 8: MC USE -->
+<section>
+  <h2>Exercise 2 — What Is the Use?</h2>
+  <p>Read the sentence. Click the use that matches the CAPITALIZED future form.</p>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> It's hot in here. I'LL OPEN the window for you.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. offer</button>
+      <button class="opt">b. plan</button>
+      <button class="opt">c. evidence</button>
+      <button class="opt">d. arrangement</button>
+    </div>
+    <div class="explain" data-explain="Doing something to help someone = offer (will)."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> Look at the smoke! The toast IS GOING TO BURN.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. arrangement</button>
+      <button class="opt">b. evidence</button>
+      <button class="opt">c. promise</button>
+      <button class="opt">d. decision now</button>
+    </div>
+    <div class="explain" data-explain="You can see the smoke now = evidence (going to)."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> WE'RE MEETING the landlord at 5:00 on Monday.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. opinion</button>
+      <button class="opt">b. arrangement</button>
+      <button class="opt">c. offer</button>
+      <button class="opt">d. evidence</button>
+    </div>
+    <div class="explain" data-explain="A time and another person = arrangement (-ing)."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> The pharmacy is closed? Then I'LL TRY the one on Main Street.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. plan</button>
+      <button class="opt">b. arrangement</button>
+      <button class="opt">c. decision now</button>
+      <button class="opt">d. evidence</button>
+    </div>
+    <div class="explain" data-explain="The speaker decides at this moment = decision now (will)."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> I think the new coach WILL DO a great job.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. arrangement</button>
+      <button class="opt">b. plan</button>
+      <button class="opt">c. evidence</button>
+      <button class="opt">d. opinion</button>
+    </div>
+    <div class="explain" data-explain="&quot;I think&quot; = opinion (will)."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> My daughter IS GOING TO STUDY nursing. She decided last year.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. offer</button>
+      <button class="opt">b. decision now</button>
+      <button class="opt">c. plan</button>
+      <button class="opt">d. promise</button>
+    </div>
+    <div class="explain" data-explain="She decided before now = plan (going to)."></div>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 9: REVEAL FILL -->
+<section>
+  <h2>Exercise 3 — Fill in the Blank</h2>
+  <p>Say the future form of the verb in parentheses. Then click to check.</p>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> "My pen doesn't work." "Here, I ______ (lend) you mine."</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">'ll lend (will lend)</span> — an offer, decided now.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> Jamal ______ (start) a new class on Monday. He registered online.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">is starting</span> (or is going to start) — an arrangement with a day.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> Watch out! That cup ______ (fall) off the edge.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">is going to fall</span> (or will fall) — evidence: you can see it now.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> I ______ (not / forget) your birthday this year. I promise.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">won't forget</span> (or will not forget / am not going to forget) — a promise.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> What ______ (you / wear) to the job interview on Thursday?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">are you wearing</span> (or are you going to wear) — an arrangement with a day.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> I think it ______ (be) a long winter.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">will be</span> (or is going to be) — an opinion with "I think".</p>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 10: SUMMARY -->
+<section>
+  <h2>Summary — Main Takeaways</h2>
+  <table class="compare">
+    <tr><th>Form</th><th>Use it for</th><th>Example</th></tr>
+    <tr><td>will + verb</td><td>decision now, offer, promise, opinion</td><td>I'll call a taxi.</td></tr>
+    <tr><td>be going to + verb</td><td>plan, evidence</td><td>She's going to open a café.</td></tr>
+    <tr><td>am / is / are + verb-ing</td><td>arrangement</td><td>We're visiting Grandma on Saturday.</td></tr>
+  </table>
+  <p style="text-align:center; margin-top:30px; font-size:0.95em; color:var(--accent);"><strong>End of Deck — Great work!</strong></p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    controls: true,
+    progress: true,
+    center: false,
+    transition: 'slide',
+    width: 1100,
+    height: 720,
+    margin: 0.04
+  });
+
+  // Clickable multiple-choice wiring (data-correct = 0-indexed button)
+  document.querySelectorAll('.mc').forEach(mc => {
+    const correct = parseInt(mc.dataset.correct, 10);
+    const buttons = mc.querySelectorAll('button.opt');
+    const explain = mc.nextElementSibling && mc.nextElementSibling.classList.contains('explain')
+      ? mc.nextElementSibling : null;
+    const explainText = explain ? explain.dataset.explain || '' : '';
+    buttons.forEach((b, i) => {
+      b.addEventListener('click', () => {
+        // `sel` marks the clicked button so its class always changes on every
+        // click — keeps verify_html_deck.mjs from false-failing when the correct
+        // answer isn't option (a). Do not remove.
+        buttons.forEach(x => x.classList.remove('correct', 'wrong', 'sel'));
+        b.classList.add('sel');
+        if (i === correct) {
+          b.classList.add('correct');
+          if (explain) {
+            explain.textContent = '✓ Correct. ' + explainText;
+            explain.classList.remove('bad'); explain.classList.add('good');
+          }
+        } else {
+          b.classList.add('wrong');
+          buttons[correct].classList.add('correct');
+          if (explain) {
+            const answerText = buttons[correct].textContent;
+            explain.innerHTML = '✗ The answer is <strong>' + answerText + '</strong>. ' + explainText;
+            explain.classList.remove('good'); explain.classList.add('bad');
+          }
+        }
+      });
+    });
+  });
+</script>
+<!-- PENCIL DRAW OVERLAY — iPad annotation layer (additive; safe to delete this whole block) -->
+<style>
+  #drawCanvas {
+    position: fixed; inset: 0; z-index: 50; pointer-events: none; touch-action: none;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  }
+  html.draw-armed, html.draw-armed body, html.draw-armed .reveal {
+    -webkit-user-select: none !important; user-select: none !important;
+    -webkit-touch-callout: none !important;
+  }
+  html.presentation-mode, html.presentation-mode body {
+    width: 100%; height: 100%; overflow: hidden !important; overscroll-behavior: none;
+  }
+  html.presentation-mode body { position: fixed; inset: 0; }
+  html.presentation-mode .reveal { width: 100vw !important; height: 100vh !important; height: 100dvh !important; }
+  html.presentation-mode .reveal .slides section { overscroll-behavior-y: contain; }
+  #drawToggle {
+    position: fixed; top: 10px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 20px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle.armed { opacity: 1; background: #fde9c8; border-color: #e8a013; }
+  #fsToggle {
+    position: fixed; top: 62px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 19px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle, #fsToggle { transition: opacity 0.3s; }
+  html.presentation-mode #drawToggle:not(.armed), html.presentation-mode #fsToggle { opacity: 0.15; }
+  #drawBar {
+    position: fixed; top: 10px; right: 62px; z-index: 60; display: flex; gap: 8px;
+    background: #fff; border: 1px solid #bbb; border-radius: 22px; padding: 6px 10px;
+    align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  #drawBar button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ccc; background: #fff; cursor: pointer; font-size: 15px; padding: 0; }
+  #drawBar .swatch { border-width: 2px; }
+  #drawBar .swatch.on { outline: 3px solid #e8a013; }
+</style>
+<canvas id="drawCanvas"></canvas>
+<div id="drawBar" hidden>
+  <button class="swatch on" data-color="#d33333" style="background:#d33333"></button>
+  <button class="swatch" data-color="#2266cc" style="background:#2266cc"></button>
+  <button class="swatch" data-color="#1a1a1a" style="background:#1a1a1a"></button>
+  <button id="drawUndo" title="Undo">↩</button>
+  <button id="drawClear" title="Clear slide">✕</button>
+</div>
+<button id="drawToggle" title="Pencil mode (pen only; finger locked)" aria-pressed="false">✏️</button>
+<button id="fsToggle" title="Presentation mode" aria-label="Presentation mode" aria-pressed="false">⛶</button>
+<script>
+(() => {
+  const cv = document.getElementById('drawCanvas');
+  const ctx = cv.getContext('2d');
+  const bar = document.getElementById('drawBar');
+  const toggle = document.getElementById('drawToggle');
+  let armed = false, color = '#d33333', cur = null, drawPointerId = null;
+  const strokes = new Map(); // slide "h-v" -> stroke list; ink persists per slide
+  const key = () => { const i = Reveal.getIndices(); return i.h + '-' + (i.v || 0); };
+  const list = () => { const k = key(); if (!strokes.has(k)) strokes.set(k, []); return strokes.get(k); };
+
+  function size() {
+    const d = window.devicePixelRatio || 1;
+    cv.width = innerWidth * d; cv.height = innerHeight * d;
+    cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    render();
+  }
+  function seg(a, b, c, w) {
+    ctx.strokeStyle = c; ctx.lineWidth = Math.max(0.75, w * innerWidth);
+    ctx.beginPath(); ctx.moveTo(a.x * innerWidth, a.y * innerHeight);
+    ctx.lineTo(b.x * innerWidth, b.y * innerHeight); ctx.stroke();
+  }
+  function render() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const s of list())
+      for (let i = 1; i < s.pts.length; i++) seg(s.pts[i - 1], s.pts[i], s.color, s.pts[i].w);
+  }
+  const pt = (e) => ({ x: e.clientX / innerWidth, y: e.clientY / innerHeight,
+    w: (e.pointerType === 'pen' ? 1.5 + 4 * (e.pressure || 0.5) : 3) / innerWidth });
+
+  const cancel = (e) => { if (e.cancelable) e.preventDefault(); };
+  cv.addEventListener('pointerdown', (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerType === 'touch') {
+      cv.setPointerCapture(e.pointerId); // swallow the palm/finger for its full contact
+      return;
+    }
+    if ((e.pointerType !== 'pen' && e.pointerType !== 'mouse') || drawPointerId !== null) return;
+    drawPointerId = e.pointerId;
+    cur = { color, pts: [pt(e)] };
+    list().push(cur);
+    cv.setPointerCapture(e.pointerId);
+  }, { passive: false });
+  cv.addEventListener('pointermove', (e) => {
+    if (!armed) return;
+    if (e.pointerType === 'touch') { cancel(e); return; }
+    if (!cur || e.pointerId !== drawPointerId) return;
+    cancel(e);
+    const coalesced = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+    const events = coalesced && coalesced.length ? coalesced : [e];
+    for (const ev of events) {
+      const p = pt(ev);
+      seg(cur.pts[cur.pts.length - 1], p, cur.color, p.w);
+      cur.pts.push(p);
+    }
+  }, { passive: false });
+  const end = (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerId === drawPointerId) { cur = null; drawPointerId = null; }
+  };
+  cv.addEventListener('pointerup', end, { passive: false });
+  cv.addEventListener('pointercancel', end, { passive: false });
+  for (const eventName of ['touchstart', 'touchmove', 'touchend', 'touchcancel'])
+    cv.addEventListener(eventName, (e) => { if (armed) cancel(e); }, { passive: false });
+  document.addEventListener('selectstart', (e) => { if (armed) cancel(e); });
+
+  toggle.addEventListener('click', () => {
+    armed = !armed;
+    cv.style.pointerEvents = armed ? 'auto' : 'none'; // disarmed = taps/swipes reach the slides
+    bar.hidden = !armed;
+    toggle.classList.toggle('armed', armed);
+    toggle.setAttribute('aria-pressed', String(armed));
+    document.documentElement.classList.toggle('draw-armed', armed);
+    if (!armed) { cur = null; drawPointerId = null; }
+  });
+  bar.querySelectorAll('.swatch').forEach((b) => b.addEventListener('click', () => {
+    color = b.dataset.color;
+    bar.querySelectorAll('.swatch').forEach((x) => x.classList.toggle('on', x === b));
+  }));
+  document.getElementById('drawUndo').addEventListener('click', () => { list().pop(); render(); });
+  document.getElementById('drawClear').addEventListener('click', () => { strokes.set(key(), []); render(); });
+
+  Reveal.on('slidechanged', render);
+  addEventListener('resize', size);
+  size();
+
+  // Fixed presentation mode avoids iPadOS's native-fullscreen pull-down exit gesture.
+  const fsT = document.getElementById('fsToggle');
+  let presenting = false;
+  const toast = (message) => {
+    const t = document.createElement('div');
+    t.textContent = message;
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:10px;font:14px system-ui;z-index:99;max-width:46ch;text-align:center';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  };
+  fsT.addEventListener('click', () => {
+    presenting = !presenting;
+    document.documentElement.classList.toggle('presentation-mode', presenting);
+    fsT.textContent = presenting ? '\u2921' : '\u26f6';
+    fsT.setAttribute('aria-pressed', String(presenting));
+    fsT.title = presenting ? 'Exit presentation mode' : 'Presentation mode';
+    requestAnimationFrame(() => {
+      if (Reveal.layout) Reveal.layout();
+      size();
+    });
+    if (presenting) toast('Presentation mode on. For more space in Safari, tap AA, then Hide Toolbar.');
+  });
+})();
+</script>
+<!-- END PENCIL DRAW OVERLAY -->
+
+</body>
+</html>
