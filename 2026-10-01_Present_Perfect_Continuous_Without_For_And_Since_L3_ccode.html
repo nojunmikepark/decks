@@ -1,0 +1,779 @@
+<!-- generator: _lib/school_deck_scaffold.py -->
+<!DOCTYPE html>
+<!--
+  ESL reveal.js DECK TEMPLATE — copy this file, rename to
+  YYYY-MM-DD_Title_Case_Topic_L<level>_ccode.html in the School Stuff root,
+  and fill the Edit.
+
+  LEVEL SWAP: this template ships L2 colors (green). For L4, change the
+  three lines in :root marked  /* L4: ... */  and swap theme to white
+  (already white). L2 accent 2E6B3A / light D9E9D3.  L4 accent 1F4E79 /
+  light D6E4F2.
+
+  All canonical contracts (invisible scrollbar, 80vh bottom spacer per
+  section, no font-size on .reveal, table.compare last-child border,
+  reveal init config) are baked in. Run the linter after editing:
+      node _lib/verify_html_deck.mjs <deck.html>            # rendered check
+      python3 _lib/verify_html_deck_static.py <deck.html>   # fast source lint
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Present Perfect Continuous Without For and Since — Level 3</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/theme/white.css">
+<style>
+  :root { --accent: #1F6B6B; --accent-light: #D6E8E8; --gray: #555555;
+          /* L4: --accent: #1F4E79; --accent-light: #D6E4F2; */
+          --good: #15803D; --bad: #B91C1C; --muted: #777; }
+
+  /* TYPOGRAPHY CANON — never put font-size on .reveal itself */
+  .reveal { font-family: Arial, sans-serif; }
+  .reveal h1, .reveal h2, .reveal h3 { color: var(--accent); font-family: Arial, sans-serif; text-transform: none; letter-spacing: 0; }
+  .reveal h1 { font-size: 2.2em; }
+  .reveal h2 { font-size: 1.6em; }
+  .reveal h3 { font-size: 1.15em; }
+  .reveal h4 { font-size: 1.05em; }
+  .reveal p, .reveal li { font-size: 0.85em; line-height: 1.5; }
+
+  /* SCROLLABLE SLIDES WITH INVISIBLE SCROLLBAR */
+  .reveal .slides section {
+    overflow-y: auto !important;
+    max-height: 92vh !important;
+    text-align: left;
+    padding: 20px 40px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .reveal .slides section::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* Title slide */
+  .title-slide { text-align: center !important; }
+  .title-slide h1 { font-size: 2.6em; margin-bottom: 0.3em; }
+  .title-slide .subtitle { font-size: 1.2em; color: var(--gray); }
+
+  /* Pattern / example / note / tip */
+  .pattern-box {
+    background: var(--accent-light);
+    border-left: 6px solid var(--accent);
+    padding: 14px 20px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+  .pattern-box code {
+    background: white; padding: 2px 8px; border-radius: 3px;
+    color: var(--accent); font-weight: bold;
+  }
+  .example {
+    background: #FAFAFA; border: 1px solid #DDD;
+    padding: 10px 16px; margin: 8px 0; border-radius: 3px; font-size: 0.9em;
+  }
+  .example .key { color: var(--accent); font-weight: bold; }
+  .note { font-style: italic; color: var(--gray); font-size: 0.85em; margin-top: 10px; }
+  .check-tip {
+    background: #FFF8E1; border-left: 6px solid #F5A623;
+    padding: 12px 18px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+
+  /* Comparison tables — borders need !important (reveal theme strips them) */
+  table.compare {
+    border-collapse: collapse !important; margin: 14px 0;
+    font-size: 0.82em; width: 100%; border: 1px solid var(--accent) !important;
+  }
+  table.compare th, table.compare td {
+    border: 1px solid var(--accent) !important; padding: 8px 12px; text-align: left;
+  }
+  table.compare tr:last-child td { border-bottom: 1px solid var(--accent) !important; }
+  table.compare th { background: var(--accent); color: white; }
+  table.compare td:first-child { font-weight: bold; color: var(--accent); }
+
+  /* Click-to-reveal exercise (single-answer reveal) */
+  .exercise {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .exercise .question { font-size: 0.9em; margin: 0 0 10px 0; }
+  .exercise .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .exercise button.reveal-btn {
+    background: var(--accent); color: white; border: none; padding: 6px 14px;
+    border-radius: 4px; font-family: Arial; font-size: 0.8em; cursor: pointer;
+  }
+  .exercise button.reveal-btn:hover { filter: brightness(0.85); }
+  .exercise .answer {
+    display: none; margin-top: 10px; padding: 10px 14px;
+    background: var(--accent-light); border-left: 4px solid var(--accent); font-size: 0.9em;
+  }
+  .exercise .answer .key { color: var(--accent); font-weight: bold; }
+  .exercise .answer.shown { display: block; }
+
+  /* Clickable multiple choice */
+  .mc-q {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .mc-q .stem { font-size: 0.9em; margin: 0 0 10px 0; }
+  .mc-q .stem .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .mc { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .mc button.opt {
+    font-family: inherit; font-size: 0.8em; padding: 10px 12px;
+    border: 2px solid #d0d8e4; background: white; border-radius: 8px;
+    cursor: pointer; transition: all .15s; font-weight: 600;
+  }
+  .mc button.opt:hover { border-color: var(--accent); background: var(--accent-light); }
+  .mc button.opt.correct { background: #DCFCE7; border-color: var(--good); color: var(--good); }
+  .mc button.opt.wrong   { background: #FEE2E2; border-color: var(--bad);  color: var(--bad); }
+  .explain { margin-top: 10px; font-size: 0.78em; color: var(--muted); font-style: italic; min-height: 1.2em; }
+  .explain.good { color: var(--good); font-style: normal; }
+  .explain.bad  { color: var(--bad); }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1: TITLE -->
+<section class="title-slide">
+  <h1>Present Perfect Continuous Without For and Since</h1>
+  <p class="subtitle">Five ways to use it with no for or since</p>
+  <p class="subtitle" style="margin-top: 1.5em;">Level 3 — Grammar Practice</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 2: CORE IDEA -->
+<section>
+  <h2>Core Idea</h2>
+  <div class="pattern-box">
+    <strong>Form:</strong> <code>have / has + been + verb-ing</code><br>
+    <strong>Negative:</strong> <code>haven't / hasn't been + verb-ing</code><br>
+    <strong>Question:</strong> <code>Have / Has + subject + been + verb-ing?</code>
+  </div>
+  <p>You already know this tense with <strong>for</strong> and <strong>since</strong>. But many sentences have <strong>no for or since</strong>. Then we look for other clues.</p>
+  <table class="compare">
+    <tr><th>Use</th><th>Clue</th></tr>
+    <tr><td>1. Evidence now</td><td>You can see, hear, smell, or feel the result now.</td></tr>
+    <tr><td>2. Excuse or reason</td><td>You explain why something is true right now.</td></tr>
+    <tr><td>3. Complaint</td><td>Someone keeps doing something that bothers you.</td></tr>
+    <tr><td>4. Repeated action</td><td>Again and again up to now: all day, all week. No number.</td></tr>
+    <tr><td>5. Temporary situation</td><td>True now, but not forever: lately, these days, this month.</td></tr>
+  </table>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 3: USES 1 + 2 -->
+<section>
+  <h2>Uses 1 and 2 — Evidence and Excuses</h2>
+  <div class="pattern-box">
+    <strong>Evidence now:</strong> You see a result now, so you talk about the activity that made it.<br>
+    <strong>Excuse or reason:</strong> You say sorry or explain with the activity.
+  </div>
+  <div class="example">The floor is wet and shiny. Someone <span class="key">has been mopping</span>.</div>
+  <div class="example">Your shoes are muddy. <span class="key">Have</span> you <span class="key">been walking</span> in the park?</div>
+  <div class="example">Sorry, I can't talk long. I<span class="key">'ve been cooking</span> dinner, and the pot is on the stove.</div>
+  <div class="example">Excuse my messy hair. I<span class="key">'ve been working</span> in the garden.</div>
+  <div class="check-tip"><strong>Watch out:</strong> The activity may be finished or still going. The proof is here <em>now</em>.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 4: EXERCISE 1 -->
+<section>
+  <h2>Exercise 1 — Evidence and Excuses</h2>
+  <p>Write the present perfect continuous form of the verb. Then click to check.</p>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> Your hands are covered in blue paint. ________ (you / paint) the fence?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">Have you been painting</span> — The blue paint is the evidence now.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> The streets are wet, and there are puddles everywhere. It ________ (rain).</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">has been raining</span> — We see the wet streets now.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> I'm sorry I forgot your birthday. I ________ (work) so hard this month.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">have been working</span> — An excuse: the reason for the problem.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> There's flour all over the counter. What ________ (Grandma / make)?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">has Grandma been making</span> — Question form: has + subject + been + verb-ing.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> Please excuse my late reply. I ________ (study) for my final exams.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">have been studying</span> — An excuse for the late reply.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> Mario is out of breath, and his face is red. He ________ (run) up the stairs.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">has been running</span> — His red face is the evidence. He = has.</p>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 5: USES 3 + 4 -->
+<section>
+  <h2>Uses 3 and 4 — Complaints and Repeated Actions</h2>
+  <div class="pattern-box">
+    <strong>Complaint:</strong> Someone keeps doing something that bothers you. Often with <em>again</em> or an exclamation mark (!).<br>
+    <strong>Repeated action:</strong> Something happens again and again up to now. Time clues: <code>all day</code> <code>all week</code> <code>all morning</code>.
+  </div>
+  <div class="example">My little brother <span class="key">has been using</span> my headphones again!</div>
+  <div class="example">The neighbors <span class="key">have been letting</span> their dog bark at night.</div>
+  <div class="example">The car alarm downstairs <span class="key">has been beeping</span> all week.</div>
+  <div class="example">My coworker <span class="key">has been begging</span> me for rides all month.</div>
+  <div class="check-tip"><strong>No number!</strong> <em>has been begging</em> = again and again. A number (<em>has begged four times</em>) = present perfect.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 6: EXERCISE 2 (MC) -->
+<section>
+  <h2>Exercise 2 — Choose the Correct Answer</h2>
+  <p>Click a, b, c, or d.</p>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> My upstairs neighbor ____ heavy boxes across the floor every night! I can't sleep.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. have been dragging</button>
+      <button class="opt">b. is been dragging</button>
+      <button class="opt">c. has been dragging</button>
+      <button class="opt">d. has dragging</button>
+    </div>
+    <div class="explain" data-explain="A complaint. My neighbor = he or she, so use has been + verb-ing."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> My roommate ____ his dirty socks on the kitchen table again! It's so gross.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. has been leaving</button>
+      <button class="opt">b. have been leaving</button>
+      <button class="opt">c. has been leave</button>
+      <button class="opt">d. is leaving been</button>
+    </div>
+    <div class="explain" data-explain="A complaint with again. Been is followed by verb-ing."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> My boss ____ me with questions all morning, so I haven't finished my report.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. has been interrupt</button>
+      <button class="opt">b. have been interrupting</button>
+      <button class="opt">c. has be interrupting</button>
+      <button class="opt">d. has been interrupting</button>
+    </div>
+    <div class="explain" data-explain="Repeated action: all morning, again and again."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> Lucy ____ the same joke all week, and nobody laughs anymore.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. have been telling</button>
+      <button class="opt">b. has been telling</button>
+      <button class="opt">c. has been told</button>
+      <button class="opt">d. is telling</button>
+    </div>
+    <div class="explain" data-explain="Repeated action with all week. Lucy = has."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> My sister ____ my clothes without asking! My favorite jacket is in her room.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. has been borrowing</button>
+      <button class="opt">b. have been borrowing</button>
+      <button class="opt">c. is borrow</button>
+      <button class="opt">d. borrowing has</button>
+    </div>
+    <div class="explain" data-explain="A complaint. The jacket in her room is also evidence."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> Kim ____ me about the party all day. She really wants me to come.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. has texted been</button>
+      <button class="opt">b. have been texting</button>
+      <button class="opt">c. has been texting</button>
+      <button class="opt">d. is texting</button>
+    </div>
+    <div class="explain" data-explain="Repeated action: all day, many messages, no number."></div>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 7: USE 5 + QUESTIONS -->
+<section>
+  <h2>Use 5 — Temporary Situations and Questions</h2>
+  <div class="pattern-box">
+    <strong>Temporary situation:</strong> It is true now, but it is not forever.<br>
+    Time clues: <code>lately</code> <code>these days</code> <code>this month</code>
+  </div>
+  <div class="example">My husband <span class="key">has been working</span> nights this month.</div>
+  <div class="example">These days, we<span class="key">'ve been riding</span> our bikes to work.</div>
+  <div class="example">Ben <span class="key">hasn't been coming</span> to class lately.</div>
+  <div class="example">What <span class="key">have</span> you <span class="key">been reading</span> lately?</div>
+  <div class="example">How long <span class="key">have</span> you <span class="key">been playing</span> the guitar?</div>
+  <p class="note">A <em>How long</em> question has no for or since. The answer often does: "For two years."</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 8: EXERCISE 3 -->
+<section>
+  <h2>Exercise 3 — Temporary Situations and Questions</h2>
+  <p>Write the present perfect continuous form of the verb. Then click to check.</p>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> My grandmother ________ (go) to a yoga class at the library these days.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">has been going</span> — these days = a temporary situation.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> ________ (you / eat) a lot of fast food lately? Your doctor says your cholesterol is high.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">Have you been eating</span> — Question: Have + you + been + verb-ing.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> We ________ (not / use) the car much this month because gas is so expensive.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">haven't been using</span> (or <span class="key">have not been using</span>) — Negative: haven't + been + verb-ing.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> What ________ (your kids / do) after school these days?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">have your kids been doing</span> — Your kids = they, so use have.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> How long ________ (Ramon / wait) at the bus stop? He looks cold.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">has Ramon been waiting</span> — A How long question. Ramon = has.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> My English ________ (get) better lately because I watch movies with English subtitles.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">has been getting</span> — lately = a change happening now.</p>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 9: CONTRAST -->
+<section>
+  <h2>Present Perfect Continuous or Present Perfect?</h2>
+  <table class="compare">
+    <tr><th>Present perfect continuous</th><th>Present perfect</th></tr>
+    <tr><td>The activity (maybe not finished)</td><td>A number, so far, or a finished result</td></tr>
+    <tr><td>Mia has been folding laundry all afternoon.</td><td>Mia has folded five baskets.</td></tr>
+    <tr><td>I've been washing the car. (My shoes are wet.)</td><td>I've washed the car. (It's clean now.)</td></tr>
+  </table>
+  <div class="check-tip"><strong>Stative verbs</strong> (be, know, like, own) do not use -ing here.<br>
+    I<strong>'ve known</strong> about the problem all week. — NOT <s>have been knowing</s></div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 10: EXERCISE 4 (MC) -->
+<section>
+  <h2>Exercise 4 — Which Form?</h2>
+  <p>Click a, b, c, or d.</p>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> Look at all these boxes! How many ____ ?</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. have you been packing</button>
+      <button class="opt">b. have you packed</button>
+      <button class="opt">c. you have packed</button>
+      <button class="opt">d. has you packed</button>
+    </div>
+    <div class="explain" data-explain="How many = a number, so use the present perfect."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> Jun's hands are black with grease. He ____ on his motorcycle.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. have worked</button>
+      <button class="opt">b. is worked</button>
+      <button class="opt">c. have been working</button>
+      <button class="opt">d. has been working</button>
+    </div>
+    <div class="explain" data-explain="The grease is evidence of the activity."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> The weather ____ really strange lately. It was 90 degrees on Monday and 50 degrees today!</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. has been being</button>
+      <button class="opt">b. have been</button>
+      <button class="opt">c. has been</button>
+      <button class="opt">d. is been</button>
+    </div>
+    <div class="explain" data-explain="Be is a stative verb: has been, not has been being."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> Liam ____ the whole book! Now he wants the next one in the series.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. has finished</button>
+      <button class="opt">b. have finished</button>
+      <button class="opt">c. is finishing</button>
+      <button class="opt">d. has been finishing</button>
+    </div>
+    <div class="explain" data-explain="A finished result: the whole book is done."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> My wife ____ for a new job lately, but she hasn't found one yet.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. looks</button>
+      <button class="opt">b. has been looking</button>
+      <button class="opt">c. have been looking</button>
+      <button class="opt">d. has been look</button>
+    </div>
+    <div class="explain" data-explain="lately + not finished = present perfect continuous."></div>
+  </div>
+
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> How many times ____ the dentist this year?</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. have you been visiting</button>
+      <button class="opt">b. you have visited</button>
+      <button class="opt">c. have you visited</button>
+      <button class="opt">d. has you visited</button>
+    </div>
+    <div class="explain" data-explain="How many times = a number, so use the present perfect."></div>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 11: EXERCISE 5 (ERROR CORRECTION) -->
+<section>
+  <h2>Exercise 5 — Find the Mistake</h2>
+  <p>Each sentence has one mistake in the CAPITALIZED words. Say the correct present perfect continuous or present perfect form. Then click to check.</p>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> My kids HAS BEEN ARGUING about the TV remote all evening.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">have been arguing</span> — My kids = they, so use have.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> Your hair is wet. HAVE YOU BEEN SWIM at the pool?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">Have you been swimming</span> — Been is followed by verb-ing.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> These days, Marta HAS WORKING two jobs to pay for school.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">has been working</span> — Don't forget been.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> My uncle HAS BEEN OWNING that old truck all his life.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">has owned</span> — Own is a stative verb, so no -ing.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> Grandpa's face is red from the sun. He HAS BEEN RAKE leaves in the yard all afternoon.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">has been raking</span> — Evidence now. Been is followed by verb-ing.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> The cat next door HAVE BEEN SLEEPING on my car lately. There are paw prints everywhere.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">has been sleeping</span> — The cat = it, so use has.</p>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 12: EXERCISE 6 (MIXED) -->
+<section>
+  <h2>Exercise 6 — Mixed Practice</h2>
+  <p>Write the present perfect continuous or present perfect form of the verb. Then click to check.</p>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> Pablo ________ (drink) four glasses of water this afternoon.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">has drunk</span> — A number (four glasses) = present perfect.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> Why are you so dusty? ________ (you / clean) the attic all morning?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">Have you been cleaning</span> — Evidence now (the dust) + all morning.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> Oh no! The cat ________ (break) my favorite mug. There are pieces on the floor.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">has broken</span> — A finished result: the mug is in pieces now.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> My daughter ________ (practice) the piano a lot these days because she has a concert soon.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">has been practicing</span> — these days = a temporary situation.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> Hassan ________ (have) three different jobs this year.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">has had</span> — A number (three jobs) = present perfect.</p>
+  </div>
+
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> The baby's eyes are red, and her cheeks are wet. She ________ (cry).</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">has been crying</span> — Evidence now: red eyes and wet cheeks.</p>
+  </div>
+
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 13: SUMMARY -->
+<section>
+  <h2>Summary — No For or Since? Look for Clues</h2>
+  <table class="compare">
+    <tr><th>Use</th><th>Clue</th><th>Example</th></tr>
+    <tr><td>Evidence now</td><td>You see, hear, or smell a result</td><td>The floor is wet. Someone has been mopping.</td></tr>
+    <tr><td>Excuse or reason</td><td>Sorry / excuse me + why</td><td>Excuse my messy hair. I've been working in the garden.</td></tr>
+    <tr><td>Complaint</td><td>again, !</td><td>My little brother has been using my headphones again!</td></tr>
+    <tr><td>Repeated action</td><td>all day, all week (no number)</td><td>The car alarm downstairs has been beeping all week.</td></tr>
+    <tr><td>Temporary situation</td><td>lately, these days, this month</td><td>My husband has been working nights this month.</td></tr>
+    <tr><td>Present perfect instead</td><td>a number, so far, a finished result, stative verbs</td><td>Mia has folded five baskets.</td></tr>
+  </table>
+  <p style="text-align:center; margin-top:30px; font-size:0.95em; color:var(--accent);"><strong>End of Deck — Great work!</strong></p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    controls: true,
+    progress: true,
+    center: false,
+    transition: 'slide',
+    width: 1100,
+    height: 720,
+    margin: 0.04
+  });
+
+  // Clickable multiple-choice wiring (data-correct = 0-indexed button)
+  document.querySelectorAll('.mc').forEach(mc => {
+    const correct = parseInt(mc.dataset.correct, 10);
+    const buttons = mc.querySelectorAll('button.opt');
+    const explain = mc.nextElementSibling && mc.nextElementSibling.classList.contains('explain')
+      ? mc.nextElementSibling : null;
+    const explainText = explain ? explain.dataset.explain || '' : '';
+    buttons.forEach((b, i) => {
+      b.addEventListener('click', () => {
+        // `sel` marks the clicked button so its class always changes on every
+        // click — keeps verify_html_deck.mjs from false-failing when the correct
+        // answer isn't option (a). Do not remove.
+        buttons.forEach(x => x.classList.remove('correct', 'wrong', 'sel'));
+        b.classList.add('sel');
+        if (i === correct) {
+          b.classList.add('correct');
+          if (explain) {
+            explain.textContent = '✓ Correct. ' + explainText;
+            explain.classList.remove('bad'); explain.classList.add('good');
+          }
+        } else {
+          b.classList.add('wrong');
+          buttons[correct].classList.add('correct');
+          if (explain) {
+            const answerText = buttons[correct].textContent;
+            explain.innerHTML = '✗ The answer is <strong>' + answerText + '</strong>. ' + explainText;
+            explain.classList.remove('good'); explain.classList.add('bad');
+          }
+        }
+      });
+    });
+  });
+</script>
+<!-- PENCIL DRAW OVERLAY — iPad annotation layer (additive; safe to delete this whole block) -->
+<style>
+  #drawCanvas {
+    position: fixed; inset: 0; z-index: 50; pointer-events: none; touch-action: none;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  }
+  html.draw-armed, html.draw-armed body, html.draw-armed .reveal {
+    -webkit-user-select: none !important; user-select: none !important;
+    -webkit-touch-callout: none !important;
+  }
+  html.presentation-mode, html.presentation-mode body {
+    width: 100%; height: 100%; overflow: hidden !important; overscroll-behavior: none;
+  }
+  html.presentation-mode body { position: fixed; inset: 0; }
+  html.presentation-mode .reveal { width: 100vw !important; height: 100vh !important; height: 100dvh !important; }
+  html.presentation-mode .reveal .slides section { overscroll-behavior-y: contain; }
+  #drawToggle {
+    position: fixed; top: 10px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 20px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle.armed { opacity: 1; background: #fde9c8; border-color: #e8a013; }
+  #fsToggle {
+    position: fixed; top: 62px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 19px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle, #fsToggle { transition: opacity 0.3s; }
+  html.presentation-mode #drawToggle:not(.armed), html.presentation-mode #fsToggle { opacity: 0.15; }
+  #drawBar {
+    position: fixed; top: 10px; right: 62px; z-index: 60; display: flex; gap: 8px;
+    background: #fff; border: 1px solid #bbb; border-radius: 22px; padding: 6px 10px;
+    align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  #drawBar button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ccc; background: #fff; cursor: pointer; font-size: 15px; padding: 0; }
+  #drawBar .swatch { border-width: 2px; }
+  #drawBar .swatch.on { outline: 3px solid #e8a013; }
+</style>
+<canvas id="drawCanvas"></canvas>
+<div id="drawBar" hidden>
+  <button class="swatch on" data-color="#d33333" style="background:#d33333"></button>
+  <button class="swatch" data-color="#2266cc" style="background:#2266cc"></button>
+  <button class="swatch" data-color="#1a1a1a" style="background:#1a1a1a"></button>
+  <button id="drawUndo" title="Undo">↩</button>
+  <button id="drawClear" title="Clear slide">✕</button>
+</div>
+<button id="drawToggle" title="Pencil mode (pen only; finger locked)" aria-pressed="false">✏️</button>
+<button id="fsToggle" title="Presentation mode" aria-label="Presentation mode" aria-pressed="false">⛶</button>
+<script>
+(() => {
+  const cv = document.getElementById('drawCanvas');
+  const ctx = cv.getContext('2d');
+  const bar = document.getElementById('drawBar');
+  const toggle = document.getElementById('drawToggle');
+  let armed = false, color = '#d33333', cur = null, drawPointerId = null;
+  const strokes = new Map(); // slide "h-v" -> stroke list; ink persists per slide
+  const key = () => { const i = Reveal.getIndices(); return i.h + '-' + (i.v || 0); };
+  const list = () => { const k = key(); if (!strokes.has(k)) strokes.set(k, []); return strokes.get(k); };
+
+  function size() {
+    const d = window.devicePixelRatio || 1;
+    cv.width = innerWidth * d; cv.height = innerHeight * d;
+    cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    render();
+  }
+  function seg(a, b, c, w) {
+    ctx.strokeStyle = c; ctx.lineWidth = Math.max(0.75, w * innerWidth);
+    ctx.beginPath(); ctx.moveTo(a.x * innerWidth, a.y * innerHeight);
+    ctx.lineTo(b.x * innerWidth, b.y * innerHeight); ctx.stroke();
+  }
+  function render() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const s of list())
+      for (let i = 1; i < s.pts.length; i++) seg(s.pts[i - 1], s.pts[i], s.color, s.pts[i].w);
+  }
+  const pt = (e) => ({ x: e.clientX / innerWidth, y: e.clientY / innerHeight,
+    w: (e.pointerType === 'pen' ? 1.5 + 4 * (e.pressure || 0.5) : 3) / innerWidth });
+
+  const cancel = (e) => { if (e.cancelable) e.preventDefault(); };
+  cv.addEventListener('pointerdown', (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerType === 'touch') {
+      cv.setPointerCapture(e.pointerId); // swallow the palm/finger for its full contact
+      return;
+    }
+    if ((e.pointerType !== 'pen' && e.pointerType !== 'mouse') || drawPointerId !== null) return;
+    drawPointerId = e.pointerId;
+    cur = { color, pts: [pt(e)] };
+    list().push(cur);
+    cv.setPointerCapture(e.pointerId);
+  }, { passive: false });
+  cv.addEventListener('pointermove', (e) => {
+    if (!armed) return;
+    if (e.pointerType === 'touch') { cancel(e); return; }
+    if (!cur || e.pointerId !== drawPointerId) return;
+    cancel(e);
+    const coalesced = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+    const events = coalesced && coalesced.length ? coalesced : [e];
+    for (const ev of events) {
+      const p = pt(ev);
+      seg(cur.pts[cur.pts.length - 1], p, cur.color, p.w);
+      cur.pts.push(p);
+    }
+  }, { passive: false });
+  const end = (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerId === drawPointerId) { cur = null; drawPointerId = null; }
+  };
+  cv.addEventListener('pointerup', end, { passive: false });
+  cv.addEventListener('pointercancel', end, { passive: false });
+  for (const eventName of ['touchstart', 'touchmove', 'touchend', 'touchcancel'])
+    cv.addEventListener(eventName, (e) => { if (armed) cancel(e); }, { passive: false });
+  document.addEventListener('selectstart', (e) => { if (armed) cancel(e); });
+
+  toggle.addEventListener('click', () => {
+    armed = !armed;
+    cv.style.pointerEvents = armed ? 'auto' : 'none'; // disarmed = taps/swipes reach the slides
+    bar.hidden = !armed;
+    toggle.classList.toggle('armed', armed);
+    toggle.setAttribute('aria-pressed', String(armed));
+    document.documentElement.classList.toggle('draw-armed', armed);
+    if (!armed) { cur = null; drawPointerId = null; }
+  });
+  bar.querySelectorAll('.swatch').forEach((b) => b.addEventListener('click', () => {
+    color = b.dataset.color;
+    bar.querySelectorAll('.swatch').forEach((x) => x.classList.toggle('on', x === b));
+  }));
+  document.getElementById('drawUndo').addEventListener('click', () => { list().pop(); render(); });
+  document.getElementById('drawClear').addEventListener('click', () => { strokes.set(key(), []); render(); });
+
+  Reveal.on('slidechanged', render);
+  addEventListener('resize', size);
+  size();
+
+  // Fixed presentation mode avoids iPadOS's native-fullscreen pull-down exit gesture.
+  const fsT = document.getElementById('fsToggle');
+  let presenting = false;
+  const toast = (message) => {
+    const t = document.createElement('div');
+    t.textContent = message;
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:10px;font:14px system-ui;z-index:99;max-width:46ch;text-align:center';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  };
+  fsT.addEventListener('click', () => {
+    presenting = !presenting;
+    document.documentElement.classList.toggle('presentation-mode', presenting);
+    fsT.textContent = presenting ? '\u2921' : '\u26f6';
+    fsT.setAttribute('aria-pressed', String(presenting));
+    fsT.title = presenting ? 'Exit presentation mode' : 'Presentation mode';
+    requestAnimationFrame(() => {
+      if (Reveal.layout) Reveal.layout();
+      size();
+    });
+    if (presenting) toast('Presentation mode on. For more space in Safari, tap AA, then Hide Toolbar.');
+  });
+})();
+</script>
+<!-- END PENCIL DRAW OVERLAY -->
+
+</body>
+</html>
