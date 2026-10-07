@@ -61,11 +61,11 @@ select{font:inherit;font-size:16px;border:1px solid var(--line);border-radius:8p
 <button class="seg" id="diff" hidden title="Both mouths show where the tongue starts, as each word is spoken">Show the difference</button></div>
 <div class="res" id="res"></div>
 <div class="row" style="margin-top:10px">
-<span>Speed:</span><button class="seg" data-speed="1">1×</button><button class="seg" data-speed="2" aria-pressed="true">½×</button><button class="seg" data-speed="4">¼×</button><button class="seg" data-speed="8">⅛×</button>
+<span>Speed:</span><button class="seg" data-speed="1" aria-pressed="true">1×</button><button class="seg" data-speed="2">½×</button><button class="seg" data-speed="4">¼×</button><button class="seg" data-speed="8">⅛×</button>
 <span style="margin-left:14px">View:</span><button class="seg" data-view="side" aria-pressed="true">Side</button><button class="seg" data-view="quarter" title="Front-left corner, close on the lips">¾</button><button class="seg" data-view="front">Front</button><button class="seg" data-view="draw" title="A drawing of the mouth cut down the middle, seen from the side, with a close-up of the lips">Drawing</button>
 <label style="margin-left:14px" title="See-through: look through the face at the tongue. Hidden: teeth, gums and tongue only">Face <select id="face"><option value="see">See-through</option><option value="solid">Solid</option><option value="none">Hidden</option></select></label>
 <label style="margin-left:14px">Voice <select id="voice" title="Auto: Bella, a natural voice (the 20,000 most common words); other words: this computer's Samantha voice if it has one, otherwise the voice built into this page">
-<option value="auto">Auto</option><option value="bella">Bella</option><option value="builtin">Built-in</option><option value="device">This computer</option><option value="off">Off</option></select></label>
+<option value="auto">Auto</option><option value="bella" selected>Bella</option><option value="builtin">Built-in</option><option value="device">This computer</option><option value="off">Off</option></select></label>
 <span class="vname" id="vname"></span>
 <label style="margin-left:14px"><input type="checkbox" id="air" checked> <span style="color:#1976d2;font-weight:600">➜ Air</span></label>
 </div>
@@ -6063,7 +6063,7 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
   // ---------------------------------------------------------------- words
   const V = { AA: "ɑ", AE: "æ", AO: "ɔ", AW: "aʊ", AY: "aɪ", EH: "ɛ", ER: "ɚ", EY: "eɪ", IH: "ɪ", IY: "i", OW: "oʊ", OY: "ɔɪ", UH: "ʊ", UW: "u" };
   const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  let cur = null, cur2 = null, compare = false, anim = null, speed = 2, sel = -1;  // ½× by default (Mike 2026-09-24)
+  let cur = null, cur2 = null, compare = false, anim = null, speed = 1, sel = -1;  // 1× by default (Mike 2026-10-07; was ½× from 2026-09-24)
   let solo = null;  // the sound held from the Single sounds panel (the left or only mouth), else null
   // compare view: each half's pose (q), whether it holds a sound (held: its air shows), and its drawing snapshot
   const sides = [{ q: null, held: false, snap: null }, { q: null, held: false, snap: null }];
@@ -6396,8 +6396,8 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
   }
   let deviceFailed = false;
   const vsel = $("voice");
-  try { const v = localStorage.getItem("mouthVoice"); if ([...vsel.options].some((o) => o.value === v)) vsel.value = v; } catch (e) { /* no storage */ }
-  vsel.onchange = () => { deviceFailed = false; try { localStorage.setItem("mouthVoice", vsel.value); } catch (e) { /* no storage */ } if (cur) play(); };
+  try { const v = localStorage.getItem("mouthVoice2"); if ([...vsel.options].some((o) => o.value === v)) vsel.value = v; } catch (e) { /* no storage */ }
+  vsel.onchange = () => { deviceFailed = false; try { localStorage.setItem("mouthVoice2", vsel.value); } catch (e) { /* no storage */ } if (cur) play(); };
   const devVoices = () => ("speechSynthesis" in window ? speechSynthesis.getVoices() : []);
   const samantha = () => devVoices().find((v) => /Samantha/.test(v.name));
   const devVoice = () => { const vs = devVoices(), us = (v) => /^en[-_]US$/i.test(v.lang);
