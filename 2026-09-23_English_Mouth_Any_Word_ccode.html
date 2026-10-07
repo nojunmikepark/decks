@@ -5258,6 +5258,7 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
   palate.renderOrder = 1; upperGum.renderOrder = 2; upperTeeth.renderOrder = 3;
   const velum = meshOf(PARTS.velum, MATS.palate, true);
   const lowerRest = { teeth: f32(PARTS.lower_teeth.pos), gum: f32(PARTS.lower_gum.pos) };
+  const lowerRestN = new Map([lowerTeeth, lowerGum].map((o) => [o, Float32Array.from(o.geometry.attributes.normal.array)]));  // three.js axes, jaw shut
   const velUp = f32(PARTS.velum.pos), velDn = f32(PARTS.velum.pos_dn);
   const F = PARTS.face;
   const FD = { n: F.n, pos: f32(F.pos), lipw: f32(F.lipw), dmouth: f32(F.dmouth), dup: f32(F.dup), dlo: f32(F.dlo) };
@@ -5397,7 +5398,12 @@ float vnz(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f)
   function setJaw(obj, rest, deg) {
     const a = obj.geometry.attributes.position.array, n = rest.length / 3;
     for (let i = 0; i < n; i++) { const [y, z] = M.jawRot(rest[3 * i + 1], rest[3 * i + 2], deg); put(a, i, rest[3 * i], y, z); }
-    obj.geometry.attributes.position.needsUpdate = true; obj.geometry.computeVertexNormals();
+    obj.geometry.attributes.position.needsUpdate = true;
+    // the jaw turn is a rigid rotation round the hinge, so the rest normals turn by the same angle: recomputing them
+    // every frame cost Safari ~5 ms of its 16.7 ms frame (Mike 2026-10-07: "runs terrible" in Safari)
+    const na = obj.geometry.attributes.normal.array, nr = lowerRestN.get(obj), r = deg * Math.PI / 180, c = Math.cos(r), s = Math.sin(r);
+    for (let i = 0; i < n; i++) { const ny = nr[3 * i + 2], nz = nr[3 * i + 1]; put(na, i, nr[3 * i], ny * c + nz * s, -ny * s + nz * c); }
+    obj.geometry.attributes.normal.needsUpdate = true;
   }
   // one posed object per sound frame, so the per-pose caches (face cut, air path) still hold when the two mouths of
   // the compare view take turns with the same model
