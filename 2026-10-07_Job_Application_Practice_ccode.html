@@ -1,0 +1,488 @@
+<title>Oak Street Books Job Application</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@600;700&family=Libre+Franklin:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one paper application sheet, form-number strip on top, sections as ruled bands; teacher list below for the owner only. */
+:root {
+  --bg: #e9ecef;
+  --paper: #fdfdfb;
+  --ink: #1d2733;
+  --muted: #5b6672;
+  --rule: #c9d0d7;
+  --accent: #1f4e79;
+  --accent-soft: #e3ecf5;
+  --error: #a3262a;
+  --ok: #2a6b3d;
+  --font-display: "Zilla Slab", Rockwell, "Roboto Slab", Georgia, serif;
+  --font-body: "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12161b; --paper: #1b2128; --ink: #e4e8ec; --muted: #9aa5b1; --rule: #34404c;
+    --accent: #8fb8e3; --accent-soft: #233243; --error: #f08a8d; --ok: #86cf9b; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12161b; --paper: #1b2128; --ink: #e4e8ec; --muted: #9aa5b1; --rule: #34404c;
+  --accent: #8fb8e3; --accent-soft: #233243; --error: #f08a8d; --ok: #86cf9b; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body);
+  font-size: 16px; line-height: 1.5; padding: 24px 16px 48px;
+}
+.sheet {
+  max-width: 720px; margin: 0 auto; background: var(--paper);
+  border: 1px solid var(--rule); border-radius: 4px; padding: 28px clamp(16px, 5vw, 40px) 32px;
+}
+.formno {
+  display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  font-family: var(--font-mono); font-size: 12px; color: var(--muted);
+  letter-spacing: .04em; text-transform: uppercase; border-bottom: 1px solid var(--rule); padding-bottom: 8px;
+}
+h1 { font-family: var(--font-display); font-size: clamp(26px, 5vw, 34px); line-height: 1.15; margin: 18px 0 4px; text-wrap: balance; }
+.practice {
+  margin: 12px 0 0; padding: 10px 14px; background: var(--accent-soft);
+  border-left: 3px solid var(--accent); font-weight: 500;
+}
+.eeo { color: var(--muted); font-size: 14px; margin: 14px 0 0; max-width: 65ch; }
+.bio { margin-top: 20px; padding: 16px 18px; border: 1px dashed var(--accent); border-radius: 4px; display: grid; gap: 8px; }
+.bio h2 { font-family: var(--font-display); font-size: 20px; margin: 0; color: var(--accent); }
+.bio p { margin: 0; max-width: 65ch; }
+.bio-text { display: grid; gap: 8px; }
+.picker { display: grid; gap: 6px; border-bottom: 1px solid var(--rule); padding-bottom: 12px; margin-bottom: 4px; }
+.picks { display: flex; flex-wrap: wrap; gap: 8px; }
+.picks button { padding: 6px 14px; background: transparent; color: var(--accent); font-weight: 500; }
+.picks button[aria-pressed="true"] { background: var(--accent); color: var(--paper); }
+form { display: grid; gap: 28px; margin-top: 24px; }
+fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 18px; min-width: 0; }
+legend {
+  font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--accent);
+  width: 100%; border-bottom: 2px solid var(--accent); padding-bottom: 4px; margin-bottom: 14px;
+}
+.field { display: grid; gap: 6px; }
+.field > label, .q { font-weight: 600; }
+.hint { font-size: 14px; color: var(--muted); }
+input[type="text"], input[type="tel"], input[type="date"] {
+  font: inherit; color: var(--ink); background: transparent; width: 100%;
+  border: 0; border-bottom: 1.5px solid var(--rule); padding: 6px 2px; border-radius: 0;
+}
+input[type="text"]:focus, input[type="tel"]:focus, input[type="date"]:focus {
+  outline: none; border-bottom-color: var(--accent); background: var(--accent-soft);
+}
+input.mono { font-family: var(--font-mono); }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; }
+.choices { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+.choices label { display: inline-flex; align-items: center; gap: 8px; font-weight: 400; cursor: pointer; padding: 4px 0; }
+.choices input { width: 18px; height: 18px; accent-color: var(--accent); margin: 0; }
+input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.err { color: var(--error); font-size: 14px; font-weight: 500; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; border-top: 1px solid var(--rule); padding-top: 20px; }
+button {
+  font: inherit; font-weight: 600; cursor: pointer; border-radius: 4px; padding: 10px 22px;
+  border: 1.5px solid var(--accent);
+}
+.primary { background: var(--accent); color: var(--paper); }
+.ghost { background: transparent; color: var(--accent); }
+button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.closing { text-align: center; font-family: var(--font-display); font-size: 17px; color: var(--muted); margin: 26px 0 0; }
+
+.receipt { display: grid; gap: 16px; margin-top: 24px; }
+.receipt h2, .teacher h2 { font-family: var(--font-display); font-size: 24px; margin: 0; }
+.score { font-family: var(--font-display); font-size: 20px; font-weight: 700; margin: 0; }
+.receipt .hint { margin: 0; }
+.mark-ok { color: var(--ok); }
+.mark-no { color: var(--error); }
+.fix { font-weight: 600; margin-top: 2px; }
+.status { padding: 10px 14px; border-left: 3px solid var(--ok); background: var(--accent-soft); }
+.status.warn { border-left-color: var(--muted); }
+dl { display: grid; grid-template-columns: minmax(0, 15em) minmax(0, 1fr); margin: 0; border-top: 1px solid var(--rule); }
+dt, dd { padding: 8px 0; border-bottom: 1px solid var(--rule); margin: 0; }
+dt { color: var(--muted); font-size: 14px; padding-right: 12px; }
+dd { font-weight: 500; overflow-wrap: anywhere; }
+@media (max-width: 480px) {
+  dl { grid-template-columns: 1fr; }
+  dt { border-bottom: 0; padding-bottom: 0; }
+}
+
+.teacher { max-width: 720px; margin: 24px auto 0; background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; padding: 24px clamp(16px, 5vw, 40px); display: grid; gap: 12px; }
+.teacher p { margin: 0; color: var(--muted); font-size: 14px; }
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 560px; }
+th, td { text-align: left; padding: 8px 10px 8px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 600; }
+td.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+</style>
+
+<div class="sheet">
+  <div class="formno"><span>Form EA-1 · Application for Employment</span><span>EL Civics practice</span></div>
+  <h1>Oak Street Books Application for Employment</h1>
+  <p class="practice">This is practice for EL Civics. This is not a real job application.</p>
+  <p class="eeo">We consider applications for all positions without regard to race, color, religion, creed, gender, national origin, age, disability, marital or veteran status, sexual orientation, or any other legally protected status.</p>
+
+  <section class="bio" aria-labelledby="bio-title">
+    <div class="picker" role="group" aria-label="Choose your practice person">
+      <span class="hint">Your teacher will give you a number.</span>
+      <div class="picks" id="picks"></div>
+    </div>
+    <h2 id="bio-title">Your practice person</h2>
+    <p class="hint" id="bio-hint"></p>
+    <div id="bio-text" class="bio-text"></div>
+    <p>For the Social Security number, use the practice number 000-00-0000.</p>
+  </section>
+
+  <form id="app" novalidate>
+    <div class="field">
+      <label for="position">Position applied for</label>
+      <input type="text" id="position" name="position" autocomplete="off">
+    </div>
+
+    <fieldset>
+      <legend>Personal Information</legend>
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="ssn">Social Security Number</label>
+        <span class="hint" id="ssn-hint">Practice only. Type 000-00-0000. Never type your real number here.</span>
+        <input type="text" id="ssn" name="ssn" class="mono" inputmode="numeric" autocomplete="off" placeholder="000-00-0000" aria-describedby="ssn-hint ssn-err">
+        <span class="err" id="ssn-err" hidden>For this practice form, type 000-00-0000.</span>
+      </div>
+      <div class="field">
+        <label for="address">Home address</label>
+        <input type="text" id="address" name="address" autocomplete="off">
+      </div>
+      <div class="two">
+        <div class="field">
+          <label for="homePhone">Home phone</label>
+          <input type="tel" id="homePhone" name="homePhone" class="mono" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="businessPhone">Business phone</label>
+          <input type="tel" id="businessPhone" name="businessPhone" class="mono" autocomplete="off">
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Job History</legend>
+      <div class="field" role="radiogroup" aria-labelledby="q-before">
+        <span class="q" id="q-before">Have you ever been employed with us before?</span>
+        <div class="choices">
+          <label><input type="radio" id="employedBefore-yes" name="employedBefore" value="Yes"> Yes</label>
+          <label><input type="radio" id="employedBefore-no" name="employedBefore" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field" role="radiogroup" aria-labelledby="q-current">
+        <span class="q" id="q-current">Are you currently employed?</span>
+        <div class="choices">
+          <label><input type="radio" id="currentlyEmployed-yes" name="currentlyEmployed" value="Yes"> Yes</label>
+          <label><input type="radio" id="currentlyEmployed-no" name="currentlyEmployed" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field" role="radiogroup" aria-labelledby="q-contact">
+        <span class="q" id="q-contact">May we contact your present employer?</span>
+        <div class="choices">
+          <label><input type="radio" id="contactEmployer-yes" name="contactEmployer" value="Yes"> Yes</label>
+          <label><input type="radio" id="contactEmployer-no" name="contactEmployer" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label for="availableDate">On what date would you be available to work?</label>
+        <input type="date" id="availableDate" name="availableDate">
+      </div>
+      <div class="field" role="group" aria-labelledby="q-avail">
+        <span class="q" id="q-avail">Are you available to work: <span class="hint">(check all that are true)</span></span>
+        <div class="choices">
+          <label><input type="checkbox" id="avail-full" name="availability" value="full-time"> full-time</label>
+          <label><input type="checkbox" id="avail-part" name="availability" value="part-time"> part-time</label>
+          <label><input type="checkbox" id="avail-temp" name="availability" value="temporary"> temporary</label>
+        </div>
+      </div>
+      <div class="field" role="radiogroup" aria-labelledby="q-travel">
+        <span class="q" id="q-travel">Can you travel occasionally if the job requires it?</span>
+        <div class="choices">
+          <label><input type="radio" id="travel-yes" name="travel" value="Yes"> Yes</label>
+          <label><input type="radio" id="travel-no" name="travel" value="No"> No</label>
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="actions">
+      <button type="submit" class="primary" id="submit">Submit</button>
+      <button type="button" class="ghost" id="clear">Clear form</button>
+    </div>
+    <span class="err" id="clear-confirm" hidden>Click Clear form again to erase every answer.</span>
+  </form>
+
+  <section class="receipt" id="receipt" hidden aria-live="polite">
+    <h2>Application submitted</h2>
+    <p class="score" id="score"></p>
+    <p class="hint">✓ means your answer is right. ✗ means it is wrong, and the right answer is under it.</p>
+    <div class="status" id="save-status"></div>
+    <dl id="summary"></dl>
+    <div class="actions"><button type="button" class="ghost" id="again">Fill in a new application</button></div>
+  </section>
+
+  <p class="closing">We are an equal opportunity employer</p>
+</div>
+
+<section class="teacher" id="teacher" hidden>
+  <h2>Submitted applications</h2>
+  <p id="teacher-note">Only you see this list. Each student's latest submission appears here. Social Security numbers are not saved.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Submitted</th><th>Name</th><th>Score</th><th>Position</th><th>Available</th><th>Hours</th><th>Before / Now / Contact / Travel</th></tr></thead>
+      <tbody id="rows"><tr><td colspan="7">No applications yet. Student submissions show up here as they arrive.</td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<script>
+(function () {
+  const form = document.getElementById("app");
+  const ssn = document.getElementById("ssn");
+  const ssnErr = document.getElementById("ssn-err");
+  const receipt = document.getElementById("receipt");
+  const statusEl = document.getElementById("save-status");
+  const summary = document.getElementById("summary");
+  const clearBtn = document.getElementById("clear");
+  const clearConfirm = document.getElementById("clear-confirm");
+  let db = null, me = null, armedClear = false;
+
+  const BIOS = [
+    { name: "Lucia Flores", first: "Lucia", text: [
+      "Lucia Flores lives at 4521 Oakview Street, Apartment 3, Glendale, CA 91205. Her home phone number is (818) 555-0143. Lucia wants a job as a cashier at Oak Street Books. She never worked at Oak Street Books before.",
+      "Right now, Lucia works at Sunrise Café. The phone number at the café is (818) 555-0178. She likes her job, but she does not want her boss to know that she is looking for a new job. Please do not call the café.",
+      "Lucia goes to school in the morning, so she wants part-time work. She can also do temporary work during the busy holiday season. She can start on November 3, 2026. Lucia has a car, and she can drive to other stores sometimes for work."
+    ]},
+    { name: "Daniel Kim", first: "Daniel", text: [
+      "Daniel Kim lives at 1187 Linden Avenue, Glendale, CA 91201. His home phone number is (818) 555-0112. Daniel wants a job as a stock clerk at Oak Street Books. He has never worked at Oak Street Books.",
+      "Daniel works at Glendale Hardware now. The store's phone number is (818) 555-0165. His manager knows that Daniel wants a new job, and she says it is OK to call her.",
+      "Daniel wants to work 40 hours a week, so he is looking for full-time work only. He can start on October 20, 2026. Daniel does not have a car. He takes the bus, so he cannot travel for work."
+    ]},
+    { name: "Mei Chen", first: "Mei", text: [
+      "Mei Chen lives at 2309 Rosewood Drive, Burbank, CA 91504. Her home phone number is (818) 555-0131. Mei wants a job as a sales associate at Oak Street Books. She worked at Oak Street Books for one summer in 2024, and she liked it.",
+      "Now Mei works at Valley Flower Shop. The shop's phone number is (818) 555-0187. Her boss knows about her plans, and he is happy to talk to new employers about her.",
+      "Mei takes care of her son after 3:00 p.m., so she can only work part-time. She can start on December 1, 2026. Mei likes to travel. She can go to book fairs in other cities if the job needs it."
+    ]},
+    { name: "Samuel Okafor", first: "Samuel", text: [
+      "Samuel Okafor lives at 815 Cedar Court, Apartment 12, Glendale, CA 91203. His home phone number is (818) 555-0154. Samuel wants a job as a warehouse assistant at Oak Street Books. He worked at Oak Street Books as a cashier in 2023.",
+      "Samuel does not have a job right now. The restaurant where he worked closed in August. He has no business phone, so leave that line blank. He has no present employer, so answer No to the question about contacting a present employer.",
+      "Samuel needs work soon. He will take any kind of job: full-time, part-time, or temporary. He can start on October 13, 2026. Samuel has a driver's license, and he can travel for work when the job requires it."
+    ]}
+  ];
+  // Right answers, in the same order as BIOS.
+  const KEYS = [
+    { position: "Cashier", name: "Lucia Flores", address: "4521 Oakview Street, Apartment 3, Glendale, CA 91205",
+      homePhone: "(818) 555-0143", businessPhone: "(818) 555-0178", employedBefore: "No", currentlyEmployed: "Yes",
+      contactEmployer: "No", availableDate: "2026-11-03", availability: ["part-time", "temporary"], travel: "Yes" },
+    { position: "Stock clerk", name: "Daniel Kim", address: "1187 Linden Avenue, Glendale, CA 91201",
+      homePhone: "(818) 555-0112", businessPhone: "(818) 555-0165", employedBefore: "No", currentlyEmployed: "Yes",
+      contactEmployer: "Yes", availableDate: "2026-10-20", availability: ["full-time"], travel: "No" },
+    { position: "Sales associate", name: "Mei Chen", address: "2309 Rosewood Drive, Burbank, CA 91504",
+      homePhone: "(818) 555-0131", businessPhone: "(818) 555-0187", employedBefore: "Yes", currentlyEmployed: "Yes",
+      contactEmployer: "Yes", availableDate: "2026-12-01", availability: ["part-time"], travel: "Yes" },
+    { position: "Warehouse assistant", name: "Samuel Okafor", address: "815 Cedar Court, Apartment 12, Glendale, CA 91203",
+      homePhone: "(818) 555-0154", businessPhone: "", employedBefore: "Yes", currentlyEmployed: "No",
+      contactEmployer: "No", availableDate: "2026-10-13", availability: ["full-time", "part-time", "temporary"], travel: "Yes" }
+  ];
+  let current = 0;
+  const picks = document.getElementById("picks");
+  const bioText = document.getElementById("bio-text");
+  function showBio(i) {
+    current = i;
+    const b = BIOS[i];
+    document.getElementById("bio-title").textContent = "Your practice person: " + b.name;
+    document.getElementById("bio-hint").textContent = "Read about " + b.first + ". Then fill in the application as " + b.first + ".";
+    bioText.textContent = "";
+    for (const t of b.text) { const p = document.createElement("p"); p.textContent = t; bioText.append(p); }
+    for (const btn of picks.children) btn.setAttribute("aria-pressed", String(btn.dataset.i === String(i)));
+    try { localStorage.setItem("bio", String(i)); } catch (_) {}
+  }
+  BIOS.forEach((b, i) => {
+    const btn = document.createElement("button");
+    btn.type = "button"; btn.id = "pick-" + (i + 1); btn.dataset.i = String(i);
+    btn.textContent = (i + 1) + " · " + b.first;
+    btn.addEventListener("click", () => showBio(i));
+    picks.append(btn);
+  });
+  let start = 0;
+  const hashMatch = /^#bio([1-9])$/.exec(location.hash);
+  if (hashMatch && +hashMatch[1] <= BIOS.length) start = +hashMatch[1] - 1;
+  else { try { const s = +localStorage.getItem("bio"); if (s >= 0 && s < BIOS.length) start = s; } catch (_) {} }
+  showBio(start);
+
+  const LABELS = [
+    ["position", "Position applied for"], ["name", "Name"], ["ssn", "Social Security Number"],
+    ["address", "Home address"], ["homePhone", "Home phone"], ["businessPhone", "Business phone"],
+    ["employedBefore", "Employed with us before?"], ["currentlyEmployed", "Currently employed?"],
+    ["contactEmployer", "May we contact your present employer?"], ["availableDate", "Available to work on"],
+    ["availability", "Available to work"], ["travel", "Can travel occasionally?"]
+  ];
+
+  ssn.addEventListener("input", () => {
+    const d = ssn.value.replace(/\D/g, "").slice(0, 9);
+    ssn.value = d.length > 5 ? d.slice(0, 3) + "-" + d.slice(3, 5) + "-" + d.slice(5)
+              : d.length > 3 ? d.slice(0, 3) + "-" + d.slice(3) : d;
+    ssnErr.hidden = true;
+  });
+
+  function fmtDate(iso) {
+    if (!iso) return "";
+    const [y, m, d] = iso.split("-");
+    return m + "/" + d + "/" + y;
+  }
+
+  function collect() {
+    const fd = new FormData(form);
+    return {
+      position: (fd.get("position") || "").trim(),
+      name: (fd.get("name") || "").trim(),
+      address: (fd.get("address") || "").trim(),
+      homePhone: (fd.get("homePhone") || "").trim(),
+      businessPhone: (fd.get("businessPhone") || "").trim(),
+      employedBefore: fd.get("employedBefore") || "",
+      currentlyEmployed: fd.get("currentlyEmployed") || "",
+      contactEmployer: fd.get("contactEmployer") || "",
+      availableDate: fd.get("availableDate") || "",
+      availability: fd.getAll("availability"),
+      travel: fd.get("travel") || ""
+    };
+  }
+
+  const ABBR = [[/\bapartment\b|\bapt\b|#/g, "apt"], [/\bstreet\b/g, "st"], [/\bavenue\b/g, "ave"],
+                [/\bdrive\b/g, "dr"], [/\bcourt\b/g, "ct"], [/\bcalifornia\b/g, "ca"]];
+  const squash = s => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+  function normAddress(s) {
+    let t = s.toLowerCase().replace(/[.,]/g, " ");
+    for (const [re, to] of ABBR) t = t.replace(re, " " + to + " ");
+    return squash(t.replace(/\bapt\s+apt\b/g, "apt"));
+  }
+  const digits = s => s.replace(/\D/g, "");
+
+  function isRight(key, a, k) {
+    switch (key) {
+      case "ssn": return ssn.value === "000-00-0000";
+      case "position": return a.position !== "" && squash(a.position).includes(squash(k.position));
+      case "name": return squash(a.name) === squash(k.name);
+      case "address": return normAddress(a.address) === normAddress(k.address);
+      case "homePhone": case "businessPhone": return digits(a[key]) === digits(k[key]);
+      case "availability": return a.availability.slice().sort().join() === k.availability.slice().sort().join();
+      default: return a[key] === k[key];
+    }
+  }
+
+  function show(key, src, isKey) {
+    if (key === "ssn") return isKey ? "000-00-0000" : ssn.value;
+    if (key === "availableDate") return fmtDate(src.availableDate);
+    if (key === "availability") return src.availability.join(", ");
+    return src[key];
+  }
+
+  function renderSummary(a) {
+    const k = KEYS[current];
+    let right = 0;
+    summary.textContent = "";
+    for (const [key, label] of LABELS) {
+      const ok = isRight(key, a, k);
+      if (ok) right++;
+      const dt = document.createElement("dt"); dt.textContent = label;
+      const dd = document.createElement("dd");
+      const mine = document.createElement("div");
+      mine.className = ok ? "mark-ok" : "mark-no";
+      mine.textContent = (ok ? "✓ " : "✗ ") + (show(key, a, false) || "(left blank)");
+      dd.append(mine);
+      if (!ok) {
+        const fix = document.createElement("div");
+        fix.className = "fix";
+        fix.textContent = "Right answer: " + (show(key, k, true) || "leave it blank");
+        dd.append(fix);
+      }
+      summary.append(dt, dd);
+    }
+    document.getElementById("score").textContent =
+      "You got " + right + " of " + LABELS.length + " right for " + BIOS[current].name + ".";
+    return right;
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (ssn.value && ssn.value !== "000-00-0000") {
+      ssnErr.hidden = false; ssn.focus(); return;
+    }
+    const a = collect();
+    const score = renderSummary(a);
+    form.hidden = true; receipt.hidden = false;
+    statusEl.className = "status warn";
+    statusEl.textContent = "Show this screen to your teacher.";
+    receipt.scrollIntoView({ block: "start" });
+    if (!db || !me) return;
+    try {
+      await db.collection("applications").doc(me).set({ ...a, practicePerson: BIOS[current].name, score: score + "/" + LABELS.length, submittedAt: new Date().toISOString() });
+      statusEl.className = "status";
+      statusEl.textContent = "Your teacher received your application.";
+    } catch (err) {
+      statusEl.textContent = "Your teacher's list could not save this one. Show this screen to your teacher.";
+    }
+  });
+
+  clearBtn.addEventListener("click", () => {
+    if (!armedClear) { armedClear = true; clearConfirm.hidden = false; return; }
+    form.reset(); ssnErr.hidden = true; clearConfirm.hidden = true; armedClear = false;
+  });
+  form.addEventListener("input", () => { if (armedClear) { armedClear = false; clearConfirm.hidden = true; } });
+
+  document.getElementById("again").addEventListener("click", () => {
+    form.reset(); receipt.hidden = true; form.hidden = false;
+    document.getElementById("position").focus();
+  });
+
+  function cell(text, cls) {
+    const td = document.createElement("td"); td.textContent = text || "–";
+    if (cls) td.className = cls; return td;
+  }
+
+  function renderRows(docs) {
+    const tbody = document.getElementById("rows");
+    tbody.textContent = "";
+    if (!docs.length) {
+      const tr = document.createElement("tr");
+      const td = cell("No applications yet. Student submissions show up here as they arrive.");
+      td.colSpan = 7; tr.append(td); tbody.append(tr); return;
+    }
+    const list = docs.map(d => d.data() || {}).sort((x, y) => String(y.submittedAt).localeCompare(String(x.submittedAt)));
+    for (const a of list) {
+      const when = a.submittedAt ? new Date(a.submittedAt).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) : "";
+      const tr = document.createElement("tr");
+      tr.append(
+        cell(when, "num"), cell(String(a.name || "")), cell(String(a.score || ""), "num"), cell(String(a.position || "")),
+        cell(fmtDate(String(a.availableDate || "")), "num"),
+        cell(Array.isArray(a.availability) ? a.availability.join(", ") : ""),
+        cell([a.employedBefore, a.currentlyEmployed, a.contactEmployer, a.travel].map(x => x || "–").join(" / "))
+      );
+      tbody.append(tr);
+    }
+  }
+
+  (async () => {
+    if (!window.claude || !window.claude.use) return;
+    try {
+      const [dbNs, user] = await Promise.all([window.claude.use("db"), window.claude.use("user")]);
+      db = dbNs;
+      if (user) me = await user.id();
+      const owner = user ? await user.isOwner() : false;
+      if (db && owner) {
+        document.getElementById("teacher").hidden = false;
+        db.collection("applications").onSnapshot(
+          snap => renderRows(snap.docs),
+          () => { document.getElementById("teacher-note").textContent = "The list could not load. Reload the page to try again."; }
+        );
+      }
+    } catch (_) { /* page works without saving */ }
+  })();
+})();
+</script>
