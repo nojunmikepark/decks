@@ -118,50 +118,249 @@ li.wrong .blank, li.wrong .opts button[aria-pressed="true"] { background: var(--
     </aside>
   </div>
 </div>
-<script>
-// Each exercise: MC items carry options + the index of the right one; typed items carry text before/after the blank,
-// the base-verb hint, and every accepted answer. Checking is done here in the browser; nothing is sent anywhere.
-const EXERCISES = [
-  {
-    id: "A", title: "Exercise A. Multiple Choice", dir: "Choose the correct answer.", type: "mc",
-    items: [
-      { stem: "Mrs. Wu always ____ the newspaper after breakfast.", options: ["is reading", "reads", "read", "are reading"], correct: 1 },
-      { stem: "Shh! The manager ____ on the phone.", options: ["talks", "talk", "are talking", "is talking"], correct: 3 },
-      { stem: "We ____ out of the parking lot right now. Can I call you back?", options: ["are driving", "drive", "is driving", "drives"], correct: 0 },
-      { stem: "Tomas ____ his bike to work on sunny days.", options: ["is riding", "are riding", "rides", "ride"], correct: 2 },
-      { stem: "____ your parents speak Spanish at home?", options: ["Do", "Is", "Does", "Are"], correct: 0 },
-      { stem: "At the moment, the actors ____ on stage.", options: ["practice", "is practicing", "are practicing", "practices"], correct: 2 },
-      { stem: "Mr. Lopez usually ____ coffee. He prefers tea.", options: ["isn't drinking", "don't drink", "not drinks", "doesn't drink"], correct: 3 },
-      { stem: "Look! Some birds ____ a nest on our roof.", options: ["build", "are building", "builds", "is building"], correct: 1 }
-    ]
-  },
-  {
-    id: "B", title: "Exercise B. Time Markers", dir: "Type the verb. Use the simple present or the present continuous.", type: "type",
-    items: [
-      { before: "Every Sunday, I", hint: "bake", after: "two loaves of bread.", accept: ["bake"] },
-      { before: "Right now, Mrs. Chen", hint: "pay", after: "for her groceries.", accept: ["is paying"] },
-      { before: "Wait here, please. Dr. Singh", hint: "help", after: "a patient at the moment.", accept: ["is helping"] },
-      { before: "Ahmed usually", hint: "leave", after: "home at 6:30.", accept: ["leaves"] },
-      { before: "Listen! Our guests", hint: "sing", after: "“Happy Birthday” in the living room.", accept: ["are singing"] },
-      { before: "Kevin", hint: "not wear", after: "a tie on Fridays. On Fridays, his office is casual.", accept: ["doesn't wear", "does not wear"] },
-      { before: "The post office", hint: "close", after: "at 5:00 on Saturdays.", accept: ["closes"] },
-      { before: "Hurry up! Your friends", hint: "wait", after: "for you in the lobby right now.", accept: ["are waiting"] }
-    ]
-  },
-  {
-    id: "C", title: "Exercise C. Action Verbs and Stative Verbs (Non-Action Verbs)", dir: "Type the verb. Remember: stative verbs (non-action verbs) use the simple present, even with now.", type: "type",
-    items: [
-      { before: "I", hint: "need", after: "a pencil right now. Can I borrow one?", accept: ["need"] },
-      { before: "Look! Mr. Ortiz", hint: "wash", after: "his truck.", accept: ["is washing"] },
-      { before: "Right now, my little brother", hint: "want", after: "a cookie.", accept: ["wants"] },
-      { before: "I", hint: "understand", after: "the lesson now. Thank you!", accept: ["understand"] },
-      { before: "Shh! I", hint: "count", after: "the money.", accept: ["am counting"] },
-      { before: "Bella", hint: "love", after: "old movies.", accept: ["loves"] },
-      { before: "Right now, the chef", hint: "chop", after: "onions for the salsa.", accept: ["is chopping"] },
-      { before: "Ms. Kaur", hint: "like", after: "jazz music.", accept: ["likes"] }
+<script type="application/json" id="items">
+{
+    "exercises": [
+      {
+        "id": "A",
+        "title": "Exercise A. Multiple Choice",
+        "dir": "Choose the correct answer.",
+        "type": "mc",
+        "items": [
+          {
+            "stem": "Mrs. Wu always ____ the newspaper after breakfast.",
+            "options": [
+              "is reading",
+              "reads",
+              "read",
+              "are reading"
+            ],
+            "correct": 1
+          },
+          {
+            "stem": "Shh! The manager ____ on the phone.",
+            "options": [
+              "talks",
+              "talk",
+              "are talking",
+              "is talking"
+            ],
+            "correct": 3
+          },
+          {
+            "stem": "We ____ out of the parking lot right now. Can I call you back?",
+            "options": [
+              "are driving",
+              "drive",
+              "is driving",
+              "drives"
+            ],
+            "correct": 0
+          },
+          {
+            "stem": "Tomas ____ his bike to work on sunny days.",
+            "options": [
+              "is riding",
+              "are riding",
+              "rides",
+              "ride"
+            ],
+            "correct": 2
+          },
+          {
+            "stem": "____ your parents speak Spanish at home?",
+            "options": [
+              "Do",
+              "Is",
+              "Does",
+              "Are"
+            ],
+            "correct": 0
+          },
+          {
+            "stem": "At the moment, the actors ____ on stage.",
+            "options": [
+              "practice",
+              "is practicing",
+              "are practicing",
+              "practices"
+            ],
+            "correct": 2
+          },
+          {
+            "stem": "Mr. Lopez usually ____ coffee. He prefers tea.",
+            "options": [
+              "isn't drinking",
+              "don't drink",
+              "not drinks",
+              "doesn't drink"
+            ],
+            "correct": 3
+          },
+          {
+            "stem": "Look! Some birds ____ a nest on our roof.",
+            "options": [
+              "build",
+              "are building",
+              "builds",
+              "is building"
+            ],
+            "correct": 1
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "Exercise B. Time Markers",
+        "dir": "Type the verb. Use the simple present or the present continuous.",
+        "type": "type",
+        "items": [
+          {
+            "before": "Every Sunday, I",
+            "hint": "bake",
+            "after": "two loaves of bread.",
+            "accept": [
+              "bake"
+            ]
+          },
+          {
+            "before": "Right now, Mrs. Chen",
+            "hint": "pay",
+            "after": "for her groceries.",
+            "accept": [
+              "is paying"
+            ]
+          },
+          {
+            "before": "Wait here, please. Dr. Singh",
+            "hint": "help",
+            "after": "a patient at the moment.",
+            "accept": [
+              "is helping"
+            ]
+          },
+          {
+            "before": "Ahmed usually",
+            "hint": "leave",
+            "after": "home at 6:30.",
+            "accept": [
+              "leaves"
+            ]
+          },
+          {
+            "before": "Listen! Our guests",
+            "hint": "sing",
+            "after": "“Happy Birthday” in the living room.",
+            "accept": [
+              "are singing"
+            ]
+          },
+          {
+            "before": "Kevin",
+            "hint": "not wear",
+            "after": "a tie on Fridays. On Fridays, his office is casual.",
+            "accept": [
+              "doesn't wear",
+              "does not wear"
+            ]
+          },
+          {
+            "before": "The post office",
+            "hint": "close",
+            "after": "at 5:00 on Saturdays.",
+            "accept": [
+              "closes"
+            ]
+          },
+          {
+            "before": "Hurry up! Your friends",
+            "hint": "wait",
+            "after": "for you in the lobby right now.",
+            "accept": [
+              "are waiting"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "Exercise C. Action Verbs and Stative Verbs (Non-Action Verbs)",
+        "dir": "Type the verb. Remember: stative verbs (non-action verbs) use the simple present, even with now.",
+        "type": "type",
+        "items": [
+          {
+            "before": "I",
+            "hint": "need",
+            "after": "a pencil right now. Can I borrow one?",
+            "accept": [
+              "need"
+            ]
+          },
+          {
+            "before": "Look! Mr. Ortiz",
+            "hint": "wash",
+            "after": "his truck.",
+            "accept": [
+              "is washing"
+            ]
+          },
+          {
+            "before": "Right now, my little brother",
+            "hint": "want",
+            "after": "a cookie.",
+            "accept": [
+              "wants"
+            ]
+          },
+          {
+            "before": "I",
+            "hint": "understand",
+            "after": "the lesson now. Thank you!",
+            "accept": [
+              "understand"
+            ]
+          },
+          {
+            "before": "Shh! I",
+            "hint": "count",
+            "after": "the money.",
+            "accept": [
+              "am counting"
+            ]
+          },
+          {
+            "before": "Bella",
+            "hint": "love",
+            "after": "old movies.",
+            "accept": [
+              "loves"
+            ]
+          },
+          {
+            "before": "Right now, the chef",
+            "hint": "chop",
+            "after": "onions for the salsa.",
+            "accept": [
+              "is chopping"
+            ]
+          },
+          {
+            "before": "Ms. Kaur",
+            "hint": "like",
+            "after": "jazz music.",
+            "accept": [
+              "likes"
+            ]
+          }
+        ]
+      }
     ]
   }
-];
+</script>
+<script>
+// Items live in the JSON block above (school_practice_page_ccode.py reads the same block for school-check and the audit pack).
+// Checking is done here in the browser; nothing is sent anywhere.
+const EXERCISES = JSON.parse(document.getElementById("items").textContent).exercises;
 
 // Forgiving match: ignore capitals, extra spaces, curly apostrophes, end punctuation, and contraction vs. full form.
 const CONTRACTIONS = { "doesn't": "does not", "don't": "do not", "isn't": "is not", "aren't": "are not", "i'm": "i am" };
