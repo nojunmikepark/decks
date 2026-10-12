@@ -1,0 +1,721 @@
+<!doctype html>
+<!--
+  SCHOOL PRACTICE PAGE TEMPLATE (2026-10-08 retro E3). A self-checking page, not a reveal.js deck.
+  Copy to "School Stuff/YYYY-MM-DD_Title_Case_Topic_L<n>_ccode.html", then edit ONLY:
+    <title>, the <header>, the notes panel (<aside class="card notes">), and the items JSON block.
+  Items JSON: exercises[] of {id, title, dir, type: "mc"|"type", items[]}.
+    mc   item: {stem (with ____), options[], correct (0-based index)}
+    type item: {before, hint, after, accept[]}  -- accept lists EVERY correct form: the page marks
+               anything else wrong (case, spaces, curly apostrophes, end punctuation, and
+               contraction vs full form are already forgiven).
+  Level colour: --accent is L2 green #2e6b3a; use #1f6b6b for L3.
+  school-check runs web page QA on it (school_webpage_check_ccode.mjs: every keyed answer scored in
+  Firefox + WebKit/iPad) and the overlap gates read the items via school_practice_page_ccode.py;
+  school-audit-pack_ccode builds the student/key text from the same block. The browser test relies on
+  this markup: role="tab" per exercise, ol.items > li, .opts button, input.blank, the
+  "Check answers" / "Start over" buttons and .result -- keep them.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simple Present Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: task tabs on top, one exercise at a time on the left, grammar notes beside it (above it on narrow screens). */
+:root {
+  --bg: #eef2ee;
+  --paper: #ffffff;
+  --ink: #1c2620;
+  --muted: #59665d;
+  --rule: #cdd7cf;
+  --accent: #2e6b3a;
+  --accent-soft: #e4efe6;
+  --ok: #2a6b3d;
+  --ok-soft: #e1f2e5;
+  --bad: #a3262a;
+  --bad-soft: #f8e3e3;
+  --font: "Atkinson Hyperlegible", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121714; --paper: #1a211c; --ink: #e3ebe5; --muted: #9fb0a4; --rule: #34433a;
+    --accent: #8fd19e; --accent-soft: #223328; --ok: #8fd19e; --ok-soft: #1f3326;
+    --bad: #f19a9c; --bad-soft: #3a2222; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121714; --paper: #1a211c; --ink: #e3ebe5; --muted: #9fb0a4; --rule: #34433a;
+  --accent: #8fd19e; --accent-soft: #223328; --ok: #8fd19e; --ok-soft: #1f3326;
+  --bad: #f19a9c; --bad-soft: #3a2222; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font);
+  font-size: 18px; line-height: 1.5; padding: 20px 16px 48px;
+}
+.wrap { max-width: 1120px; margin: 0 auto; }
+header h1 { font-size: clamp(24px, 4.5vw, 32px); line-height: 1.2; margin: 0 0 4px; color: var(--accent); text-wrap: balance; }
+header p { margin: 0 0 16px; color: var(--muted); }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+button {
+  font: inherit; color: inherit; cursor: pointer; border-radius: 10px;
+  border: 2px solid var(--accent); background: var(--paper); padding: 10px 16px;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.tabs button { font-weight: 700; color: var(--accent); }
+.tabs button[aria-selected="true"] { background: var(--accent); color: var(--paper); }
+.tabs .score { font-weight: 400; font-size: 15px; margin-left: 6px; }
+.layout { display: grid; gap: 16px; align-items: start; }
+@media (min-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr) 360px; } .notes { position: sticky; top: 16px; } }
+.card { background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; padding: 20px clamp(16px, 3vw, 28px); }
+.notes summary { font-weight: 700; color: var(--accent); cursor: pointer; font-size: 20px; }
+.notes h3 { margin: 16px 0 4px; font-size: 18px; color: var(--accent); }
+.notes p, .notes ul { margin: 4px 0; font-size: 16px; }
+.notes ul { padding-left: 20px; }
+.notes .ex { background: var(--accent-soft); border-radius: 8px; padding: 6px 10px; margin-top: 6px; }
+section h2 { margin: 0 0 4px; font-size: 22px; }
+section .dir { margin: 0 0 16px; color: var(--muted); }
+ol.items { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+ol.items > li { border-top: 1px solid var(--rule); padding-top: 14px; }
+.num { font-weight: 700; color: var(--accent); margin-right: 6px; }
+.opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.opts button { text-align: left; border-color: var(--rule); }
+.opts button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); font-weight: 700; }
+.blank {
+  font: inherit; color: var(--ink); background: var(--accent-soft); border: 0; border-bottom: 2px solid var(--accent);
+  border-radius: 6px 6px 0 0; padding: 4px 8px; width: 11em; max-width: 100%;
+}
+.hint { color: var(--muted); }
+.mark { display: inline-block; margin-left: 6px; font-weight: 700; }
+li.right .mark { color: var(--ok); }
+li.wrong .mark { color: var(--bad); }
+li.right .blank, li.right .opts button[aria-pressed="true"] { background: var(--ok-soft); border-color: var(--ok); }
+li.wrong .blank, li.wrong .opts button[aria-pressed="true"] { background: var(--bad-soft); border-color: var(--bad); }
+.answer { margin: 6px 0 0; color: var(--ok); font-weight: 700; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; align-items: center; }
+.actions .primary { background: var(--accent); color: var(--paper); font-weight: 700; }
+.result { font-size: 20px; font-weight: 700; margin: 0; }
+[hidden] { display: none !important; }
+@media (max-width: 520px) { .opts { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Simple Present</h1>
+    <p>Habits, facts, and schedules. With he, she, and it, the verb ends in -s.</p>
+  </header>
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <div class="layout">
+    <main class="card" id="main"></main>
+    <aside class="card notes">
+      <details id="notesBox" open>
+        <summary>Grammar Notes</summary>
+        <h3>1. Positive sentences</h3>
+        <p>I / you / we / they + verb</p>
+        <p>he / she / it + verb + <b>-s</b></p>
+        <p class="ex">I drink tea. She drink<b>s</b> tea.</p>
+        <h3>2. Negative sentences</h3>
+        <p>I / you / we / they + <b>don't</b> + verb</p>
+        <p>he / she / it + <b>doesn't</b> + verb (no -s)</p>
+        <p class="ex">They don't drink soda. He doesn't drink soda.</p>
+        <h3>3. Questions</h3>
+        <p><b>Do</b> + I / you / we / they + verb?</p>
+        <p><b>Does</b> + he / she / it + verb (no -s)?</p>
+        <p class="ex">Do you drink milk? Yes, I do.<br>Does she drink milk? No, she doesn't.<br>What does he drink? He drinks juice.</p>
+        <h3>4. When do we use it?</h3>
+        <ul>
+          <li><b>Habits</b> (things we do again and again): every day, on weekends, in the morning, always, usually, often, sometimes, never</li>
+          <li><b>Facts</b>: The sun rises in the east.</li>
+          <li><b>Schedules</b>: Our train departs at 8:15.</li>
+        </ul>
+        <h3>5. Spelling with he / she / it</h3>
+        <ul>
+          <li>Most verbs: + s (buy → buys)</li>
+          <li>-s, -sh, -ch, -x: + es (pass → passes, mix → mixes)</li>
+          <li>go → goes</li>
+          <li>consonant + y: y → ies (reply → replies)</li>
+          <li>have → has</li>
+        </ul>
+      </details>
+    </aside>
+  </div>
+</div>
+<script type="application/json" id="items">
+{
+  "exercises": [
+    {
+      "id": "A",
+      "title": "Exercise A. Positive Sentences",
+      "dir": "Choose the correct verb.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "My grandmother ____ her plants every morning.",
+          "options": [
+            "water",
+            "waters"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "Mr. Petrov ____ his teeth after every meal.",
+          "options": [
+            "brush",
+            "brushes"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "We ____ our dog in the morning and at night.",
+          "options": [
+            "feed",
+            "feeds"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "The airport bus ____ at the hotel at 7:00 and 9:00.",
+          "options": [
+            "arrives",
+            "arrive"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Most penguins ____ in cold places.",
+          "options": [
+            "lives",
+            "live"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "My kids ____ their own clothes on weekends.",
+          "options": [
+            "fold",
+            "folds"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Kenji ____ old coins. It's his favorite hobby.",
+          "options": [
+            "collects",
+            "collect"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "You ____ beautiful pictures, Rosa!",
+          "options": [
+            "paints",
+            "paint"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "My cats ____ on my bed every night.",
+          "options": [
+            "sleep",
+            "sleeps"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Our evening class ____ at 9:30.",
+          "options": [
+            "end",
+            "ends"
+          ],
+          "correct": 1
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "title": "Exercise B. Negative Sentences",
+      "dir": "Choose the correct answer.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "These shoes ____ well. They are too small.",
+          "options": [
+            "don't fit",
+            "doesn't fit"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "My son ____ his vegetables. He gives them to the dog.",
+          "options": [
+            "don't finish",
+            "doesn't finish"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "It ____ very often in Los Angeles.",
+          "options": [
+            "doesn't rain",
+            "don't rain"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "I ____ the bus to work. My neighbor drives me.",
+          "options": [
+            "doesn't take",
+            "don't take"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "My grandparents ____ email. They write letters.",
+          "options": [
+            "doesn't use",
+            "don't use"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "Dr. Romero ____ patients on weekends. The clinic is closed.",
+          "options": [
+            "doesn't see",
+            "don't see"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "My sisters ____ a lot. They get along well.",
+          "options": [
+            "don't argue",
+            "doesn't argue"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "The cafe on Pine Street ____ credit cards. Please pay cash.",
+          "options": [
+            "don't accept",
+            "doesn't accept"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "My phone battery ____ very long. It is old.",
+          "options": [
+            "doesn't last",
+            "don't last"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "We ____ the back door during the day. We lock it at night.",
+          "options": [
+            "doesn't lock",
+            "don't lock"
+          ],
+          "correct": 1
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "title": "Exercise C. Answer the Questions",
+      "dir": "Read the question. Type the correct form of the verb.",
+      "type": "type",
+      "items": [
+        {
+          "before": "Where does your aunt shop for groceries? — She",
+          "hint": "shop",
+          "after": "at the market on Elm Street.",
+          "accept": [
+            "shops"
+          ]
+        },
+        {
+          "before": "How often does Mr. Kim call his mother? — He",
+          "hint": "call",
+          "after": "her every evening.",
+          "accept": [
+            "calls"
+          ]
+        },
+        {
+          "before": "What time do your kids get up on school days? — They",
+          "hint": "get up",
+          "after": "at 6:45.",
+          "accept": [
+            "get up"
+          ]
+        },
+        {
+          "before": "What do you and your roommate do after dinner? — We",
+          "hint": "play",
+          "after": "cards.",
+          "accept": [
+            "play"
+          ]
+        },
+        {
+          "before": "What does a mechanic do? — A mechanic",
+          "hint": "repair",
+          "after": "cars.",
+          "accept": [
+            "repairs"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "D",
+      "title": "Exercise D. Make Questions",
+      "dir": "Read the answer. Choose the correct question.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "Answer: Tariq parks his car on Oak Street. Question: ____",
+          "options": [
+            "Where does Tariq park his car?",
+            "Where does Tariq parks his car?",
+            "Where Tariq parks his car?"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Answer: Our flight lands at 4:15. Question: ____",
+          "options": [
+            "What time do our flight land?",
+            "What time does our flight lands?",
+            "What time does our flight land?"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "Answer: Yes, I do. I jog in the park every morning. Question: ____",
+          "options": [
+            "Does you jog?",
+            "Do you jog?",
+            "Are you jog?"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "Answer: No, she doesn't. She lives with her parents. Question: ____",
+          "options": [
+            "Does Mina lives alone?",
+            "Do Mina live alone?",
+            "Does Mina live alone?"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "Answer: Ali cuts the grass every week. Question: ____",
+          "options": [
+            "How often does Ali cut the grass?",
+            "How often Ali cuts the grass?",
+            "How often do Ali cut the grass?"
+          ],
+          "correct": 0
+        }
+      ]
+    },
+    {
+      "id": "E",
+      "title": "Exercise E. Fix the Mistake",
+      "dir": "One CAPITALIZED word is wrong. Type the correct word. Use the simple present.",
+      "type": "type",
+      "items": [
+        {
+          "before": "My grandfather FISHS at the lake on weekends.",
+          "hint": "fix",
+          "after": "",
+          "accept": [
+            "fishes"
+          ]
+        },
+        {
+          "before": "My daughter CARRYS a big backpack to school.",
+          "hint": "fix",
+          "after": "",
+          "accept": [
+            "carries"
+          ]
+        },
+        {
+          "before": "My friends TEXTS me every morning.",
+          "hint": "fix",
+          "after": "",
+          "accept": [
+            "text"
+          ]
+        },
+        {
+          "before": "Kofi DON'T know my phone number.",
+          "hint": "fix",
+          "after": "",
+          "accept": [
+            "doesn't",
+            "does not"
+          ]
+        },
+        {
+          "before": "DO the hotel serve breakfast?",
+          "hint": "fix",
+          "after": "",
+          "accept": [
+            "Does"
+          ]
+        },
+        {
+          "before": "Does your brother OWNS a truck?",
+          "hint": "fix",
+          "after": "",
+          "accept": [
+            "own"
+          ]
+        },
+        {
+          "before": "My mother doesn't SWIMS in the ocean.",
+          "hint": "fix",
+          "after": "",
+          "accept": [
+            "swim"
+          ]
+        },
+        {
+          "before": "My dad HAVE two jobs.",
+          "hint": "fix",
+          "after": "",
+          "accept": [
+            "has"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F",
+      "title": "Exercise F. Quiz",
+      "dir": "Choose the correct answer.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "The Earth ____ around the sun.",
+          "options": [
+            "move",
+            "moves",
+            "is move"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "____ your kids like their new teacher?",
+          "options": [
+            "Do",
+            "Does",
+            "Are"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Our dog ____ at strangers.",
+          "options": [
+            "barking",
+            "bark",
+            "barks"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "I ____ my email every morning before work.",
+          "options": [
+            "checks",
+            "check",
+            "am check"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "The twins ____ look alike. One is tall, and one is short.",
+          "options": [
+            "doesn't",
+            "isn't",
+            "don't"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "How much ____ these apples cost?",
+          "options": [
+            "are",
+            "does",
+            "do"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "My son always ____ his homework before dinner.",
+          "options": [
+            "does",
+            "do",
+            "doing"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "A: Does your cousin smoke? B: No, he ____.",
+          "options": [
+            "isn't",
+            "doesn't",
+            "don't"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "The last ferry ____ the island at 6:00 p.m.",
+          "options": [
+            "leave",
+            "leaving",
+            "leaves"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "Owls ____ at night.",
+          "options": [
+            "hunt",
+            "hunts",
+            "hunting"
+          ],
+          "correct": 0
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script>
+// Items live in the JSON block above (school_practice_page_ccode.py reads the same block for school-check and the audit pack).
+// Checking is done here in the browser; nothing is sent anywhere.
+const EXERCISES = JSON.parse(document.getElementById("items").textContent).exercises;
+
+// Forgiving match: ignore capitals, extra spaces, curly apostrophes, end punctuation, and contraction vs. full form.
+const CONTRACTIONS = { "doesn't": "does not", "don't": "do not", "isn't": "is not", "aren't": "are not", "i'm": "i am" };
+function norm(s) {
+  let t = s.toLowerCase().replace(/[‘’ʼ`]/g, "'").replace(/\s+/g, " ").trim().replace(/[.!?,]+$/, "").trim();
+  return t.split(" ").map(w => CONTRACTIONS[w] || w).join(" ");
+}
+const isRight = (typed, accept) => accept.some(a => norm(a) === norm(typed));
+
+const state = {};          // id -> { answers: [], checked: bool, shown: bool }
+EXERCISES.forEach(ex => state[ex.id] = { answers: ex.items.map(() => ex.type === "mc" ? null : ""), checked: false, shown: false });
+let current = "A";
+
+const tabs = document.getElementById("tabs");
+const main = document.getElementById("main");
+
+function score(ex) {
+  const st = state[ex.id];
+  return ex.items.filter((it, i) => ex.type === "mc" ? st.answers[i] === it.correct : isRight(st.answers[i], it.accept)).length;
+}
+
+function renderTabs() {
+  tabs.innerHTML = "";
+  EXERCISES.forEach(ex => {
+    const b = document.createElement("button");
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", String(ex.id === current));
+    b.textContent = "Exercise " + ex.id;
+    if (state[ex.id].checked) {
+      const s = document.createElement("span");
+      s.className = "score";
+      s.textContent = score(ex) + "/" + ex.items.length;
+      b.append(s);
+    }
+    b.addEventListener("click", () => { current = ex.id; render(); });
+    tabs.append(b);
+  });
+}
+
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+function renderExercise() {
+  const ex = EXERCISES.find(e => e.id === current);
+  const st = state[ex.id];
+  main.innerHTML = "";
+  const sec = el("section");
+  sec.append(el("h2", null, ex.title), el("p", "dir", ex.dir));
+  const ol = el("ol", "items");
+  ex.items.forEach((it, i) => {
+    const li = el("li");
+    const ok = ex.type === "mc" ? st.answers[i] === it.correct : isRight(st.answers[i], it.accept);
+    if (st.checked) li.classList.add(ok ? "right" : "wrong");
+    const line = el("div");
+    line.append(el("span", "num", (i + 1) + "."));
+    if (ex.type === "mc") {
+      line.append(document.createTextNode(it.stem));
+      li.append(line);
+      const opts = el("div", "opts");
+      it.options.forEach((o, k) => {
+        const b = el("button", null, String.fromCharCode(97 + k) + ". " + o);
+        b.type = "button";
+        b.setAttribute("aria-pressed", String(st.answers[i] === k));
+        b.addEventListener("click", () => { st.answers[i] = k; st.checked = false; st.shown = false; render(); });
+        opts.append(b);
+      });
+      li.append(opts);
+    } else {
+      line.append(document.createTextNode(it.before + " "));
+      const inp = el("input", "blank");
+      inp.type = "text";
+      inp.value = st.answers[i];
+      inp.setAttribute("aria-label", "Item " + (i + 1) + " answer, verb: " + it.hint);
+      inp.autocomplete = "off"; inp.spellcheck = false;
+      inp.setAttribute("autocapitalize", "none"); inp.setAttribute("autocorrect", "off");
+      inp.addEventListener("input", () => { st.answers[i] = inp.value; if (st.checked) { st.checked = false; st.shown = false; li.classList.remove("right", "wrong"); const m = li.querySelector(".mark"); if (m) m.remove(); const a = li.querySelector(".answer"); if (a) a.remove(); renderTabs(); } });
+      line.append(inp, document.createTextNode(" "), el("span", "hint", "(" + it.hint + ")"), document.createTextNode(" " + it.after));
+      li.append(line);
+    }
+    if (st.checked) line.append(el("span", "mark", ok ? "✓" : "✗"));
+    if (st.checked && st.shown && !ok) {
+      li.append(el("p", "answer", "Answer: " + (ex.type === "mc" ? it.options[it.correct] : it.accept.join(" / "))));
+    }
+    ol.append(li);
+  });
+  sec.append(ol);
+
+  const actions = el("div", "actions");
+  const check = el("button", "primary", "Check answers");
+  check.type = "button";
+  check.addEventListener("click", () => { st.checked = true; render(); });
+  actions.append(check);
+  if (st.checked) {
+    const n = score(ex);
+    actions.append(el("p", "result", n === ex.items.length ? "All " + n + " correct!" : "You got " + n + " of " + ex.items.length + " correct. Fix the ✗ items and check again."));
+    if (n < ex.items.length && !st.shown) {
+      const show = el("button", null, "Show answers");
+      show.type = "button";
+      show.addEventListener("click", () => { st.shown = true; render(); });
+      actions.append(show);
+    }
+  }
+  const reset = el("button", null, "Start over");
+  reset.type = "button";
+  reset.addEventListener("click", () => { st.answers = ex.items.map(() => ex.type === "mc" ? null : ""); st.checked = false; st.shown = false; render(); });
+  actions.append(reset);
+  sec.append(actions);
+  main.append(sec);
+}
+
+function render() { renderTabs(); renderExercise(); }
+if (window.matchMedia("(max-width: 899px)").matches) document.getElementById("notesBox").open = false;
+render();
+</script>
+</body>
+</html>
