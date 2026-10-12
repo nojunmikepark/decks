@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parts of Speech Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: task tabs on top, one exercise at a time on the left, grammar notes beside it (above it on narrow screens). */
+:root {
+  --bg: #eef2ee;
+  --paper: #ffffff;
+  --ink: #1c2620;
+  --muted: #59665d;
+  --rule: #cdd7cf;
+  --accent: #2e6b3a;
+  --accent-soft: #e4efe6;
+  --ok: #2a6b3d;
+  --ok-soft: #e1f2e5;
+  --bad: #a3262a;
+  --bad-soft: #f8e3e3;
+  --font: "Atkinson Hyperlegible", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121714; --paper: #1a211c; --ink: #e3ebe5; --muted: #9fb0a4; --rule: #34433a;
+    --accent: #8fd19e; --accent-soft: #223328; --ok: #8fd19e; --ok-soft: #1f3326;
+    --bad: #f19a9c; --bad-soft: #3a2222; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121714; --paper: #1a211c; --ink: #e3ebe5; --muted: #9fb0a4; --rule: #34433a;
+  --accent: #8fd19e; --accent-soft: #223328; --ok: #8fd19e; --ok-soft: #1f3326;
+  --bad: #f19a9c; --bad-soft: #3a2222; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font);
+  font-size: 18px; line-height: 1.5; padding: 20px 16px 48px;
+}
+.wrap { max-width: 1120px; margin: 0 auto; }
+header h1 { font-size: clamp(24px, 4.5vw, 32px); line-height: 1.2; margin: 0 0 4px; color: var(--accent); text-wrap: balance; }
+header p { margin: 0 0 16px; color: var(--muted); }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+button {
+  font: inherit; color: inherit; cursor: pointer; border-radius: 10px;
+  border: 2px solid var(--accent); background: var(--paper); padding: 10px 16px;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.tabs button { font-weight: 700; color: var(--accent); }
+.tabs button[aria-selected="true"] { background: var(--accent); color: var(--paper); }
+.tabs .score { font-weight: 400; font-size: 15px; margin-left: 6px; }
+.layout { display: grid; gap: 16px; align-items: start; }
+@media (min-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr) 360px; } .notes { position: sticky; top: 16px; } }
+.card { background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; padding: 20px clamp(16px, 3vw, 28px); }
+.notes summary { font-weight: 700; color: var(--accent); cursor: pointer; font-size: 20px; }
+.notes h3 { margin: 16px 0 4px; font-size: 18px; color: var(--accent); }
+.notes p, .notes ul { margin: 4px 0; font-size: 16px; }
+.notes ul { padding-left: 20px; }
+.notes .ex { background: var(--accent-soft); border-radius: 8px; padding: 6px 10px; margin-top: 6px; }
+section h2 { margin: 0 0 4px; font-size: 22px; }
+section .dir { margin: 0 0 16px; color: var(--muted); }
+ol.items { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+ol.items > li { border-top: 1px solid var(--rule); padding-top: 14px; }
+.num { font-weight: 700; color: var(--accent); margin-right: 6px; }
+.opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.opts button { text-align: left; border-color: var(--rule); }
+.opts button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); font-weight: 700; }
+.blank {
+  font: inherit; color: var(--ink); background: var(--accent-soft); border: 0; border-bottom: 2px solid var(--accent);
+  border-radius: 6px 6px 0 0; padding: 4px 8px; width: 11em; max-width: 100%;
+}
+.hint { color: var(--muted); }
+.mark { display: inline-block; margin-left: 6px; font-weight: 700; }
+li.right .mark { color: var(--ok); }
+li.wrong .mark { color: var(--bad); }
+li.right .blank, li.right .opts button[aria-pressed="true"] { background: var(--ok-soft); border-color: var(--ok); }
+li.wrong .blank, li.wrong .opts button[aria-pressed="true"] { background: var(--bad-soft); border-color: var(--bad); }
+.answer { margin: 6px 0 0; color: var(--ok); font-weight: 700; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; align-items: center; }
+.actions .primary { background: var(--accent); color: var(--paper); font-weight: 700; }
+.result { font-size: 20px; font-weight: 700; margin: 0; }
+[hidden] { display: none !important; }
+@media (max-width: 520px) { .opts { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Parts of Speech: Practice</h1>
+    <p>Nouns and pronouns, verbs, articles, adjectives, adverbs, prepositions and conjunctions.</p>
+  </header>
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <div class="layout">
+    <main class="card" id="main"></main>
+    <aside class="card notes">
+      <details id="notesBox" open>
+        <summary>Grammar Notes</summary>
+        <h3>Noun or pronoun</h3>
+        <p>A <b>noun</b> is a person, place, thing or idea. A <b>pronoun</b> takes the place of a noun: I, you, he, she, it, we, they, me, him, her, them.</p>
+        <p class="ex">Maria lost her phone. She is upset.</p>
+        <h3>Verb</h3>
+        <p>An action or a state: swim, cook, is, have.</p>
+        <p class="ex">The kids swim every summer.</p>
+        <h3>Article</h3>
+        <p><b>a</b>, <b>an</b>, <b>the</b>. Use <b>an</b> before a vowel sound.</p>
+        <p class="ex">a lemon, an egg, the moon</p>
+        <h3>Adjective</h3>
+        <p>Describes a noun. What kind?</p>
+        <p class="ex">a tall building / The soup is hot.</p>
+        <h3>Adverb</h3>
+        <p>Tells <b>how</b> or <b>how often</b>. Many end in <b>-ly</b>. How often: always, usually, sometimes, never.</p>
+        <p class="ex">She sings sweetly. He never smokes.</p>
+        <h3>Preposition</h3>
+        <p>Shows where or when: on, at, next to, behind, after.</p>
+        <p class="ex">The bank is next to the gas station.</p>
+        <h3>Conjunction</h3>
+        <p>Joins two ideas: and, but, or, so, because.</p>
+        <p class="ex">I called him, and he answered.</p>
+        <h3>Word endings</h3>
+        <ul><li>noun: -ness, -ment, -th, -er (kindness, payment)</li><li>adjective: -ful, -ous, -al (helpful, famous)</li><li>adverb: -ly (calmly)</li><li>verb: -en, -ize (widen, organize)</li></ul>
+      </details>
+    </aside>
+  </div>
+</div>
+<script type="application/json" id="items">
+{
+  "exercises": [
+    {
+      "id": "A",
+      "title": "Exercise A. Find the Word",
+      "dir": "Read the question. Choose the word that fits the sentence.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "Which word is an adjective? Grace wears ____ boots in the winter.",
+          "options": [
+            "gently",
+            "with",
+            "warm",
+            "or"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "Which word is a verb? My cousins ____ soccer in the park on Sundays.",
+          "options": [
+            "play",
+            "happy",
+            "and",
+            "an"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Which word is a preposition? The tickets are ____ my wallet.",
+          "options": [
+            "loudly",
+            "green",
+            "so",
+            "in"
+          ],
+          "correct": 3
+        },
+        {
+          "stem": "Which word is a noun or pronoun? The ____ fixed our roof yesterday.",
+          "options": [
+            "or",
+            "worker",
+            "slowly",
+            "busy"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "Which word is an article? There is ____ owl in that tree.",
+          "options": [
+            "see",
+            "quiet",
+            "on",
+            "an"
+          ],
+          "correct": 3
+        },
+        {
+          "stem": "Which word is a conjunction? I was tired, ____ I went to bed early.",
+          "options": [
+            "under",
+            "so",
+            "sleepy",
+            "the"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "Which word is an adverb? Lin types ____ on her computer.",
+          "options": [
+            "desk",
+            "because",
+            "quickly",
+            "from"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "Which word is a noun or pronoun? Ms. Kim called ____ this afternoon.",
+          "options": [
+            "us",
+            "nice",
+            "and",
+            "a"
+          ],
+          "correct": 0
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "title": "Exercise B. Name the Part of Speech",
+      "dir": "What part of speech is the CAPITALIZED word? Choose the answer.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "The cat is sleeping UNDER the bed. ____",
+          "options": [
+            "adverb",
+            "preposition",
+            "verb",
+            "article"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "My grandfather OFTEN reads the newspaper in the morning. ____",
+          "options": [
+            "adjective",
+            "verb",
+            "noun or pronoun",
+            "adverb"
+          ],
+          "correct": 3
+        },
+        {
+          "stem": "The apartment is small, BUT the rent is cheap. ____",
+          "options": [
+            "conjunction",
+            "preposition",
+            "article",
+            "adjective"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "THEY live next door to my aunt. ____",
+          "options": [
+            "article",
+            "verb",
+            "noun or pronoun",
+            "conjunction"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "Lucy BAKES cookies for her family on weekends. ____",
+          "options": [
+            "noun or pronoun",
+            "adjective",
+            "verb",
+            "preposition"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "I saw A rabbit in the garden this morning. ____",
+          "options": [
+            "article",
+            "adverb",
+            "conjunction",
+            "noun or pronoun"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "That comedian tells FUNNY stories. ____",
+          "options": [
+            "adverb",
+            "noun or pronoun",
+            "verb",
+            "adjective"
+          ],
+          "correct": 3
+        },
+        {
+          "stem": "Ten STUDENTS came to the meeting. ____",
+          "options": [
+            "verb",
+            "noun or pronoun",
+            "adjective",
+            "preposition"
+          ],
+          "correct": 1
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "title": "Exercise C. Word Endings",
+      "dir": "Choose the correct word. Look at the word endings.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "My grandmother is 90, but she still has a lot of ____.",
+          "options": [
+            "strong",
+            "strength",
+            "strongly",
+            "strengthen"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "Ben smiled ____ at the new student.",
+          "options": [
+            "polite",
+            "politeness",
+            "impolite",
+            "politely"
+          ],
+          "correct": 3
+        },
+        {
+          "stem": "Too much sugar can ____ your teeth.",
+          "options": [
+            "weak",
+            "weakly",
+            "weaken",
+            "weakness"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "This old map is very ____ for tourists.",
+          "options": [
+            "use",
+            "usefully",
+            "usefulness",
+            "useful"
+          ],
+          "correct": 3
+        },
+        {
+          "stem": "The movie has a ____ ending. Everyone cried.",
+          "options": [
+            "sadly",
+            "sadness",
+            "sad",
+            "sadden"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "We celebrated our son's ____ at his new job.",
+          "options": [
+            "success",
+            "succeed",
+            "successful",
+            "successfully"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "The firefighters worked ____ to save the house.",
+          "options": [
+            "bravely",
+            "brave",
+            "bravery",
+            "braver"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "The cook will ____ the sauce with a little flour.",
+          "options": [
+            "thick",
+            "thicken",
+            "thickly",
+            "thickness"
+          ],
+          "correct": 1
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script>
+// Items live in the JSON block above (school_practice_page_ccode.py reads the same block for school-check and the audit pack).
+// Checking is done here in the browser; nothing is sent anywhere.
+const EXERCISES = JSON.parse(document.getElementById("items").textContent).exercises;
+
+// Forgiving match: ignore capitals, extra spaces, curly apostrophes, end punctuation, and contraction vs. full form.
+const CONTRACTIONS = { "doesn't": "does not", "don't": "do not", "isn't": "is not", "aren't": "are not", "i'm": "i am" };
+function norm(s) {
+  let t = s.toLowerCase().replace(/[‘’ʼ`]/g, "'").replace(/\s+/g, " ").trim().replace(/[.!?,]+$/, "").trim();
+  return t.split(" ").map(w => CONTRACTIONS[w] || w).join(" ");
+}
+const isRight = (typed, accept) => accept.some(a => norm(a) === norm(typed));
+
+const state = {};          // id -> { answers: [], checked: bool, shown: bool }
+EXERCISES.forEach(ex => state[ex.id] = { answers: ex.items.map(() => ex.type === "mc" ? null : ""), checked: false, shown: false });
+let current = "A";
+
+const tabs = document.getElementById("tabs");
+const main = document.getElementById("main");
+
+function score(ex) {
+  const st = state[ex.id];
+  return ex.items.filter((it, i) => ex.type === "mc" ? st.answers[i] === it.correct : isRight(st.answers[i], it.accept)).length;
+}
+
+function renderTabs() {
+  tabs.innerHTML = "";
+  EXERCISES.forEach(ex => {
+    const b = document.createElement("button");
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", String(ex.id === current));
+    b.textContent = "Exercise " + ex.id;
+    if (state[ex.id].checked) {
+      const s = document.createElement("span");
+      s.className = "score";
+      s.textContent = score(ex) + "/" + ex.items.length;
+      b.append(s);
+    }
+    b.addEventListener("click", () => { current = ex.id; render(); });
+    tabs.append(b);
+  });
+}
+
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+function renderExercise() {
+  const ex = EXERCISES.find(e => e.id === current);
+  const st = state[ex.id];
+  main.innerHTML = "";
+  const sec = el("section");
+  sec.append(el("h2", null, ex.title), el("p", "dir", ex.dir));
+  const ol = el("ol", "items");
+  ex.items.forEach((it, i) => {
+    const li = el("li");
+    const ok = ex.type === "mc" ? st.answers[i] === it.correct : isRight(st.answers[i], it.accept);
+    if (st.checked) li.classList.add(ok ? "right" : "wrong");
+    const line = el("div");
+    line.append(el("span", "num", (i + 1) + "."));
+    if (ex.type === "mc") {
+      line.append(document.createTextNode(it.stem));
+      li.append(line);
+      const opts = el("div", "opts");
+      it.options.forEach((o, k) => {
+        const b = el("button", null, String.fromCharCode(97 + k) + ". " + o);
+        b.type = "button";
+        b.setAttribute("aria-pressed", String(st.answers[i] === k));
+        b.addEventListener("click", () => { st.answers[i] = k; st.checked = false; st.shown = false; render(); });
+        opts.append(b);
+      });
+      li.append(opts);
+    } else {
+      line.append(document.createTextNode(it.before + " "));
+      const inp = el("input", "blank");
+      inp.type = "text";
+      inp.value = st.answers[i];
+      inp.setAttribute("aria-label", "Item " + (i + 1) + " answer, verb: " + it.hint);
+      inp.autocomplete = "off"; inp.spellcheck = false;
+      inp.setAttribute("autocapitalize", "none"); inp.setAttribute("autocorrect", "off");
+      inp.addEventListener("input", () => { st.answers[i] = inp.value; if (st.checked) { st.checked = false; st.shown = false; li.classList.remove("right", "wrong"); const m = li.querySelector(".mark"); if (m) m.remove(); const a = li.querySelector(".answer"); if (a) a.remove(); renderTabs(); } });
+      line.append(inp, document.createTextNode(" "), el("span", "hint", "(" + it.hint + ")"), document.createTextNode(" " + it.after));
+      li.append(line);
+    }
+    if (st.checked) line.append(el("span", "mark", ok ? "✓" : "✗"));
+    if (st.checked && st.shown && !ok) {
+      li.append(el("p", "answer", "Answer: " + (ex.type === "mc" ? it.options[it.correct] : it.accept.join(" / "))));
+    }
+    ol.append(li);
+  });
+  sec.append(ol);
+
+  const actions = el("div", "actions");
+  const check = el("button", "primary", "Check answers");
+  check.type = "button";
+  check.addEventListener("click", () => { st.checked = true; render(); });
+  actions.append(check);
+  if (st.checked) {
+    const n = score(ex);
+    actions.append(el("p", "result", n === ex.items.length ? "All " + n + " correct!" : "You got " + n + " of " + ex.items.length + " correct. Fix the ✗ items and check again."));
+    if (n < ex.items.length && !st.shown) {
+      const show = el("button", null, "Show answers");
+      show.type = "button";
+      show.addEventListener("click", () => { st.shown = true; render(); });
+      actions.append(show);
+    }
+  }
+  const reset = el("button", null, "Start over");
+  reset.type = "button";
+  reset.addEventListener("click", () => { st.answers = ex.items.map(() => ex.type === "mc" ? null : ""); st.checked = false; st.shown = false; render(); });
+  actions.append(reset);
+  sec.append(actions);
+  main.append(sec);
+}
+
+function render() { renderTabs(); renderExercise(); }
+if (window.matchMedia("(max-width: 899px)").matches) document.getElementById("notesBox").open = false;
+render();
+</script>
+</body>
+</html>
