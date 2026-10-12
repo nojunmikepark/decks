@@ -1,0 +1,831 @@
+<!doctype html>
+<!--
+  SCHOOL PRACTICE PAGE TEMPLATE (2026-10-08 retro E3). A self-checking page, not a reveal.js deck.
+  Copy to "School Stuff/YYYY-MM-DD_Title_Case_Topic_L<n>_ccode.html", then edit ONLY:
+    <title>, the <header>, the notes panel (<aside class="card notes">), and the items JSON block.
+  Items JSON: exercises[] of {id, title, dir, type: "mc"|"type", items[]}.
+    mc   item: {stem (with ____), options[], correct (0-based index)}
+    type item: {before, hint, after, accept[]}  -- accept lists EVERY correct form: the page marks
+               anything else wrong (case, spaces, curly apostrophes, end punctuation, and
+               contraction vs full form are already forgiven).
+  Level colour: --accent is L2 green #2e6b3a; use #1f6b6b for L3.
+  school-check runs web page QA on it (school_webpage_check_ccode.mjs: every keyed answer scored in
+  Firefox + WebKit/iPad) and the overlap gates read the items via school_practice_page_ccode.py;
+  school-audit-pack_ccode builds the student/key text from the same block. The browser test relies on
+  this markup: role="tab" per exercise, ol.items > li, .opts button, input.blank, the
+  "Check answers" / "Start over" buttons and .result -- keep them.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comparatives and Superlatives Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: task tabs on top, one exercise at a time on the left, grammar notes beside it (above it on narrow screens). */
+:root {
+  --bg: #eef2ee;
+  --paper: #ffffff;
+  --ink: #1c2620;
+  --muted: #59665d;
+  --rule: #cdd7cf;
+  --accent: #2e6b3a;
+  --accent-soft: #e4efe6;
+  --ok: #2a6b3d;
+  --ok-soft: #e1f2e5;
+  --bad: #a3262a;
+  --bad-soft: #f8e3e3;
+  --font: "Atkinson Hyperlegible", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121714; --paper: #1a211c; --ink: #e3ebe5; --muted: #9fb0a4; --rule: #34433a;
+    --accent: #8fd19e; --accent-soft: #223328; --ok: #8fd19e; --ok-soft: #1f3326;
+    --bad: #f19a9c; --bad-soft: #3a2222; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121714; --paper: #1a211c; --ink: #e3ebe5; --muted: #9fb0a4; --rule: #34433a;
+  --accent: #8fd19e; --accent-soft: #223328; --ok: #8fd19e; --ok-soft: #1f3326;
+  --bad: #f19a9c; --bad-soft: #3a2222; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font);
+  font-size: 18px; line-height: 1.5; padding: 20px 16px 48px;
+}
+.wrap { max-width: 1120px; margin: 0 auto; }
+header h1 { font-size: clamp(24px, 4.5vw, 32px); line-height: 1.2; margin: 0 0 4px; color: var(--accent); text-wrap: balance; }
+header p { margin: 0 0 16px; color: var(--muted); }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+button {
+  font: inherit; color: inherit; cursor: pointer; border-radius: 10px;
+  border: 2px solid var(--accent); background: var(--paper); padding: 10px 16px;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.tabs button { font-weight: 700; color: var(--accent); }
+.tabs button[aria-selected="true"] { background: var(--accent); color: var(--paper); }
+.tabs .score { font-weight: 400; font-size: 15px; margin-left: 6px; }
+.layout { display: grid; gap: 16px; align-items: start; }
+@media (min-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr) 360px; } .notes { position: sticky; top: 16px; } }
+.card { background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; padding: 20px clamp(16px, 3vw, 28px); }
+.notes summary { font-weight: 700; color: var(--accent); cursor: pointer; font-size: 20px; }
+.notes h3 { margin: 16px 0 4px; font-size: 18px; color: var(--accent); }
+.notes p, .notes ul { margin: 4px 0; font-size: 16px; }
+.notes ul { padding-left: 20px; }
+.notes .ex { background: var(--accent-soft); border-radius: 8px; padding: 6px 10px; margin-top: 6px; }
+section h2 { margin: 0 0 4px; font-size: 22px; }
+section .dir { margin: 0 0 16px; color: var(--muted); }
+ol.items { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+ol.items > li { border-top: 1px solid var(--rule); padding-top: 14px; }
+.num { font-weight: 700; color: var(--accent); margin-right: 6px; }
+.opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.opts button { text-align: left; border-color: var(--rule); }
+.opts button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); font-weight: 700; }
+.blank {
+  font: inherit; color: var(--ink); background: var(--accent-soft); border: 0; border-bottom: 2px solid var(--accent);
+  border-radius: 6px 6px 0 0; padding: 4px 8px; width: 11em; max-width: 100%;
+}
+.hint { color: var(--muted); }
+.mark { display: inline-block; margin-left: 6px; font-weight: 700; }
+li.right .mark { color: var(--ok); }
+li.wrong .mark { color: var(--bad); }
+li.right .blank, li.right .opts button[aria-pressed="true"] { background: var(--ok-soft); border-color: var(--ok); }
+li.wrong .blank, li.wrong .opts button[aria-pressed="true"] { background: var(--bad-soft); border-color: var(--bad); }
+.answer { margin: 6px 0 0; color: var(--ok); font-weight: 700; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; align-items: center; }
+.actions .primary { background: var(--accent); color: var(--paper); font-weight: 700; }
+.result { font-size: 20px; font-weight: 700; margin: 0; }
+[hidden] { display: none !important; }
+@media (max-width: 520px) { .opts { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Comparatives and Superlatives</h1>
+    <p>Use a comparative to compare two things. Use a superlative to compare three or more things.</p>
+  </header>
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <div class="layout">
+    <main class="card" id="main"></main>
+    <aside class="card notes">
+      <details id="notesBox" open>
+        <summary>Grammar Notes</summary>
+        <h3>1. One-syllable adjectives</h3>
+        <p>Add <b>-er</b> (comparative) and <b>-est</b> (superlative).</p>
+        <p class="ex">long → longer than → the longest</p>
+        <ul>
+          <li>Ends in <b>e</b>: add <b>-r</b> / <b>-st</b>: safe → safer → the safest</li>
+          <li>Ends in 1 consonant + 1 vowel + 1 consonant (not w, x, or y): double the last letter: fat → fatter → the fattest</li>
+        </ul>
+        <h3>2. Adjectives ending in consonant + y</h3>
+        <p>Change <b>y</b> to <b>i</b>, then add <b>-er</b> / <b>-est</b>.</p>
+        <p class="ex">easy → easier → the easiest</p>
+        <h3>3. Other adjectives with 2 or more syllables</h3>
+        <p>Use <b>more</b> and <b>the most</b>.</p>
+        <p class="ex">exciting → more exciting → the most exciting</p>
+        <h3>4. Irregular adjectives</h3>
+        <ul>
+          <li>good → better → the best</li>
+          <li>bad → worse → the worst</li>
+          <li>far → farther → the farthest</li>
+        </ul>
+        <h3>5. As ... as</h3>
+        <p>Two things are the same: <b>as</b> + adjective + <b>as</b>. Not the same: <b>not as</b> ... <b>as</b>.</p>
+        <p class="ex">My coat is as long as your coat. My coat is not as long as your coat.</p>
+        <h3>6. Comparative adverbs (How?)</h3>
+        <ul>
+          <li>Most adverbs with <b>-ly</b>: use <b>more</b>: slowly → more slowly</li>
+          <li>Some adverbs look like adjectives. Add <b>-er</b>: fast → faster</li>
+          <li>Irregular: well → better, badly → worse</li>
+        </ul>
+        <p class="ex">He speaks more slowly than his boss.</p>
+        <p><b>Tip:</b> Comparatives use <b>than</b>. Superlatives use <b>the</b> and often <b>of all</b> or <b>in</b> + a place or group.</p>
+      </details>
+    </aside>
+  </div>
+</div>
+<script type="application/json" id="items">
+{
+  "exercises": [
+    {
+      "id": "A",
+      "title": "Exercise A. Comparatives",
+      "dir": "Type the comparative form of the word in ( ).",
+      "type": "type",
+      "items": [
+        {
+          "before": "Apples are",
+          "hint": "cheap",
+          "after": "at the farmers market than at the corner store.",
+          "accept": [
+            "cheaper"
+          ]
+        },
+        {
+          "before": "Climbing a ladder is",
+          "hint": "dangerous",
+          "after": "than climbing the stairs.",
+          "accept": [
+            "more dangerous"
+          ]
+        },
+        {
+          "before": "Your hair is",
+          "hint": "wet",
+          "after": "than my hair. Did you swim?",
+          "accept": [
+            "wetter"
+          ]
+        },
+        {
+          "before": "The upstairs neighbors are",
+          "hint": "noisy",
+          "after": "than the downstairs neighbors.",
+          "accept": [
+            "noisier"
+          ]
+        },
+        {
+          "before": "Your test score is",
+          "hint": "good",
+          "after": "than my score.",
+          "accept": [
+            "better"
+          ]
+        },
+        {
+          "before": "My summer gloves are",
+          "hint": "thin",
+          "after": "than my winter gloves.",
+          "accept": [
+            "thinner"
+          ]
+        },
+        {
+          "before": "This old couch is",
+          "hint": "comfortable",
+          "after": "than it looks.",
+          "accept": [
+            "more comfortable"
+          ]
+        },
+        {
+          "before": "The balcony is",
+          "hint": "sunny",
+          "after": "than the living room.",
+          "accept": [
+            "sunnier"
+          ]
+        },
+        {
+          "before": "The post office is",
+          "hint": "far",
+          "after": "from my house than the bank.",
+          "accept": [
+            "farther",
+            "further"
+          ]
+        },
+        {
+          "before": "The weather in May is",
+          "hint": "nice",
+          "after": "than the weather in March.",
+          "accept": [
+            "nicer"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "title": "Exercise B. Superlatives",
+      "dir": "Type the superlative form of the word in ( ).",
+      "type": "type",
+      "items": [
+        {
+          "before": "Ramon is the",
+          "hint": "lucky",
+          "after": "person in my family. He always wins prizes.",
+          "accept": [
+            "luckiest"
+          ]
+        },
+        {
+          "before": "This knife is the",
+          "hint": "useful",
+          "after": "tool in my kitchen.",
+          "accept": [
+            "most useful"
+          ]
+        },
+        {
+          "before": "Saying goodbye at the airport is the",
+          "hint": "sad",
+          "after": "part of a trip.",
+          "accept": [
+            "saddest"
+          ]
+        },
+        {
+          "before": "This bakery has the",
+          "hint": "good",
+          "after": "bread in town.",
+          "accept": [
+            "best"
+          ]
+        },
+        {
+          "before": "Alaska is the",
+          "hint": "large",
+          "after": "state in the U.S.",
+          "accept": [
+            "largest"
+          ]
+        },
+        {
+          "before": "Soccer is the",
+          "hint": "popular",
+          "after": "sport in Brazil.",
+          "accept": [
+            "most popular"
+          ]
+        },
+        {
+          "before": "Rush hour is the",
+          "hint": "bad",
+          "after": "time to drive downtown.",
+          "accept": [
+            "worst"
+          ]
+        },
+        {
+          "before": "This is the",
+          "hint": "pretty",
+          "after": "beach in San Diego.",
+          "accept": [
+            "prettiest"
+          ]
+        },
+        {
+          "before": "What is the",
+          "hint": "short",
+          "after": "way to the train station?",
+          "accept": [
+            "shortest"
+          ]
+        },
+        {
+          "before": "My family is the",
+          "hint": "important",
+          "after": "thing in my life.",
+          "accept": [
+            "most important"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "title": "Exercise C. As ... As",
+      "dir": "Choose the correct answer.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "Mia is 30. Her husband is 30. Mia is ____ her husband.",
+          "options": [
+            "older as",
+            "as old as",
+            "as older than"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "My backpack weighs three pounds. Your backpack weighs three pounds too. My backpack is ____ yours.",
+          "options": [
+            "as light as",
+            "lighter as",
+            "light as"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "The blue sweater costs $25. The red sweater costs $40. The blue sweater is not ____ the red sweater.",
+          "options": [
+            "expensive than",
+            "as more expensive as",
+            "as expensive as"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "Chicago is very cold in January. Miami is warm in January. Miami is not ____ Chicago in January.",
+          "options": [
+            "as cold as",
+            "colder as",
+            "as colder as"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Coffee is strong. Tea is not ____ coffee.",
+          "options": [
+            "stronger as",
+            "as strong as",
+            "as strong than"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "Your bedroom is ____ my bedroom. They are both 12 feet by 12 feet.",
+          "options": [
+            "large as",
+            "as larger as",
+            "as large as"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "The park is ten minutes from my house. The library is ten minutes from my house too. The library is ____ the park.",
+          "options": [
+            "closer as",
+            "as close as",
+            "close as"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "My homemade salsa is ____ the salsa at a restaurant. Everyone loves it!",
+          "options": [
+            "good as",
+            "as better as",
+            "as good as"
+          ],
+          "correct": 2
+        }
+      ]
+    },
+    {
+      "id": "D",
+      "title": "Exercise D. Comparative or Superlative?",
+      "dir": "Choose the correct answer.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "A gorilla is ____ than a man.",
+          "options": [
+            "stronger",
+            "the strongest"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "In my hometown, January is ____ month of the year.",
+          "options": [
+            "snowier",
+            "the snowiest"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "Hollywood is ____ neighborhood in Los Angeles.",
+          "options": [
+            "more famous",
+            "the most famous"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "This lamp is ____ than that lamp. I can read with it.",
+          "options": [
+            "the brightest",
+            "brighter"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "Is a cheetah ____ than a lion?",
+          "options": [
+            "faster",
+            "the fastest"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Of all the dishes at the party, Lola's chili was ____.",
+          "options": [
+            "the spiciest",
+            "spicier"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "For me, biology is ____ than art.",
+          "options": [
+            "the most interesting",
+            "more interesting"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "My grandfather is ____ person in our family. He is 94.",
+          "options": [
+            "the oldest",
+            "older"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Rosa is ____ student in our class. She always finishes first.",
+          "options": [
+            "the quickest",
+            "quicker"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Your cake is ____ than the cake from the store.",
+          "options": [
+            "the best",
+            "better"
+          ],
+          "correct": 1
+        }
+      ]
+    },
+    {
+      "id": "E",
+      "title": "Exercise E. Comparative Adverbs",
+      "dir": "Type the comparative form of the adverb in ( ).",
+      "type": "type",
+      "items": [
+        {
+          "before": "Nina makes friends",
+          "hint": "easily",
+          "after": "than her shy sister.",
+          "accept": [
+            "more easily"
+          ]
+        },
+        {
+          "before": "Paolo studied",
+          "hint": "hard",
+          "after": "this semester than last semester. He got all A's.",
+          "accept": [
+            "harder"
+          ]
+        },
+        {
+          "before": "Ines plays the guitar",
+          "hint": "well",
+          "after": "than her teacher now!",
+          "accept": [
+            "better"
+          ]
+        },
+        {
+          "before": "I sing",
+          "hint": "badly",
+          "after": "than my kids. Please don't ask me to sing!",
+          "accept": [
+            "worse"
+          ]
+        },
+        {
+          "before": "Please put the dishes down",
+          "hint": "gently",
+          "after": "than that. You broke a plate!",
+          "accept": [
+            "more gently"
+          ]
+        },
+        {
+          "before": "My son answers the phone",
+          "hint": "politely",
+          "after": "than my daughter. He always says \"Good morning.\"",
+          "accept": [
+            "more politely"
+          ]
+        },
+        {
+          "before": "My wife helps our son with his homework",
+          "hint": "patiently",
+          "after": "than I do. I get angry quickly.",
+          "accept": [
+            "more patiently"
+          ]
+        },
+        {
+          "before": "Kim folds clothes",
+          "hint": "neatly",
+          "after": "than her roommate.",
+          "accept": [
+            "more neatly"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F",
+      "title": "Exercise F. Fix the Mistake",
+      "dir": "One CAPITALIZED word is wrong. Type the correct word or words.",
+      "type": "type",
+      "items": [
+        {
+          "before": "Today is HOTER than yesterday.",
+          "hint": "",
+          "after": "",
+          "accept": [
+            "hotter"
+          ]
+        },
+        {
+          "before": "My brother is TALLEST than me.",
+          "hint": "",
+          "after": "",
+          "accept": [
+            "taller"
+          ]
+        },
+        {
+          "before": "Of all the mountains in California, Mount Whitney is the HIGHER.",
+          "hint": "",
+          "after": "",
+          "accept": [
+            "highest",
+            "tallest"
+          ]
+        },
+        {
+          "before": "Your bag is GOODER than mine.",
+          "hint": "",
+          "after": "",
+          "accept": [
+            "better"
+          ]
+        },
+        {
+          "before": "Mira is HONESTER than her brother.",
+          "hint": "",
+          "after": "",
+          "accept": [
+            "more honest"
+          ]
+        },
+        {
+          "before": "My grandmother drives more CAREFUL than my grandfather.",
+          "hint": "",
+          "after": "",
+          "accept": [
+            "carefully"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "G",
+      "title": "Exercise G. Quiz",
+      "dir": "Choose the correct answer.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "A trumpet is ____ than a flute.",
+          "options": [
+            "more loud",
+            "loudest",
+            "louder"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "This is ____ hotel in the city.",
+          "options": [
+            "more beautiful",
+            "the most beautiful",
+            "the beautifulest"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "My shoes are ____ yours. We both wear size 8.",
+          "options": [
+            "bigger as",
+            "as bigger than",
+            "as big as"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "Mr. Ortiz explains math ____ than our old teacher.",
+          "options": [
+            "better",
+            "more good",
+            "best"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Of the four puppies, the brown one is ____.",
+          "options": [
+            "smaller",
+            "the smallest",
+            "the most small"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "Eggs are ____ now than they were last year.",
+          "options": [
+            "expensiver",
+            "most expensive",
+            "more expensive"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "Pneumonia is ____ than the flu.",
+          "options": [
+            "worse",
+            "the worst",
+            "badder"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Omar dances ____ than his wife.",
+          "options": [
+            "most beautifully",
+            "more beautifully",
+            "beautifullier"
+          ],
+          "correct": 1
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script>
+// Items live in the JSON block above (school_practice_page_ccode.py reads the same block for school-check and the audit pack).
+// Checking is done here in the browser; nothing is sent anywhere.
+const EXERCISES = JSON.parse(document.getElementById("items").textContent).exercises;
+
+// Forgiving match: ignore capitals, extra spaces, curly apostrophes, end punctuation, and contraction vs. full form.
+const CONTRACTIONS = { "doesn't": "does not", "don't": "do not", "isn't": "is not", "aren't": "are not", "i'm": "i am" };
+function norm(s) {
+  let t = s.toLowerCase().replace(/[‘’ʼ`]/g, "'").replace(/\s+/g, " ").trim().replace(/[.!?,]+$/, "").trim();
+  return t.split(" ").map(w => CONTRACTIONS[w] || w).join(" ");
+}
+const isRight = (typed, accept) => accept.some(a => norm(a) === norm(typed));
+
+const state = {};          // id -> { answers: [], checked: bool, shown: bool }
+EXERCISES.forEach(ex => state[ex.id] = { answers: ex.items.map(() => ex.type === "mc" ? null : ""), checked: false, shown: false });
+let current = "A";
+
+const tabs = document.getElementById("tabs");
+const main = document.getElementById("main");
+
+function score(ex) {
+  const st = state[ex.id];
+  return ex.items.filter((it, i) => ex.type === "mc" ? st.answers[i] === it.correct : isRight(st.answers[i], it.accept)).length;
+}
+
+function renderTabs() {
+  tabs.innerHTML = "";
+  EXERCISES.forEach(ex => {
+    const b = document.createElement("button");
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", String(ex.id === current));
+    b.textContent = "Exercise " + ex.id;
+    if (state[ex.id].checked) {
+      const s = document.createElement("span");
+      s.className = "score";
+      s.textContent = score(ex) + "/" + ex.items.length;
+      b.append(s);
+    }
+    b.addEventListener("click", () => { current = ex.id; render(); });
+    tabs.append(b);
+  });
+}
+
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+function renderExercise() {
+  const ex = EXERCISES.find(e => e.id === current);
+  const st = state[ex.id];
+  main.innerHTML = "";
+  const sec = el("section");
+  sec.append(el("h2", null, ex.title), el("p", "dir", ex.dir));
+  const ol = el("ol", "items");
+  ex.items.forEach((it, i) => {
+    const li = el("li");
+    const ok = ex.type === "mc" ? st.answers[i] === it.correct : isRight(st.answers[i], it.accept);
+    if (st.checked) li.classList.add(ok ? "right" : "wrong");
+    const line = el("div");
+    line.append(el("span", "num", (i + 1) + "."));
+    if (ex.type === "mc") {
+      line.append(document.createTextNode(it.stem));
+      li.append(line);
+      const opts = el("div", "opts");
+      it.options.forEach((o, k) => {
+        const b = el("button", null, String.fromCharCode(97 + k) + ". " + o);
+        b.type = "button";
+        b.setAttribute("aria-pressed", String(st.answers[i] === k));
+        b.addEventListener("click", () => { st.answers[i] = k; st.checked = false; st.shown = false; render(); });
+        opts.append(b);
+      });
+      li.append(opts);
+    } else {
+      line.append(document.createTextNode(it.before + " "));
+      const inp = el("input", "blank");
+      inp.type = "text";
+      inp.value = st.answers[i];
+      inp.setAttribute("aria-label", "Item " + (i + 1) + " answer" + (it.hint ? ", word: " + it.hint : ""));
+      inp.autocomplete = "off"; inp.spellcheck = false;
+      inp.setAttribute("autocapitalize", "none"); inp.setAttribute("autocorrect", "off");
+      inp.addEventListener("input", () => { st.answers[i] = inp.value; if (st.checked) { st.checked = false; st.shown = false; li.classList.remove("right", "wrong"); const m = li.querySelector(".mark"); if (m) m.remove(); const a = li.querySelector(".answer"); if (a) a.remove(); renderTabs(); } });
+      if (it.hint) line.append(inp, document.createTextNode(" "), el("span", "hint", "(" + it.hint + ")"), document.createTextNode(" " + it.after)); else line.append(inp, document.createTextNode(" " + it.after));
+      li.append(line);
+    }
+    if (st.checked) line.append(el("span", "mark", ok ? "✓" : "✗"));
+    if (st.checked && st.shown && !ok) {
+      li.append(el("p", "answer", "Answer: " + (ex.type === "mc" ? it.options[it.correct] : it.accept.join(" / "))));
+    }
+    ol.append(li);
+  });
+  sec.append(ol);
+
+  const actions = el("div", "actions");
+  const check = el("button", "primary", "Check answers");
+  check.type = "button";
+  check.addEventListener("click", () => { st.checked = true; render(); });
+  actions.append(check);
+  if (st.checked) {
+    const n = score(ex);
+    actions.append(el("p", "result", n === ex.items.length ? "All " + n + " correct!" : "You got " + n + " of " + ex.items.length + " correct. Fix the ✗ items and check again."));
+    if (n < ex.items.length && !st.shown) {
+      const show = el("button", null, "Show answers");
+      show.type = "button";
+      show.addEventListener("click", () => { st.shown = true; render(); });
+      actions.append(show);
+    }
+  }
+  const reset = el("button", null, "Start over");
+  reset.type = "button";
+  reset.addEventListener("click", () => { st.answers = ex.items.map(() => ex.type === "mc" ? null : ""); st.checked = false; st.shown = false; render(); });
+  actions.append(reset);
+  sec.append(actions);
+  main.append(sec);
+}
+
+function render() { renderTabs(); renderExercise(); }
+if (window.matchMedia("(max-width: 899px)").matches) document.getElementById("notesBox").open = false;
+render();
+</script>
+</body>
+</html>
