@@ -1,0 +1,787 @@
+<!doctype html>
+<!--
+  SCHOOL PRACTICE PAGE TEMPLATE (2026-10-08 retro E3). A self-checking page, not a reveal.js deck.
+  Copy to "School Stuff/YYYY-MM-DD_Title_Case_Topic_L<n>_ccode.html", then edit ONLY:
+    <title>, the <header>, the notes panel (<aside class="card notes">), and the items JSON block.
+  Items JSON: exercises[] of {id, title, dir, type: "mc"|"type", items[]}.
+    mc   item: {stem (with ____), options[], correct (0-based index)}
+    type item: {before, hint, after, accept[]}  -- accept lists EVERY correct form: the page marks
+               anything else wrong (case, spaces, curly apostrophes, end punctuation, and
+               contraction vs full form are already forgiven).
+  Level colour: --accent is L2 green #2e6b3a; use #1f6b6b for L3.
+  school-check runs web page QA on it (school_webpage_check_ccode.mjs: every keyed answer scored in
+  Firefox + WebKit/iPad) and the overlap gates read the items via school_practice_page_ccode.py;
+  school-audit-pack_ccode builds the student/key text from the same block. The browser test relies on
+  this markup: role="tab" per exercise, ol.items > li, .opts button, input.blank, the
+  "Check answers" / "Start over" buttons and .result -- keep them.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Count and Noncount Nouns Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: task tabs on top, one exercise at a time on the left, grammar notes beside it (above it on narrow screens). */
+:root {
+  --bg: #eef2ee;
+  --paper: #ffffff;
+  --ink: #1c2620;
+  --muted: #59665d;
+  --rule: #cdd7cf;
+  --accent: #2e6b3a;
+  --accent-soft: #e4efe6;
+  --ok: #2a6b3d;
+  --ok-soft: #e1f2e5;
+  --bad: #a3262a;
+  --bad-soft: #f8e3e3;
+  --font: "Atkinson Hyperlegible", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121714; --paper: #1a211c; --ink: #e3ebe5; --muted: #9fb0a4; --rule: #34433a;
+    --accent: #8fd19e; --accent-soft: #223328; --ok: #8fd19e; --ok-soft: #1f3326;
+    --bad: #f19a9c; --bad-soft: #3a2222; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121714; --paper: #1a211c; --ink: #e3ebe5; --muted: #9fb0a4; --rule: #34433a;
+  --accent: #8fd19e; --accent-soft: #223328; --ok: #8fd19e; --ok-soft: #1f3326;
+  --bad: #f19a9c; --bad-soft: #3a2222; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font);
+  font-size: 18px; line-height: 1.5; padding: 20px 16px 48px;
+}
+.wrap { max-width: 1120px; margin: 0 auto; }
+header h1 { font-size: clamp(24px, 4.5vw, 32px); line-height: 1.2; margin: 0 0 4px; color: var(--accent); text-wrap: balance; }
+header p { margin: 0 0 16px; color: var(--muted); }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+button {
+  font: inherit; color: inherit; cursor: pointer; border-radius: 10px;
+  border: 2px solid var(--accent); background: var(--paper); padding: 10px 16px;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.tabs button { font-weight: 700; color: var(--accent); }
+.tabs button[aria-selected="true"] { background: var(--accent); color: var(--paper); }
+.tabs .score { font-weight: 400; font-size: 15px; margin-left: 6px; }
+.layout { display: grid; gap: 16px; align-items: start; }
+@media (min-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr) 360px; } .notes { position: sticky; top: 16px; } }
+.card { background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; padding: 20px clamp(16px, 3vw, 28px); }
+.notes summary { font-weight: 700; color: var(--accent); cursor: pointer; font-size: 20px; }
+.notes h3 { margin: 16px 0 4px; font-size: 18px; color: var(--accent); }
+.notes p, .notes ul { margin: 4px 0; font-size: 16px; }
+.notes ul { padding-left: 20px; }
+.notes .ex { background: var(--accent-soft); border-radius: 8px; padding: 6px 10px; margin-top: 6px; }
+section h2 { margin: 0 0 4px; font-size: 22px; }
+section .dir { margin: 0 0 16px; color: var(--muted); }
+ol.items { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+ol.items > li { border-top: 1px solid var(--rule); padding-top: 14px; }
+.num { font-weight: 700; color: var(--accent); margin-right: 6px; }
+.opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.opts button { text-align: left; border-color: var(--rule); }
+.opts button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); font-weight: 700; }
+.blank {
+  font: inherit; color: var(--ink); background: var(--accent-soft); border: 0; border-bottom: 2px solid var(--accent);
+  border-radius: 6px 6px 0 0; padding: 4px 8px; width: 11em; max-width: 100%;
+}
+.hint { color: var(--muted); }
+.mark { display: inline-block; margin-left: 6px; font-weight: 700; }
+li.right .mark { color: var(--ok); }
+li.wrong .mark { color: var(--bad); }
+li.right .blank, li.right .opts button[aria-pressed="true"] { background: var(--ok-soft); border-color: var(--ok); }
+li.wrong .blank, li.wrong .opts button[aria-pressed="true"] { background: var(--bad-soft); border-color: var(--bad); }
+.answer { margin: 6px 0 0; color: var(--ok); font-weight: 700; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; align-items: center; }
+.actions .primary { background: var(--accent); color: var(--paper); font-weight: 700; }
+.result { font-size: 20px; font-weight: 700; margin: 0; }
+[hidden] { display: none !important; }
+@media (max-width: 520px) { .opts { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Count and Noncount Nouns</h1>
+    <p>Count nouns have a singular and a plural form. Noncount nouns have only one form.</p>
+  </header>
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <div class="layout">
+    <main class="card" id="main"></main>
+    <aside class="card notes">
+      <details id="notesBox" open>
+        <summary>Grammar Notes</summary>
+        <h3>1. Count nouns</h3>
+        <p>You can count them: one, two, three ...</p>
+        <p class="ex">a book, two books &nbsp;·&nbsp; a desk, three desks</p>
+        <h3>2. Noncount nouns</h3>
+        <p>You can't count them. They have no plural form. Don't use <b>a</b> or <b>an</b>.</p>
+        <p class="ex">milk, music, homework, money (not <s>a milk</s>, <s>musics</s>)</p>
+        <h3>3. A, an, or some</h3>
+        <ul>
+          <li><b>a</b> + singular count noun (consonant sound): a lamp</li>
+          <li><b>an</b> + singular count noun (vowel sound): an orange</li>
+          <li><b>some</b> + plural count noun: some cups</li>
+          <li><b>some</b> + noncount noun: some milk</li>
+        </ul>
+        <h3>4. Is or are</h3>
+        <p>Singular count noun or noncount noun + <b>is</b>. Plural count noun + <b>are</b>.</p>
+        <p class="ex">The lamp is new. The lamps are new. The milk is cold.</p>
+        <h3>5. Counting noncount nouns</h3>
+        <p>Use a container or amount word + <b>of</b>.</p>
+        <p class="ex">a cup of tea, two boxes of pasta, a slice of cake</p>
+        <h3>6. Much, many, a few, a little</h3>
+        <ul>
+          <li><b>many</b> / <b>a few</b> + plural count noun: How many books? a few books</li>
+          <li><b>much</b> / <b>a little</b> + noncount noun: How much money? a little milk</li>
+        </ul>
+      </details>
+    </aside>
+  </div>
+</div>
+<script type="application/json" id="items">
+{
+  "exercises": [
+    {
+      "id": "A",
+      "title": "Exercise A. Count or Noncount?",
+      "dir": "Is the noun count or noncount? Choose the answer.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "silk: a ____ noun",
+          "options": [
+            "count",
+            "noncount"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "pencil: a ____ noun",
+          "options": [
+            "count",
+            "noncount"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "passport: a ____ noun",
+          "options": [
+            "count",
+            "noncount"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "thunder: a ____ noun",
+          "options": [
+            "count",
+            "noncount"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "sock: a ____ noun",
+          "options": [
+            "count",
+            "noncount"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "lotion: a ____ noun",
+          "options": [
+            "count",
+            "noncount"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "broccoli: a ____ noun",
+          "options": [
+            "count",
+            "noncount"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "stapler: a ____ noun",
+          "options": [
+            "count",
+            "noncount"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "meat: a ____ noun",
+          "options": [
+            "count",
+            "noncount"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "ruler: a ____ noun",
+          "options": [
+            "count",
+            "noncount"
+          ],
+          "correct": 0
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "title": "Exercise B. A ____ of ...",
+      "dir": "Choose the correct word.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "Before the long drive, Emre bought a ____ of gum.",
+          "options": [
+            "gallon",
+            "pack",
+            "loaf"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "We are out of soy sauce. Please buy a ____ of soy sauce.",
+          "options": [
+            "bottle",
+            "slice",
+            "sheet"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Can I borrow a ____ of paper? I want to write a note.",
+          "options": [
+            "cup",
+            "can",
+            "sheet"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "There is only one ____ of toilet paper left!",
+          "options": [
+            "roll",
+            "bowl",
+            "slice"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "At the baseball game, Jorge opened a ____ of soda.",
+          "options": [
+            "loaf",
+            "sheet",
+            "can"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "The vet sold us a ____ of dog food for our new puppy.",
+          "options": [
+            "bag",
+            "slice",
+            "tube"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "My grandmother gave me a good ____ of advice: \"Save your money.\"",
+          "options": [
+            "bottle",
+            "piece",
+            "bar"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "Hassan put a ____ of gas in the lawn mower.",
+          "options": [
+            "gallon",
+            "bar",
+            "sheet"
+          ],
+          "correct": 0
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "title": "Exercise C. A, An, or Some?",
+      "dir": "Choose the correct answer.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "Do you have ____ extra pen?",
+          "options": [
+            "a",
+            "an",
+            "some"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "I need ____ glitter for my art project.",
+          "options": [
+            "a",
+            "an",
+            "some"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "There is ____ pharmacy on Maple Street.",
+          "options": [
+            "a",
+            "an",
+            "some"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Can you give me ____ help with this heavy suitcase?",
+          "options": [
+            "a",
+            "an",
+            "some"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "My son wants ____ iguana as a pet.",
+          "options": [
+            "a",
+            "an",
+            "some"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "There is ____ dust on the TV.",
+          "options": [
+            "a",
+            "an",
+            "some"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "Dalia is ____ nurse at the clinic.",
+          "options": [
+            "a",
+            "an",
+            "some"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "I'm looking for ____ envelope.",
+          "options": [
+            "a",
+            "an",
+            "some"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "I have ____ good news!",
+          "options": [
+            "a",
+            "an",
+            "some"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "There is ____ bee on your arm!",
+          "options": [
+            "a",
+            "an",
+            "some"
+          ],
+          "correct": 0
+        }
+      ]
+    },
+    {
+      "id": "D",
+      "title": "Exercise D. Is or Are?",
+      "dir": "Choose the correct answer.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "The cherries on this plate ____ for your brother.",
+          "options": [
+            "is",
+            "are"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "The vocabulary in this lesson ____ easy.",
+          "options": [
+            "are",
+            "is"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "Your hair ____ very long now!",
+          "options": [
+            "is",
+            "are"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "My new jeans ____ too big.",
+          "options": [
+            "are",
+            "is"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "The women in my building ____ very friendly.",
+          "options": [
+            "is",
+            "are"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "The fruit in that bowl ____ fresh.",
+          "options": [
+            "is",
+            "are"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "These tomatoes ____ very cheap today.",
+          "options": [
+            "are",
+            "is"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "The ginger in this tea ____ strong.",
+          "options": [
+            "are",
+            "is"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "The smoke from the barbecue ____ getting in my eyes!",
+          "options": [
+            "is",
+            "are"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Two students ____ absent today.",
+          "options": [
+            "is",
+            "are"
+          ],
+          "correct": 1
+        }
+      ]
+    },
+    {
+      "id": "E",
+      "title": "Exercise E. Fix the Mistake",
+      "dir": "One CAPITALIZED word is wrong. Type the correct word.",
+      "type": "type",
+      "items": [
+        {
+          "before": "This bus has forty SEAT.",
+          "hint": "",
+          "after": "",
+          "accept": [
+            "seats"
+          ]
+        },
+        {
+          "before": "Hurry! We don't have much TIMES.",
+          "hint": "",
+          "after": "",
+          "accept": [
+            "time"
+          ]
+        },
+        {
+          "before": "Your English ARE very good now!",
+          "hint": "",
+          "after": "",
+          "accept": [
+            "is"
+          ]
+        },
+        {
+          "before": "There are many PERSON at the bus stop.",
+          "hint": "",
+          "after": "",
+          "accept": [
+            "people"
+          ]
+        },
+        {
+          "before": "We need five POTATO for the stew.",
+          "hint": "",
+          "after": "",
+          "accept": [
+            "potatoes"
+          ]
+        },
+        {
+          "before": "Look! Your shoelaces IS untied.",
+          "hint": "",
+          "after": "",
+          "accept": [
+            "are"
+          ]
+        },
+        {
+          "before": "Put some SUNSCREENS on your face. It's very sunny today.",
+          "hint": "",
+          "after": "",
+          "accept": [
+            "sunscreen"
+          ]
+        },
+        {
+          "before": "My cat had four KITTEN last week.",
+          "hint": "",
+          "after": "",
+          "accept": [
+            "kittens"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F",
+      "title": "Exercise F. Quiz",
+      "dir": "Choose the correct answer.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "How ____ sleep do you get every night?",
+          "options": [
+            "many",
+            "much"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "How ____ cousins do you have?",
+          "options": [
+            "many",
+            "much"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "I'm going to make ____ omelet for breakfast.",
+          "options": [
+            "a",
+            "some",
+            "an"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "I have ____ friends in Chicago.",
+          "options": [
+            "a little",
+            "a few"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "Please add ____ lemon juice to the salad.",
+          "options": [
+            "a little",
+            "a few"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "The gloves ____ in the drawer.",
+          "options": [
+            "is",
+            "are"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "This yogurt ____ delicious.",
+          "options": [
+            "is",
+            "are"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Do you have ____ minute? I have a question.",
+          "options": [
+            "some",
+            "a",
+            "an"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "After dinner, Wei shared a ____ of chocolate with his wife.",
+          "options": [
+            "gallon",
+            "bar"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "There ____ a lot of dirt on your shoes.",
+          "options": [
+            "are",
+            "is"
+          ],
+          "correct": 1
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script>
+// Items live in the JSON block above (school_practice_page_ccode.py reads the same block for school-check and the audit pack).
+// Checking is done here in the browser; nothing is sent anywhere.
+const EXERCISES = JSON.parse(document.getElementById("items").textContent).exercises;
+
+// Forgiving match: ignore capitals, extra spaces, curly apostrophes, end punctuation, and contraction vs. full form.
+const CONTRACTIONS = { "doesn't": "does not", "don't": "do not", "isn't": "is not", "aren't": "are not", "i'm": "i am" };
+function norm(s) {
+  let t = s.toLowerCase().replace(/[‘’ʼ`]/g, "'").replace(/\s+/g, " ").trim().replace(/[.!?,]+$/, "").trim();
+  return t.split(" ").map(w => CONTRACTIONS[w] || w).join(" ");
+}
+const isRight = (typed, accept) => accept.some(a => norm(a) === norm(typed));
+
+const state = {};          // id -> { answers: [], checked: bool, shown: bool }
+EXERCISES.forEach(ex => state[ex.id] = { answers: ex.items.map(() => ex.type === "mc" ? null : ""), checked: false, shown: false });
+let current = "A";
+
+const tabs = document.getElementById("tabs");
+const main = document.getElementById("main");
+
+function score(ex) {
+  const st = state[ex.id];
+  return ex.items.filter((it, i) => ex.type === "mc" ? st.answers[i] === it.correct : isRight(st.answers[i], it.accept)).length;
+}
+
+function renderTabs() {
+  tabs.innerHTML = "";
+  EXERCISES.forEach(ex => {
+    const b = document.createElement("button");
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", String(ex.id === current));
+    b.textContent = "Exercise " + ex.id;
+    if (state[ex.id].checked) {
+      const s = document.createElement("span");
+      s.className = "score";
+      s.textContent = score(ex) + "/" + ex.items.length;
+      b.append(s);
+    }
+    b.addEventListener("click", () => { current = ex.id; render(); });
+    tabs.append(b);
+  });
+}
+
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+function renderExercise() {
+  const ex = EXERCISES.find(e => e.id === current);
+  const st = state[ex.id];
+  main.innerHTML = "";
+  const sec = el("section");
+  sec.append(el("h2", null, ex.title), el("p", "dir", ex.dir));
+  const ol = el("ol", "items");
+  ex.items.forEach((it, i) => {
+    const li = el("li");
+    const ok = ex.type === "mc" ? st.answers[i] === it.correct : isRight(st.answers[i], it.accept);
+    if (st.checked) li.classList.add(ok ? "right" : "wrong");
+    const line = el("div");
+    line.append(el("span", "num", (i + 1) + "."));
+    if (ex.type === "mc") {
+      line.append(document.createTextNode(it.stem));
+      li.append(line);
+      const opts = el("div", "opts");
+      it.options.forEach((o, k) => {
+        const b = el("button", null, String.fromCharCode(97 + k) + ". " + o);
+        b.type = "button";
+        b.setAttribute("aria-pressed", String(st.answers[i] === k));
+        b.addEventListener("click", () => { st.answers[i] = k; st.checked = false; st.shown = false; render(); });
+        opts.append(b);
+      });
+      li.append(opts);
+    } else {
+      line.append(document.createTextNode(it.before + " "));
+      const inp = el("input", "blank");
+      inp.type = "text";
+      inp.value = st.answers[i];
+      inp.setAttribute("aria-label", "Item " + (i + 1) + " answer" + (it.hint ? ", verb: " + it.hint : ""));
+      inp.autocomplete = "off"; inp.spellcheck = false;
+      inp.setAttribute("autocapitalize", "none"); inp.setAttribute("autocorrect", "off");
+      inp.addEventListener("input", () => { st.answers[i] = inp.value; if (st.checked) { st.checked = false; st.shown = false; li.classList.remove("right", "wrong"); const m = li.querySelector(".mark"); if (m) m.remove(); const a = li.querySelector(".answer"); if (a) a.remove(); renderTabs(); } });
+      if (it.hint) line.append(inp, document.createTextNode(" "), el("span", "hint", "(" + it.hint + ")"), document.createTextNode(" " + it.after)); else line.append(inp, document.createTextNode(" " + it.after));
+      li.append(line);
+    }
+    if (st.checked) line.append(el("span", "mark", ok ? "✓" : "✗"));
+    if (st.checked && st.shown && !ok) {
+      li.append(el("p", "answer", "Answer: " + (ex.type === "mc" ? it.options[it.correct] : it.accept.join(" / "))));
+    }
+    ol.append(li);
+  });
+  sec.append(ol);
+
+  const actions = el("div", "actions");
+  const check = el("button", "primary", "Check answers");
+  check.type = "button";
+  check.addEventListener("click", () => { st.checked = true; render(); });
+  actions.append(check);
+  if (st.checked) {
+    const n = score(ex);
+    actions.append(el("p", "result", n === ex.items.length ? "All " + n + " correct!" : "You got " + n + " of " + ex.items.length + " correct. Fix the ✗ items and check again."));
+    if (n < ex.items.length && !st.shown) {
+      const show = el("button", null, "Show answers");
+      show.type = "button";
+      show.addEventListener("click", () => { st.shown = true; render(); });
+      actions.append(show);
+    }
+  }
+  const reset = el("button", null, "Start over");
+  reset.type = "button";
+  reset.addEventListener("click", () => { st.answers = ex.items.map(() => ex.type === "mc" ? null : ""); st.checked = false; st.shown = false; render(); });
+  actions.append(reset);
+  sec.append(actions);
+  main.append(sec);
+}
+
+function render() { renderTabs(); renderExercise(); }
+if (window.matchMedia("(max-width: 899px)").matches) document.getElementById("notesBox").open = false;
+render();
+</script>
+</body>
+</html>
