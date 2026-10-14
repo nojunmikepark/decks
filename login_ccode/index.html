@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Student Login</title>
+<!-- Student login: name + password, password = the name again. Mike 2026-10-14.
+     The roster is stored as SHA-256 hashes of the lowercased names so names are not readable in the page source.
+     Login state lives in this browser only; shared iPads log out after 30 idle minutes. -->
+<style>
+  :root { --bg:#fff; --fg:#1d1d1f; --muted:#666; --btn:#1a6dd6; --line:#c8c8cc; --ok:#1e8e3e; --bad:#c5221f; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#111; --fg:#eee; --muted:#aaa; --btn:#4a90e2; --line:#444; --ok:#4cc26a; --bad:#ff6b5e; } }
+  body { margin:0; background:var(--bg); color:var(--fg); font-family:system-ui,-apple-system,sans-serif;
+         min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+         padding:16px; box-sizing:border-box; text-align:center; }
+  h1 { font-size:2rem; margin:0 0 24px; }
+  form, #done { width:100%; max-width:420px; }
+  label { display:block; text-align:left; font-size:1.3rem; margin:16px 0 6px; }
+  input { width:100%; box-sizing:border-box; font-size:1.5rem; padding:14px; border:2px solid var(--line);
+          border-radius:12px; background:var(--bg); color:var(--fg); }
+  button, .go { display:inline-block; font-size:1.5rem; padding:18px 40px; margin-top:28px; border:0; border-radius:16px;
+                background:var(--btn); color:#fff; cursor:pointer; touch-action:manipulation; text-decoration:none; }
+  .link { background:none; color:var(--btn); font-size:1.2rem; padding:8px; margin-top:16px; text-decoration:underline; }
+  #msg { font-size:1.3rem; margin-top:20px; min-height:1.6rem; color:var(--bad); }
+  #hi { font-size:2.2rem; font-weight:700; color:var(--ok); margin:0 0 8px; }
+  [hidden] { display:none !important; }
+</style>
+</head>
+<body>
+<form id="form" autocomplete="off" novalidate>
+  <h1>Student Login</h1>
+  <label for="name">Name</label>
+  <input id="name" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" required>
+  <label for="pass">Password</label>
+  <input id="pass" type="password" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" required>
+  <button type="submit">Log in</button>
+  <div id="msg" role="alert" aria-live="polite"></div>
+</form>
+<div id="done" hidden>
+  <p id="hi"></p>
+  <a class="go" href="../">Go to lessons</a><br>
+  <button id="out" class="link" type="button"></button>
+</div>
+<script>
+const ROSTER = new Set([
+  "e02aab0f3de3010f797384c599c58f0ba2a9f0583f0a3f3974343442ca799799",
+  "9a4b515a3d0e0cbe9b0d945e703f17e292ea8248e3bc203fce6f4cc07f13106d",
+  "4c1a9d9c5725be16475d2a221d56b6109ddc9721da2bb4475bf0201955eb7cc6",
+  "12775348cef809eb1b7bcb64f04f06867211ef3ea6b48a46e3a6a9e3a9d1b5cd",
+  "960c129cbcef56afd1c80043b7d59442d9ba8945fdcda9081af494f77ec231bd",
+  "c2ae332a423ef5afab8c196671b2cbeee89b396afe21d09b892b4f977a5db4a3",
+  "37976d6f82acb82f683f71884a9f0cf601826b5e43abdcdffe85d9f435edf3e7",
+  "a4df747a55606c520d691c01f4d60eef51263868f5034bfb4539810c13f7f425",
+  "aea1fcde2ae8c7af2b4973718ccaac5212149f9bf51b5befabaabfaf2c2fdb08",
+  "3fa987493ca3ccfcb95243b881a02b7d2e660bd58f5763086ab1d731e473421b",
+  "7dd262a625bc68593e6d86c165cf7977802a23536d6ac527eb593c3ef752ed8e",
+  "10b66e2bd553d4f4eda3427d4988a830c60860a8a025f7dbb7e61cc75d7f63a8",
+  "d31a6259276c29ad61aef235ffb812f56a37636486f1a62ba22ff41aa9713617",
+  "2b1a844d886d561522352f881bd98a3d3f8db833eea638a93753214422e06331",
+  "e1660bdca466582dc552d56a9dea747663e4e107870c80ea7bb55284f2168fb3",
+  "4e3961a42edad4345c7aa198f4ba27a28cb3cbe46ad96296da159ac05138c083",
+  "42f28dbc14b03903716a4ba127c4f6cda75ef24db84e63e3660058cddcc08119",
+  "4636369b9564e26db639dd81832454bbdf9e184c1babb270ffc1baaadeb702a7",
+  "f17c0096df937eedf8465447bacd0c9f6087958459322942947553e5ead0416c",
+  "c51ea9724362a021a709302b9fae56cf3d5bfab42efca7babe278d8a177a636a",
+  "e3e8956b88a21187ea0c123135a6dcacadf52e0e43dc54ddf92b31a1c69a22a6",
+  "59e192d9ae28b9f57ebf046f6e7829266a1cf710f3f5c9f4dbbbca1ef69ab3ae",
+  "97404c432b28186d886888413c09e1356c303f1f884258c53dd03a0dbbeeec08",
+  "a5fe381af24e2e2e739d37e7644421ee55e230922fc6dc7a11ddca7c30f59256"
+]);
+const IDLE_MS = 30 * 60 * 1000;
+const $ = id => document.getElementById(id);
+
+function store(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} }
+function load(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+
+async function sha256(s) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+function showDone(name) {
+  $("form").hidden = true; $("done").hidden = false;
+  $("hi").textContent = "Hi, " + name + "!";
+  $("out").textContent = "Not " + name + "? Log out";
+}
+
+function showForm() {
+  $("done").hidden = true; $("form").hidden = false;
+  $("name").value = ""; $("pass").value = ""; $("msg").textContent = "";
+}
+
+$("form").addEventListener("submit", async ev => {
+  ev.preventDefault();
+  const typed = $("name").value.trim(), pass = $("pass").value.trim();
+  if (!typed || !pass) { $("msg").textContent = "Type your name and password."; return; }
+  const ok = pass.toLowerCase() === typed.toLowerCase() && ROSTER.has(await sha256(typed.toLowerCase()));
+  if (!ok) { $("msg").textContent = "Name or password is wrong. Try again."; return; }
+  const name = typed.charAt(0).toUpperCase() + typed.slice(1);
+  store("student", name); store("studentSeen", String(Date.now()));
+  showDone(name);
+});
+
+$("out").addEventListener("click", () => { store("student", null); store("studentSeen", null); showForm(); });
+
+const saved = load("student"), seen = Number(load("studentSeen") || 0);
+if (saved && Date.now() - seen < IDLE_MS) { store("studentSeen", String(Date.now())); showDone(saved); }
+else { store("student", null); store("studentSeen", null); }
+</script>
+</body>
+</html>
