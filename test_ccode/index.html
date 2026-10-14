@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Connection Test</title>
+<!-- One-button check: can this device reach the student-progress storage (Supabase)? Mike 2026-10-13. -->
+<style>
+  :root { --bg:#fff; --fg:#1d1d1f; --muted:#666; --btn:#1a6dd6; --ok:#1e8e3e; --bad:#c5221f; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#111; --fg:#eee; --muted:#aaa; --btn:#4a90e2; --ok:#4cc26a; --bad:#ff6b5e; } }
+  body { margin:0; background:var(--bg); color:var(--fg); font-family:system-ui,-apple-system,sans-serif;
+         min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+         padding:16px; box-sizing:border-box; text-align:center; }
+  h1 { font-size:1.6rem; margin:0 0 24px; }
+  button { font-size:1.6rem; padding:22px 48px; border:0; border-radius:16px; background:var(--btn); color:#fff;
+           cursor:pointer; touch-action:manipulation; }
+  button:disabled { opacity:.6; }
+  #result { font-size:2.4rem; font-weight:700; margin-top:32px; min-height:3rem; }
+  #detail { color:var(--muted); margin-top:8px; max-width:520px; }
+  .ok { color:var(--ok); } .bad { color:var(--bad); }
+</style>
+</head>
+<body>
+<h1>Student progress — connection test</h1>
+<button id="go" type="button">Test connection</button>
+<div id="result" role="status" aria-live="polite"></div>
+<div id="detail"></div>
+<script>
+const URL_ = "https://vveouljskvndqsasujvf.supabase.co/auth/v1/health";
+// Publishable key: meant to sit in browser code; it grants no private access.
+const KEY = "sb_publishable_Ne3mCOWbZ1IYUODy3APOLg_8Ussn8q2";
+const btn = document.getElementById("go"), out = document.getElementById("result"), det = document.getElementById("detail");
+
+btn.addEventListener("click", async () => {
+  btn.disabled = true; out.className = ""; out.textContent = "Testing…"; det.textContent = "";
+  const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 10000);
+  try {
+    const r = await fetch(URL_, { headers: { apikey: KEY }, signal: ctl.signal, cache: "no-store" });
+    const j = await r.json().catch(() => ({}));
+    if (r.ok && j.name === "GoTrue") {
+      out.className = "ok"; out.textContent = "✓ Connected";
+      det.textContent = "This device can save student progress.";
+    } else {
+      out.className = "bad"; out.textContent = "✗ Not connected";
+      det.textContent = "The storage site answered with an error (code " + r.status + "). The network may be filtering it.";
+    }
+  } catch (e) {
+    out.className = "bad"; out.textContent = "✗ Blocked";
+    det.textContent = e.name === "AbortError" ? "No answer after 10 seconds. The network is probably blocking supabase.co."
+                                              : "The network blocked the storage site (" + e.message + ").";
+  } finally { clearTimeout(timer); btn.disabled = false; }
+});
+</script>
+</body>
+</html>
