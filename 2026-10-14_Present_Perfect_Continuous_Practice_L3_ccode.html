@@ -1,0 +1,877 @@
+<!doctype html>
+<!--
+  SCHOOL PRACTICE PAGE TEMPLATE (2026-10-08 retro E3). A self-checking page, not a reveal.js deck.
+  Copy to "School Stuff/YYYY-MM-DD_Title_Case_Topic_L<n>_ccode.html", then edit ONLY:
+    <title>, the <header>, the notes panel (<aside class="card notes">), and the items JSON block.
+  Items JSON: exercises[] of {id, title, dir, type: "mc"|"type", items[]}.
+    mc   item: {stem (with ____), options[], correct (0-based index)}
+    type item: {before, hint, after, accept[]}  -- accept lists EVERY correct form: the page marks
+               anything else wrong (case, spaces, curly apostrophes, end punctuation, and
+               contraction vs full form are already forgiven).
+  Level colour: --accent is L2 green #2e6b3a; use #1f6b6b for L3.
+  school-check runs web page QA on it (school_webpage_check_ccode.mjs: every keyed answer scored in
+  Firefox + WebKit/iPad) and the overlap gates read the items via school_practice_page_ccode.py;
+  school-audit-pack_ccode builds the student/key text from the same block. The browser test relies on
+  this markup: role="tab" per exercise, ol.items > li, .opts button, input.blank, the
+  "Check answers" / "Start over" buttons and .result -- keep them.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Present Perfect Continuous Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: task tabs on top, one exercise at a time on the left, grammar notes beside it (above it on narrow screens). */
+:root {
+  --bg: #eef2ee;
+  --paper: #ffffff;
+  --ink: #1c2620;
+  --muted: #59665d;
+  --rule: #cdd7cf;
+  --accent: #1f6b6b;
+  --accent-soft: #e0eeee;
+  --ok: #2a6b3d;
+  --ok-soft: #e1f2e5;
+  --bad: #a3262a;
+  --bad-soft: #f8e3e3;
+  --font: "Atkinson Hyperlegible", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121714; --paper: #1a211c; --ink: #e3ebe5; --muted: #9fb0a4; --rule: #34433a;
+    --accent: #8fd1d1; --accent-soft: #1f3333; --ok: #8fd19e; --ok-soft: #1f3326;
+    --bad: #f19a9c; --bad-soft: #3a2222; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121714; --paper: #1a211c; --ink: #e3ebe5; --muted: #9fb0a4; --rule: #34433a;
+  --accent: #8fd1d1; --accent-soft: #1f3333; --ok: #8fd19e; --ok-soft: #1f3326;
+  --bad: #f19a9c; --bad-soft: #3a2222; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font);
+  font-size: 18px; line-height: 1.5; padding: 20px 16px 48px;
+}
+.wrap { max-width: 1120px; margin: 0 auto; }
+header h1 { font-size: clamp(24px, 4.5vw, 32px); line-height: 1.2; margin: 0 0 4px; color: var(--accent); text-wrap: balance; }
+header p { margin: 0 0 16px; color: var(--muted); }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+button {
+  font: inherit; color: inherit; cursor: pointer; border-radius: 10px;
+  border: 2px solid var(--accent); background: var(--paper); padding: 10px 16px;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.tabs button { font-weight: 700; color: var(--accent); }
+.tabs button[aria-selected="true"] { background: var(--accent); color: var(--paper); }
+.tabs .score { font-weight: 400; font-size: 15px; margin-left: 6px; }
+.layout { display: grid; gap: 16px; align-items: start; }
+@media (min-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr) 360px; } .notes { position: sticky; top: 16px; } }
+.card { background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; padding: 20px clamp(16px, 3vw, 28px); }
+.notes summary { font-weight: 700; color: var(--accent); cursor: pointer; font-size: 20px; }
+.notes h3 { margin: 16px 0 4px; font-size: 18px; color: var(--accent); }
+.notes p, .notes ul { margin: 4px 0; font-size: 16px; }
+.notes ul { padding-left: 20px; }
+.notes .ex { background: var(--accent-soft); border-radius: 8px; padding: 6px 10px; margin-top: 6px; }
+section h2 { margin: 0 0 4px; font-size: 22px; }
+section .dir { margin: 0 0 16px; color: var(--muted); }
+ol.items { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+ol.items > li { border-top: 1px solid var(--rule); padding-top: 14px; }
+.num { font-weight: 700; color: var(--accent); margin-right: 6px; }
+.opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.opts button { text-align: left; border-color: var(--rule); }
+.opts button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); font-weight: 700; }
+.blank {
+  font: inherit; color: var(--ink); background: var(--accent-soft); border: 0; border-bottom: 2px solid var(--accent);
+  border-radius: 6px 6px 0 0; padding: 4px 8px; width: 11em; max-width: 100%;
+}
+.hint { color: var(--muted); }
+.mark { display: inline-block; margin-left: 6px; font-weight: 700; }
+li.right .mark { color: var(--ok); }
+li.wrong .mark { color: var(--bad); }
+li.right .blank, li.right .opts button[aria-pressed="true"] { background: var(--ok-soft); border-color: var(--ok); }
+li.wrong .blank, li.wrong .opts button[aria-pressed="true"] { background: var(--bad-soft); border-color: var(--bad); }
+.answer { margin: 6px 0 0; color: var(--ok); font-weight: 700; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; align-items: center; }
+.actions .primary { background: var(--accent); color: var(--paper); font-weight: 700; }
+.result { font-size: 20px; font-weight: 700; margin: 0; }
+[hidden] { display: none !important; }
+@media (max-width: 520px) { .opts { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<!-- back-to-topics (school-save) --><style>@media print{.back-to-topics{display:none}}</style><a href="index.html" class="back-to-topics" style="display:inline-block;margin:12px 16px 0;font:600 18px/1.2 system-ui,sans-serif;color:#fff;background:#1f5fbf;padding:10px 16px;border-radius:10px;text-decoration:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">← Back to topics</a>
+
+<div class="wrap">
+  <header>
+    <h1>Present Perfect Continuous</h1>
+    <p>have / has + been + verb-ing. Use it for an action that started in the past and is still going on, or one that just stopped and you can see the result.</p>
+  </header>
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <div class="layout">
+    <main class="card" id="main"></main>
+    <aside class="card notes">
+      <details id="notesBox" open>
+        <summary>Grammar Notes</summary>
+        <h3>1. Form</h3>
+        <p>I / you / we / they + <b>have been</b> + verb-ing</p>
+        <p>he / she / it + <b>has been</b> + verb-ing</p>
+        <p class="ex">He has been knitting a scarf.<br>They haven't been answering their emails.<br>Have they been resting? Yes, they have.</p>
+        <h3>2. Still going on</h3>
+        <p>The action started in the past and is still happening. Use <b>for</b>, <b>since</b>, <b>all day</b>, or <b>How long…?</b></p>
+        <p class="ex">He has been knitting that scarf for two weeks.<br>How long have they been resting? Since noon.</p>
+        <h3>3. Just stopped: you can see the result</h3>
+        <p class="ex">Your shirt is wet. Have you been washing the car?</p>
+        <h3>4. These days</h3>
+        <p>Use <b>lately</b> or <b>these days</b> for something true now but not forever.</p>
+        <p class="ex">We have been walking more these days.</p>
+        <h3>5. Present perfect or present perfect continuous?</h3>
+        <ul>
+          <li>A number, or a finished result: <b>present perfect</b>. I have written three emails.</li>
+          <li>The activity and how long: <b>present perfect continuous</b>. I have been writing emails all morning.</li>
+          <li>Stative verbs (like, believe, need, belong) are not used in the continuous form.</li>
+        </ul>
+        <h3>6. -ing spelling</h3>
+        <ul>
+          <li>Most verbs: + -ing (read → reading)</li>
+          <li>Silent -e: drop the e (make → making)</li>
+          <li>-ie: change to y (lie → lying)</li>
+          <li>One-syllable verb that ends consonant + vowel + consonant: double the last letter (sit → sitting). Not w, x, or y (snow → snowing).</li>
+        </ul>
+      </details>
+    </aside>
+  </div>
+</div>
+<script type="application/json" id="items">
+{
+  "exercises": [
+    {
+      "id": "A",
+      "title": "Exercise A. -ing Spelling",
+      "dir": "Type the -ing form of each verb.",
+      "type": "type",
+      "items": [
+        {
+          "before": "",
+          "hint": "shop",
+          "after": "",
+          "accept": [
+            "shopping"
+          ]
+        },
+        {
+          "before": "",
+          "hint": "dance",
+          "after": "",
+          "accept": [
+            "dancing"
+          ]
+        },
+        {
+          "before": "",
+          "hint": "tie",
+          "after": "",
+          "accept": [
+            "tying"
+          ]
+        },
+        {
+          "before": "",
+          "hint": "ski",
+          "after": "",
+          "accept": [
+            "skiing"
+          ]
+        },
+        {
+          "before": "",
+          "hint": "plan",
+          "after": "",
+          "accept": [
+            "planning"
+          ]
+        },
+        {
+          "before": "",
+          "hint": "smile",
+          "after": "",
+          "accept": [
+            "smiling"
+          ]
+        },
+        {
+          "before": "",
+          "hint": "fix",
+          "after": "",
+          "accept": [
+            "fixing"
+          ]
+        },
+        {
+          "before": "",
+          "hint": "jog",
+          "after": "",
+          "accept": [
+            "jogging"
+          ]
+        },
+        {
+          "before": "",
+          "hint": "ride",
+          "after": "",
+          "accept": [
+            "riding"
+          ]
+        },
+        {
+          "before": "",
+          "hint": "hug",
+          "after": "",
+          "accept": [
+            "hugging"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "title": "Exercise B. Positive Sentences",
+      "dir": "Choose the correct answer.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "My roommate ____ for her nursing exam all week.",
+          "options": [
+            "has been studying",
+            "have been studying"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "The twins ____ in the pool since lunch.",
+          "options": [
+            "have been splash",
+            "have been splashing"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "Mr. Abara ____ the hallway floors since 6 a.m.",
+          "options": [
+            "has been mopping",
+            "has been mop"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "The wind ____ all night, and there are branches all over the yard.",
+          "options": [
+            "has been blowing",
+            "has been blew"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "We ____ about getting a puppy for months.",
+          "options": [
+            "has been talking",
+            "have been talking"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "Lately, my father ____ to a lot of history podcasts.",
+          "options": [
+            "has being listening",
+            "has been listening"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "I ____ my grandmother's recipes into a notebook all afternoon.",
+          "options": [
+            "have been copying",
+            "has been copying"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "The kids ____ snowmen in the front yard since breakfast.",
+          "options": [
+            "have been make",
+            "have been making"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "Elsa ____ flowers at the farmers market every weekend this summer.",
+          "options": [
+            "has been selling",
+            "have been selling"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Our English class ____ songs this month to practice pronunciation.",
+          "options": [
+            "has been sing",
+            "has been singing"
+          ],
+          "correct": 1
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "title": "Exercise C. Negative Sentences",
+      "dir": "Choose the correct answer.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "I ____ well since I started my new medicine.",
+          "options": [
+            "haven't been feeling",
+            "hasn't been feeling"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Our dishwasher ____ the cups very well lately.",
+          "options": [
+            "hasn't been clean",
+            "hasn't been cleaning"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "My neighbors ____ their trash cans out on time this month.",
+          "options": [
+            "hasn't been putting",
+            "haven't been putting"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "Sun-hee ____ to class this week because her car is in the shop.",
+          "options": [
+            "hasn't been coming",
+            "haven't been coming"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "We ____ out much lately. We are saving money.",
+          "options": [
+            "haven't been eat",
+            "haven't been eating"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "The cat ____ much today. It is just lying in the sun.",
+          "options": [
+            "hasn't been moving",
+            "haven't been moving"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "My son ____ his phone in class. His teacher is happy.",
+          "options": [
+            "hasn't been using",
+            "hasn't been use"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "You ____ enough water. Your lips are dry.",
+          "options": [
+            "hasn't been drinking",
+            "haven't been drinking"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "The elevator in our building ____ since Thursday.",
+          "options": [
+            "hasn't been work",
+            "hasn't been working"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "My parents ____ much TV lately. They are busy with their new house.",
+          "options": [
+            "haven't been watching",
+            "hasn't been watching"
+          ],
+          "correct": 0
+        }
+      ]
+    },
+    {
+      "id": "D",
+      "title": "Exercise D. Questions and Answers",
+      "dir": "Choose the best answer to each question.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "Question: How long have you been learning English? Answer: ____",
+          "options": [
+            "Since I came to the U.S.",
+            "Two years ago.",
+            "Next year."
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Question: Has your sister been working late? Answer: ____",
+          "options": [
+            "Yes, she is.",
+            "Yes, she has.",
+            "Yes, she does."
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "Question: What have you been doing all morning? Answer: ____",
+          "options": [
+            "I cleaning out the closet.",
+            "I have been clean out the closet.",
+            "I have been cleaning out the closet."
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "Question: Why are your shoes wet? Answer: ____",
+          "options": [
+            "Because I have been walk in the rain.",
+            "Because I have been walking in the rain.",
+            "Because I walking in the rain."
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "Question: Have the kids been behaving well? Answer: ____",
+          "options": [
+            "No, they haven't.",
+            "No, they don't.",
+            "No, they aren't."
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Question: How long has Mr. Silva been teaching here? Answer: ____",
+          "options": [
+            "Six years ago.",
+            "Since six years.",
+            "For about six years."
+          ],
+          "correct": 2
+        }
+      ]
+    },
+    {
+      "id": "E",
+      "title": "Exercise E. Write the Verb",
+      "dir": "Type the present perfect continuous form of the verb.",
+      "type": "type",
+      "items": [
+        {
+          "before": "Sorry I'm late. My boss",
+          "hint": "talk",
+          "after": "to me about a new project for an hour.",
+          "accept": [
+            "has been talking"
+          ]
+        },
+        {
+          "before": "Kim's eyes are red. She",
+          "hint": "cry",
+          "after": ".",
+          "accept": [
+            "has been crying"
+          ]
+        },
+        {
+          "before": "Those two boys",
+          "hint": "kick",
+          "after": "that ball against our wall all afternoon.",
+          "accept": [
+            "have been kicking"
+          ]
+        },
+        {
+          "before": "How long",
+          "hint": "you / live",
+          "after": "in this city?",
+          "accept": [
+            "have you been living"
+          ]
+        },
+        {
+          "before": "My grandfather",
+          "hint": "grow",
+          "after": "tomatoes in his backyard since he retired.",
+          "accept": [
+            "has been growing"
+          ]
+        },
+        {
+          "before": "Your face is red.",
+          "hint": "you / run",
+          "after": "?",
+          "accept": [
+            "Have you been running"
+          ]
+        },
+        {
+          "before": "We",
+          "hint": "not / cook",
+          "after": "at home much this month. We order pizza a lot.",
+          "accept": [
+            "haven't been cooking",
+            "have not been cooking"
+          ]
+        },
+        {
+          "before": "Ms. Lopez",
+          "hint": "teach",
+          "after": "math at this school for twenty years.",
+          "accept": [
+            "has been teaching"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F",
+      "title": "Exercise F. Present Perfect or Present Perfect Continuous",
+      "dir": "Choose the correct answer.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "My arms are sore because I ____ the fence all day.",
+          "options": [
+            "have painted",
+            "have been painting"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "I ____ this song three times today. I love it!",
+          "options": [
+            "have played",
+            "have been playing"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Mina ____ Mr. Park since they were in college.",
+          "options": [
+            "has known",
+            "has been knowing"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Your hair is wet. ____ in the pool?",
+          "options": [
+            "Have you swum",
+            "Have you been swimming"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "Hamid ____ his novel. He is sending it to a publisher tomorrow.",
+          "options": [
+            "has finally been finishing",
+            "has finally finished"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "The smoke alarm ____ for five minutes. Can someone turn it off?",
+          "options": [
+            "has been beeping",
+            "has beeped"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "We ____ only two cars in our lives.",
+          "options": [
+            "have been owning",
+            "have owned"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "My daughter ____ four books this month.",
+          "options": [
+            "has read",
+            "has been reading"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "The neighbors' dog ____ all morning. I can't concentrate.",
+          "options": [
+            "has been barking",
+            "has barked"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Why are your hands so dirty? ____ in the garden?",
+          "options": [
+            "Have you dug",
+            "Have you been digging"
+          ],
+          "correct": 1
+        }
+      ]
+    },
+    {
+      "id": "G",
+      "title": "Exercise G. Quiz",
+      "dir": "Choose the correct answer.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "She ____ been working here since spring.",
+          "options": [
+            "have",
+            "has",
+            "is"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "They have been ____ the same jokes all night.",
+          "options": [
+            "tell",
+            "told",
+            "telling"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "I have been feeling sick ____ the weekend.",
+          "options": [
+            "since",
+            "for",
+            "ago"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "How long ____ you been driving a taxi?",
+          "options": [
+            "are",
+            "did",
+            "have"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "My kids have been playing outside ____ two hours.",
+          "options": [
+            "since",
+            "for",
+            "during"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "____ your sister been feeling better?",
+          "options": [
+            "Has",
+            "Is",
+            "Does"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "I ____ this camera since 2018.",
+          "options": [
+            "have been having",
+            "have had",
+            "am having"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "Shh! The baby ____ for an hour. Don't wake her.",
+          "options": [
+            "has been sleeping",
+            "sleeps",
+            "has been sleep"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Mia has been working at the bank ____ she finished college.",
+          "options": [
+            "for",
+            "ago",
+            "since"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "Your fingers are blue. ____ with markers?",
+          "options": [
+            "Did you been drawing",
+            "Have you been drawing",
+            "Have you drawing"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "We ____ a lot of rain lately.",
+          "options": [
+            "have been getting",
+            "has been getting",
+            "are get"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Lately, I ____ to work instead of driving.",
+          "options": [
+            "have biking",
+            "has been biking",
+            "have been biking"
+          ],
+          "correct": 2
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script>
+// Items live in the JSON block above (school_practice_page_ccode.py reads the same block for school-check and the audit pack).
+// Checking is done here in the browser; nothing is sent anywhere.
+const EXERCISES = JSON.parse(document.getElementById("items").textContent).exercises;
+
+// Forgiving match: ignore capitals, extra spaces, curly apostrophes, end punctuation, and contraction vs. full form.
+const CONTRACTIONS = { "doesn't": "does not", "don't": "do not", "isn't": "is not", "aren't": "are not", "i'm": "i am" };
+function norm(s) {
+  let t = s.toLowerCase().replace(/[‘’ʼ`]/g, "'").replace(/\s+/g, " ").trim().replace(/[.!?,]+$/, "").trim();
+  return t.split(" ").map(w => CONTRACTIONS[w] || w).join(" ");
+}
+const isRight = (typed, accept) => accept.some(a => norm(a) === norm(typed));
+
+const state = {};          // id -> { answers: [], checked: bool, shown: bool }
+EXERCISES.forEach(ex => state[ex.id] = { answers: ex.items.map(() => ex.type === "mc" ? null : ""), checked: false, shown: false });
+let current = "A";
+
+const tabs = document.getElementById("tabs");
+const main = document.getElementById("main");
+
+function score(ex) {
+  const st = state[ex.id];
+  return ex.items.filter((it, i) => ex.type === "mc" ? st.answers[i] === it.correct : isRight(st.answers[i], it.accept)).length;
+}
+
+function renderTabs() {
+  tabs.innerHTML = "";
+  EXERCISES.forEach(ex => {
+    const b = document.createElement("button");
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", String(ex.id === current));
+    b.textContent = "Exercise " + ex.id;
+    if (state[ex.id].checked) {
+      const s = document.createElement("span");
+      s.className = "score";
+      s.textContent = score(ex) + "/" + ex.items.length;
+      b.append(s);
+    }
+    b.addEventListener("click", () => { current = ex.id; render(); });
+    tabs.append(b);
+  });
+}
+
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+function renderExercise() {
+  const ex = EXERCISES.find(e => e.id === current);
+  const st = state[ex.id];
+  main.innerHTML = "";
+  const sec = el("section");
+  sec.append(el("h2", null, ex.title), el("p", "dir", ex.dir));
+  const ol = el("ol", "items");
+  ex.items.forEach((it, i) => {
+    const li = el("li");
+    const ok = ex.type === "mc" ? st.answers[i] === it.correct : isRight(st.answers[i], it.accept);
+    if (st.checked) li.classList.add(ok ? "right" : "wrong");
+    const line = el("div");
+    line.append(el("span", "num", (i + 1) + "."));
+    if (ex.type === "mc") {
+      line.append(document.createTextNode(it.stem));
+      li.append(line);
+      const opts = el("div", "opts");
+      it.options.forEach((o, k) => {
+        const b = el("button", null, String.fromCharCode(97 + k) + ". " + o);
+        b.type = "button";
+        b.setAttribute("aria-pressed", String(st.answers[i] === k));
+        b.addEventListener("click", () => { st.answers[i] = k; st.checked = false; st.shown = false; render(); });
+        opts.append(b);
+      });
+      li.append(opts);
+    } else {
+      line.append(document.createTextNode(it.before + " "));
+      const inp = el("input", "blank");
+      inp.type = "text";
+      inp.value = st.answers[i];
+      inp.setAttribute("aria-label", "Item " + (i + 1) + " answer, verb: " + it.hint);
+      inp.autocomplete = "off"; inp.spellcheck = false;
+      inp.setAttribute("autocapitalize", "none"); inp.setAttribute("autocorrect", "off");
+      inp.addEventListener("input", () => { st.answers[i] = inp.value; if (st.checked) { st.checked = false; st.shown = false; li.classList.remove("right", "wrong"); const m = li.querySelector(".mark"); if (m) m.remove(); const a = li.querySelector(".answer"); if (a) a.remove(); renderTabs(); } });
+      line.append(inp, document.createTextNode(" "), el("span", "hint", "(" + it.hint + ")"), document.createTextNode(" " + it.after));
+      li.append(line);
+    }
+    if (st.checked) line.append(el("span", "mark", ok ? "✓" : "✗"));
+    if (st.checked && st.shown && !ok) {
+      li.append(el("p", "answer", "Answer: " + (ex.type === "mc" ? it.options[it.correct] : it.accept.join(" / "))));
+    }
+    ol.append(li);
+  });
+  sec.append(ol);
+
+  const actions = el("div", "actions");
+  const check = el("button", "primary", "Check answers");
+  check.type = "button";
+  check.addEventListener("click", () => { st.checked = true; render(); });
+  actions.append(check);
+  if (st.checked) {
+    const n = score(ex);
+    actions.append(el("p", "result", n === ex.items.length ? "All " + n + " correct!" : "You got " + n + " of " + ex.items.length + " correct. Fix the ✗ items and check again."));
+    if (n < ex.items.length && !st.shown) {
+      const show = el("button", null, "Show answers");
+      show.type = "button";
+      show.addEventListener("click", () => { st.shown = true; render(); });
+      actions.append(show);
+    }
+  }
+  const reset = el("button", null, "Start over");
+  reset.type = "button";
+  reset.addEventListener("click", () => { st.answers = ex.items.map(() => ex.type === "mc" ? null : ""); st.checked = false; st.shown = false; render(); });
+  actions.append(reset);
+  sec.append(actions);
+  main.append(sec);
+}
+
+function render() { renderTabs(); renderExercise(); }
+if (window.matchMedia("(max-width: 899px)").matches) document.getElementById("notesBox").open = false;
+render();
+</script>
+</body>
+</html>
