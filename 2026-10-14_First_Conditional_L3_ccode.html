@@ -1,0 +1,593 @@
+<!-- generator: _lib/school_deck_scaffold.py -->
+<!DOCTYPE html>
+<!--
+  ESL reveal.js DECK TEMPLATE — copy this file, rename to
+  YYYY-MM-DD_Title_Case_Topic_L<level>_ccode.html in the School Stuff root,
+  and fill the Edit.
+
+  LEVEL SWAP: this template ships L2 colors (green). For L4, change the
+  three lines in :root marked  /* L4: ... */  and swap theme to white
+  (already white). L2 accent 2E6B3A / light D9E9D3.  L4 accent 1F4E79 /
+  light D6E4F2.
+
+  All canonical contracts (invisible scrollbar, 80vh bottom spacer per
+  section, no font-size on .reveal, table.compare last-child border,
+  reveal init config) are baked in. Run the linter after editing:
+      node _lib/verify_html_deck.mjs <deck.html>            # rendered check
+      python3 _lib/verify_html_deck_static.py <deck.html>   # fast source lint
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>First Conditional — Level 3</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/theme/white.css">
+<style>
+  :root { --accent: #1F6B6B; --accent-light: #D6E8E8; --gray: #555555;
+          /* L4: --accent: #1F4E79; --accent-light: #D6E4F2; */
+          --good: #15803D; --bad: #B91C1C; --muted: #777; }
+
+  /* TYPOGRAPHY CANON — never put font-size on .reveal itself */
+  .reveal { font-family: Arial, sans-serif; }
+  .reveal h1, .reveal h2, .reveal h3 { color: var(--accent); font-family: Arial, sans-serif; text-transform: none; letter-spacing: 0; }
+  .reveal h1 { font-size: 2.2em; }
+  .reveal h2 { font-size: 1.6em; }
+  .reveal h3 { font-size: 1.15em; }
+  .reveal h4 { font-size: 1.05em; }
+  .reveal p, .reveal li { font-size: 0.85em; line-height: 1.5; }
+
+  /* SCROLLABLE SLIDES WITH INVISIBLE SCROLLBAR */
+  .reveal .slides section {
+    overflow-y: auto !important;
+    max-height: 92vh !important;
+    text-align: left;
+    padding: 20px 40px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .reveal .slides section::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* Title slide */
+  .title-slide { text-align: center !important; }
+  .title-slide h1 { font-size: 2.6em; margin-bottom: 0.3em; }
+  .title-slide .subtitle { font-size: 1.2em; color: var(--gray); }
+
+  /* Pattern / example / note / tip */
+  .pattern-box {
+    background: var(--accent-light);
+    border-left: 6px solid var(--accent);
+    padding: 14px 20px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+  .pattern-box code {
+    background: white; padding: 2px 8px; border-radius: 3px;
+    color: var(--accent); font-weight: bold;
+  }
+  .example {
+    background: #FAFAFA; border: 1px solid #DDD;
+    padding: 10px 16px; margin: 8px 0; border-radius: 3px; font-size: 0.9em;
+  }
+  .example .key { color: var(--accent); font-weight: bold; }
+  .note { font-style: italic; color: var(--gray); font-size: 0.85em; margin-top: 10px; }
+  .check-tip {
+    background: #FFF8E1; border-left: 6px solid #F5A623;
+    padding: 12px 18px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+
+  /* Comparison tables — borders need !important (reveal theme strips them) */
+  table.compare {
+    border-collapse: collapse !important; margin: 14px 0;
+    font-size: 0.82em; width: 100%; border: 1px solid var(--accent) !important;
+  }
+  table.compare th, table.compare td {
+    border: 1px solid var(--accent) !important; padding: 8px 12px; text-align: left;
+  }
+  table.compare tr:last-child td { border-bottom: 1px solid var(--accent) !important; }
+  table.compare th { background: var(--accent); color: white; }
+  table.compare td:first-child { font-weight: bold; color: var(--accent); }
+
+  /* Click-to-reveal exercise (single-answer reveal) */
+  .exercise {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .exercise .question { font-size: 0.9em; margin: 0 0 10px 0; }
+  .exercise .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .exercise button.reveal-btn {
+    background: var(--accent); color: white; border: none; padding: 6px 14px;
+    border-radius: 4px; font-family: Arial; font-size: 0.8em; cursor: pointer;
+  }
+  .exercise button.reveal-btn:hover { filter: brightness(0.85); }
+  .exercise .answer {
+    display: none; margin-top: 10px; padding: 10px 14px;
+    background: var(--accent-light); border-left: 4px solid var(--accent); font-size: 0.9em;
+  }
+  .exercise .answer .key { color: var(--accent); font-weight: bold; }
+  .exercise .answer.shown { display: block; }
+
+  /* Clickable multiple choice */
+  .mc-q {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .mc-q .stem { font-size: 0.9em; margin: 0 0 10px 0; }
+  .mc-q .stem .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .mc { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .mc button.opt {
+    font-family: inherit; font-size: 0.8em; padding: 10px 12px;
+    border: 2px solid #d0d8e4; background: white; border-radius: 8px;
+    cursor: pointer; transition: all .15s; font-weight: 600;
+  }
+  .mc button.opt:hover { border-color: var(--accent); background: var(--accent-light); }
+  .mc button.opt.correct { background: #DCFCE7; border-color: var(--good); color: var(--good); }
+  .mc button.opt.wrong   { background: #FEE2E2; border-color: var(--bad);  color: var(--bad); }
+  .explain { margin-top: 10px; font-size: 0.78em; color: var(--muted); font-style: italic; min-height: 1.2em; }
+  .explain.good { color: var(--good); font-style: normal; }
+  .explain.bad  { color: var(--bad); }
+</style>
+</head>
+<body>
+<!-- back-to-topics (school-save) --><style>@media print{.back-to-topics{display:none}}</style><a href="index.html" class="back-to-topics" style="position:fixed;top:10px;left:10px;z-index:70;font:600 18px/1.2 system-ui,sans-serif;color:#fff;background:#1f5fbf;padding:10px 16px;border-radius:10px;text-decoration:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">← Back to topics</a>
+
+<div class="reveal">
+<div class="slides">
+
+<section class="title-slide">
+  <h1>First Conditional</h1>
+  <p class="subtitle">if + simple present, will + base verb</p>
+  <p class="subtitle" style="margin-top: 1.5em;">Level 3 — Grammar Practice</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>What Is the First Conditional?</h2>
+  <p>We use it for a <strong>real possibility in the future</strong>. Maybe it will happen, maybe not.</p>
+  <div class="pattern-box"><strong>If</strong> + simple present, &nbsp; <strong>will</strong> + base verb</div>
+  <div class="example">If Rita <span class="key">receives</span> the scholarship, she <span class="key">will become</span> a nurse.</div>
+  <p class="note">The if-clause is the condition. The other clause is the result.</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Two Orders, One Meaning</h2>
+  <div class="pattern-box">If-clause FIRST → use a comma.<br>Result FIRST → no comma.</div>
+  <div class="example">If the elevator <span class="key">breaks</span>, we <span class="key">will use</span> the stairs.</div>
+  <div class="example">We <span class="key">will use</span> the stairs if the elevator <span class="key">breaks</span>.</div>
+  <p class="note">In the result, <strong>be going to</strong>, <strong>can</strong>, <strong>may</strong>, and <strong>might</strong> also work.</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Negatives</h2>
+  <div class="pattern-box">If-clause: <code>don't / doesn't</code> + base verb<br>Result: <code>won't</code> + base verb</div>
+  <div class="example">If the museum <span class="key">doesn't open</span> on time, we <span class="key">won't see</span> the dinosaur show.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Watch Out</h2>
+  <div class="check-tip"><strong>No will after if:</strong> <s>If my brother will lend me his truck, I will move the couch.</s><br>→ If my brother <strong>lends</strong> me his truck, I will move the couch.</div>
+  <div class="check-tip"><strong>Base verb after will:</strong> <s>She will drives.</s> → She will <strong>drive</strong>.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Exercise 1 — Choose the Correct Form</h2>
+  <p>Click a, b, c, or d. The correct button turns green; a wrong button turns red and the correct one is highlighted.</p>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> If the market ____ out of avocados, I will make a salad.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. will run</button>
+      <button class="opt">b. runs</button>
+      <button class="opt">c. ran</button>
+      <button class="opt">d. run</button>
+    </div>
+    <div class="explain" data-explain="If-clause: simple present. The market runs."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> If Diego forgets the password, he ____ the manager.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. asked</button>
+      <button class="opt">b. would ask</button>
+      <button class="opt">c. will ask</button>
+      <button class="opt">d. asking</button>
+    </div>
+    <div class="explain" data-explain="Result: will + base verb."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> If you mail the card today, it ____ to Chicago in two days.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. will get</button>
+      <button class="opt">b. got</button>
+      <button class="opt">c. would get</button>
+      <button class="opt">d. getting</button>
+    </div>
+    <div class="explain" data-explain="Result: will + base verb."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> If they ____ the dog after lunch, he will sleep all afternoon.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. walks</button>
+      <button class="opt">b. walked</button>
+      <button class="opt">c. will walk</button>
+      <button class="opt">d. walk</button>
+    </div>
+    <div class="explain" data-explain="If-clause: simple present. They walk."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> If the copier jams again, Ms. Lee ____ a repair person.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. will contact</button>
+      <button class="opt">b. contacted</button>
+      <button class="opt">c. would contact</button>
+      <button class="opt">d. contacting</button>
+    </div>
+    <div class="explain" data-explain="Result: will + base verb."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> If you ____ me your new address, I will visit you next summer.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. wrote</button>
+      <button class="opt">b. will write</button>
+      <button class="opt">c. write</button>
+      <button class="opt">d. writes</button>
+    </div>
+    <div class="explain" data-explain="If-clause: simple present. You write."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">7.</span> If Ken ____ his medicine, his cough will get worse.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. doesn't take</button>
+      <button class="opt">b. won't take</button>
+      <button class="opt">c. didn't take</button>
+      <button class="opt">d. not take</button>
+    </div>
+    <div class="explain" data-explain="Negative if-clause: doesn&#x27;t + base verb."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">8.</span> If the weather is nice on Sunday, ____ you come to the zoo with us?</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. do</button>
+      <button class="opt">b. are</button>
+      <button class="opt">c. did</button>
+      <button class="opt">d. will</button>
+    </div>
+    <div class="explain" data-explain="Result question: will + subject + base verb."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">9.</span> If Paulo eats all that candy, he ____ hungry for dinner.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. wasn't</button>
+      <button class="opt">b. won't be</button>
+      <button class="opt">c. wouldn't be</button>
+      <button class="opt">d. not be</button>
+    </div>
+    <div class="explain" data-explain="Negative result: won&#x27;t + base verb."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">10.</span> The teacher will be happy if everyone ____ on time tomorrow.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. are</button>
+      <button class="opt">b. were</button>
+      <button class="opt">c. will be</button>
+      <button class="opt">d. is</button>
+    </div>
+    <div class="explain" data-explain="If-clause: simple present. Everyone is."></div>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Exercise 2 — Fill in the Blank</h2>
+  <p>Use the verb in parentheses. Use the simple present or will. Then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> If Hana ____ (feel) better tomorrow, she will go back to work.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">feels</span> — If-clause: simple present.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> We ____ (bake) cookies if the kids get home early tomorrow.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">will bake</span> (or are going to bake) — Result: will + base verb.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> If the neighbors ____ (not turn) down the music, I will knock on their door.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">don't turn</span> (or do not turn) — Negative if-clause: don't + base verb.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> If you ____ (lose) your ticket, you will pay again.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">lose</span> — If-clause: simple present.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> Mr. Cho ____ (not be) at the party if his daughter has a fever.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">won't be</span> (or will not be / isn't going to be) — Negative result: won't + base verb.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> If the bookstore ____ (have) the book, I will buy it this week.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">has</span> — If-clause: simple present.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">7.</span> If our team ____ (score) a goal, the crowd will go wild.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">scores</span> — If-clause: simple present.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">8.</span> Your shoes ____ (be) muddy if you walk across that field.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">will be</span> (or are going to be) — Result: will + base verb.</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Exercise 3 — Fix the Mistake</h2>
+  <p>Each sentence has one mistake. Correct the CAPITALIZED word or words. Then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> If Ali WILL MISS the last train, he will sleep at his cousin's place.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">misses</span> — No will after if: If Ali misses the last train …</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> If the shop has my size, I BUY the boots.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">will buy</span> (or am going to buy / can buy / may buy / might buy) — Result: will + base verb.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> If Pam DON'T like the color, she will return the dress.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">doesn't</span> (or does not) — She → doesn't + base verb.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> They will WATCHES the fireworks if the sky is clear.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">watch</span> — After will, use the base verb.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> If you ASKED nicely, he will help you.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">ask</span> — If-clause: simple present.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> We WOULD NOT need jackets if the sun comes out.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">will not</span> (or won't / aren't going to / may not / might not) — Result: will not (won't) + base verb.</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Summary — Main Takeaways</h2>
+  <table class="compare">
+    <tr><th>Part</th><th>Form</th><th>Example</th></tr>
+    <tr><td>if-clause</td><td>if + simple present</td><td>If the elevator breaks, …</td></tr>
+    <tr><td>result</td><td>will + base verb</td><td>… we will use the stairs.</td></tr>
+    <tr><td>negative</td><td>don't / doesn't · won't</td><td>We won't see the show.</td></tr>
+    <tr><td>order</td><td>result first = no comma</td><td>We will use the stairs if it breaks.</td></tr>
+  </table>
+  <p style="text-align:center; margin-top:30px; font-size:0.95em; color:var(--accent);"><strong>End of Deck — Great work!</strong></p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    controls: true,
+    progress: true,
+    center: false,
+    transition: 'slide',
+    width: 1100,
+    height: 720,
+    margin: 0.04
+  });
+
+  // Clickable multiple-choice wiring (data-correct = 0-indexed button)
+  document.querySelectorAll('.mc').forEach(mc => {
+    const correct = parseInt(mc.dataset.correct, 10);
+    const buttons = mc.querySelectorAll('button.opt');
+    const explain = mc.nextElementSibling && mc.nextElementSibling.classList.contains('explain')
+      ? mc.nextElementSibling : null;
+    const explainText = explain ? explain.dataset.explain || '' : '';
+    buttons.forEach((b, i) => {
+      b.addEventListener('click', () => {
+        // `sel` marks the clicked button so its class always changes on every
+        // click — keeps verify_html_deck.mjs from false-failing when the correct
+        // answer isn't option (a). Do not remove.
+        buttons.forEach(x => x.classList.remove('correct', 'wrong', 'sel'));
+        b.classList.add('sel');
+        if (i === correct) {
+          b.classList.add('correct');
+          if (explain) {
+            explain.textContent = '✓ Correct. ' + explainText;
+            explain.classList.remove('bad'); explain.classList.add('good');
+          }
+        } else {
+          b.classList.add('wrong');
+          buttons[correct].classList.add('correct');
+          if (explain) {
+            const answerText = buttons[correct].textContent;
+            explain.innerHTML = '✗ The answer is <strong>' + answerText + '</strong>. ' + explainText;
+            explain.classList.remove('good'); explain.classList.add('bad');
+          }
+        }
+      });
+    });
+  });
+</script>
+<!-- PENCIL DRAW OVERLAY — iPad annotation layer (additive; safe to delete this whole block) -->
+<style>
+  #drawCanvas {
+    position: fixed; inset: 0; z-index: 50; pointer-events: none; touch-action: none;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  }
+  html.draw-armed, html.draw-armed body, html.draw-armed .reveal {
+    -webkit-user-select: none !important; user-select: none !important;
+    -webkit-touch-callout: none !important;
+  }
+  html.presentation-mode, html.presentation-mode body {
+    width: 100%; height: 100%; overflow: hidden !important; overscroll-behavior: none;
+  }
+  html.presentation-mode body { position: fixed; inset: 0; }
+  html.presentation-mode .reveal { width: 100vw !important; height: 100vh !important; height: 100dvh !important; }
+  html.presentation-mode .reveal .slides section { overscroll-behavior-y: contain; }
+  #drawToggle {
+    position: fixed; top: 10px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 20px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle.armed { opacity: 1; background: #fde9c8; border-color: #e8a013; }
+  #fsToggle {
+    position: fixed; top: 62px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 19px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle, #fsToggle { transition: opacity 0.3s; }
+  html.presentation-mode #drawToggle:not(.armed), html.presentation-mode #fsToggle { opacity: 0.15; }
+  #drawBar {
+    position: fixed; top: 10px; right: 62px; z-index: 60; display: flex; gap: 8px;
+    background: #fff; border: 1px solid #bbb; border-radius: 22px; padding: 6px 10px;
+    align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  #drawBar button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ccc; background: #fff; cursor: pointer; font-size: 15px; padding: 0; }
+  #drawBar .swatch { border-width: 2px; }
+  #drawBar .swatch.on { outline: 3px solid #e8a013; }
+</style>
+<canvas id="drawCanvas"></canvas>
+<div id="drawBar" hidden>
+  <button class="swatch on" data-color="#d33333" style="background:#d33333"></button>
+  <button class="swatch" data-color="#2266cc" style="background:#2266cc"></button>
+  <button class="swatch" data-color="#1a1a1a" style="background:#1a1a1a"></button>
+  <button id="drawUndo" title="Undo">↩</button>
+  <button id="drawClear" title="Clear slide">✕</button>
+</div>
+<button id="drawToggle" title="Pencil mode (pen only; finger locked)" aria-pressed="false">✏️</button>
+<button id="fsToggle" title="Presentation mode" aria-label="Presentation mode" aria-pressed="false">⛶</button>
+<script>
+(() => {
+  const cv = document.getElementById('drawCanvas');
+  const ctx = cv.getContext('2d');
+  const bar = document.getElementById('drawBar');
+  const toggle = document.getElementById('drawToggle');
+  let armed = false, color = '#d33333', cur = null, drawPointerId = null;
+  const strokes = new Map(); // slide "h-v" -> stroke list; ink persists per slide
+  const key = () => { const i = Reveal.getIndices(); return i.h + '-' + (i.v || 0); };
+  const list = () => { const k = key(); if (!strokes.has(k)) strokes.set(k, []); return strokes.get(k); };
+
+  function size() {
+    const d = window.devicePixelRatio || 1;
+    cv.width = innerWidth * d; cv.height = innerHeight * d;
+    cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    render();
+  }
+  function seg(a, b, c, w) {
+    ctx.strokeStyle = c; ctx.lineWidth = Math.max(0.75, w * innerWidth);
+    ctx.beginPath(); ctx.moveTo(a.x * innerWidth, a.y * innerHeight);
+    ctx.lineTo(b.x * innerWidth, b.y * innerHeight); ctx.stroke();
+  }
+  function render() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const s of list())
+      for (let i = 1; i < s.pts.length; i++) seg(s.pts[i - 1], s.pts[i], s.color, s.pts[i].w);
+  }
+  const pt = (e) => ({ x: e.clientX / innerWidth, y: e.clientY / innerHeight,
+    w: (e.pointerType === 'pen' ? 1.5 + 4 * (e.pressure || 0.5) : 3) / innerWidth });
+
+  const cancel = (e) => { if (e.cancelable) e.preventDefault(); };
+  cv.addEventListener('pointerdown', (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerType === 'touch') {
+      cv.setPointerCapture(e.pointerId); // swallow the palm/finger for its full contact
+      return;
+    }
+    if ((e.pointerType !== 'pen' && e.pointerType !== 'mouse') || drawPointerId !== null) return;
+    drawPointerId = e.pointerId;
+    cur = { color, pts: [pt(e)] };
+    list().push(cur);
+    cv.setPointerCapture(e.pointerId);
+  }, { passive: false });
+  cv.addEventListener('pointermove', (e) => {
+    if (!armed) return;
+    if (e.pointerType === 'touch') { cancel(e); return; }
+    if (!cur || e.pointerId !== drawPointerId) return;
+    cancel(e);
+    const coalesced = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+    const events = coalesced && coalesced.length ? coalesced : [e];
+    for (const ev of events) {
+      const p = pt(ev);
+      seg(cur.pts[cur.pts.length - 1], p, cur.color, p.w);
+      cur.pts.push(p);
+    }
+  }, { passive: false });
+  const end = (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerId === drawPointerId) { cur = null; drawPointerId = null; }
+  };
+  cv.addEventListener('pointerup', end, { passive: false });
+  cv.addEventListener('pointercancel', end, { passive: false });
+  for (const eventName of ['touchstart', 'touchmove', 'touchend', 'touchcancel'])
+    cv.addEventListener(eventName, (e) => { if (armed) cancel(e); }, { passive: false });
+  document.addEventListener('selectstart', (e) => { if (armed) cancel(e); });
+
+  toggle.addEventListener('click', () => {
+    armed = !armed;
+    cv.style.pointerEvents = armed ? 'auto' : 'none'; // disarmed = taps/swipes reach the slides
+    bar.hidden = !armed;
+    toggle.classList.toggle('armed', armed);
+    toggle.setAttribute('aria-pressed', String(armed));
+    document.documentElement.classList.toggle('draw-armed', armed);
+    if (!armed) { cur = null; drawPointerId = null; }
+  });
+  bar.querySelectorAll('.swatch').forEach((b) => b.addEventListener('click', () => {
+    color = b.dataset.color;
+    bar.querySelectorAll('.swatch').forEach((x) => x.classList.toggle('on', x === b));
+  }));
+  document.getElementById('drawUndo').addEventListener('click', () => { list().pop(); render(); });
+  document.getElementById('drawClear').addEventListener('click', () => { strokes.set(key(), []); render(); });
+
+  Reveal.on('slidechanged', render);
+  addEventListener('resize', size);
+  size();
+
+  // Fixed presentation mode avoids iPadOS's native-fullscreen pull-down exit gesture.
+  const fsT = document.getElementById('fsToggle');
+  let presenting = false;
+  const toast = (message) => {
+    const t = document.createElement('div');
+    t.textContent = message;
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:10px;font:14px system-ui;z-index:99;max-width:46ch;text-align:center';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  };
+  fsT.addEventListener('click', () => {
+    presenting = !presenting;
+    document.documentElement.classList.toggle('presentation-mode', presenting);
+    fsT.textContent = presenting ? '\u2921' : '\u26f6';
+    fsT.setAttribute('aria-pressed', String(presenting));
+    fsT.title = presenting ? 'Exit presentation mode' : 'Presentation mode';
+    requestAnimationFrame(() => {
+      if (Reveal.layout) Reveal.layout();
+      size();
+    });
+    if (presenting) toast('Presentation mode on. For more space in Safari, tap AA, then Hide Toolbar.');
+  });
+})();
+</script>
+<!-- END PENCIL DRAW OVERLAY -->
+
+</body>
+</html>
