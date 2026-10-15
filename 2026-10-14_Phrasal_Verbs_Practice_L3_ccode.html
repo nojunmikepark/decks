@@ -1,0 +1,806 @@
+<!doctype html>
+<!--
+  SCHOOL PRACTICE PAGE TEMPLATE (2026-10-08 retro E3). A self-checking page, not a reveal.js deck.
+  Copy to "School Stuff/YYYY-MM-DD_Title_Case_Topic_L<n>_ccode.html", then edit ONLY:
+    <title>, the <header>, the notes panel (<aside class="card notes">), and the items JSON block.
+  Items JSON: exercises[] of {id, title, dir, type: "mc"|"type", items[]}.
+    mc   item: {stem (with ____), options[], correct (0-based index)}
+    type item: {before, hint, after, accept[]}  -- accept lists EVERY correct form: the page marks
+               anything else wrong (case, spaces, curly apostrophes, end punctuation, and
+               contraction vs full form are already forgiven).
+  Level colour: --accent is L2 green #2e6b3a; use #1f6b6b for L3.
+  school-check runs web page QA on it (school_webpage_check_ccode.mjs: every keyed answer scored in
+  Firefox + WebKit/iPad) and the overlap gates read the items via school_practice_page_ccode.py;
+  school-audit-pack_ccode builds the student/key text from the same block. The browser test relies on
+  this markup: role="tab" per exercise, ol.items > li, .opts button, input.blank, the
+  "Check answers" / "Start over" buttons and .result -- keep them.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phrasal Verbs Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: task tabs on top, one exercise at a time on the left, grammar notes beside it (above it on narrow screens). */
+:root {
+  --bg: #eef2ee;
+  --paper: #ffffff;
+  --ink: #1c2620;
+  --muted: #59665d;
+  --rule: #cdd7cf;
+  --accent: #1f6b6b;
+  --accent-soft: #e0eeee;
+  --ok: #2a6b3d;
+  --ok-soft: #e1f2e5;
+  --bad: #a3262a;
+  --bad-soft: #f8e3e3;
+  --font: "Atkinson Hyperlegible", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121714; --paper: #1a211c; --ink: #e3ebe5; --muted: #9fb0a4; --rule: #34433a;
+    --accent: #8fd1d1; --accent-soft: #1f3333; --ok: #8fd19e; --ok-soft: #1f3326;
+    --bad: #f19a9c; --bad-soft: #3a2222; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121714; --paper: #1a211c; --ink: #e3ebe5; --muted: #9fb0a4; --rule: #34433a;
+  --accent: #8fd1d1; --accent-soft: #1f3333; --ok: #8fd19e; --ok-soft: #1f3326;
+  --bad: #f19a9c; --bad-soft: #3a2222; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font);
+  font-size: 18px; line-height: 1.5; padding: 20px 16px 48px;
+}
+.wrap { max-width: 1120px; margin: 0 auto; }
+header h1 { font-size: clamp(24px, 4.5vw, 32px); line-height: 1.2; margin: 0 0 4px; color: var(--accent); text-wrap: balance; }
+header p { margin: 0 0 16px; color: var(--muted); }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+button {
+  font: inherit; color: inherit; cursor: pointer; border-radius: 10px;
+  border: 2px solid var(--accent); background: var(--paper); padding: 10px 16px;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.tabs button { font-weight: 700; color: var(--accent); }
+.tabs button[aria-selected="true"] { background: var(--accent); color: var(--paper); }
+.tabs .score { font-weight: 400; font-size: 15px; margin-left: 6px; }
+.layout { display: grid; gap: 16px; align-items: start; }
+@media (min-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr) 360px; } .notes { position: sticky; top: 16px; } }
+.card { background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; padding: 20px clamp(16px, 3vw, 28px); }
+.notes summary { font-weight: 700; color: var(--accent); cursor: pointer; font-size: 20px; }
+.notes h3 { margin: 16px 0 4px; font-size: 18px; color: var(--accent); }
+.notes p, .notes ul { margin: 4px 0; font-size: 16px; }
+.notes ul { padding-left: 20px; }
+.notes .ex { background: var(--accent-soft); border-radius: 8px; padding: 6px 10px; margin-top: 6px; }
+section h2 { margin: 0 0 4px; font-size: 22px; }
+section .dir { margin: 0 0 16px; color: var(--muted); }
+ol.items { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+ol.items > li { border-top: 1px solid var(--rule); padding-top: 14px; }
+.num { font-weight: 700; color: var(--accent); margin-right: 6px; }
+.opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.opts button { text-align: left; border-color: var(--rule); }
+.opts button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); font-weight: 700; }
+.blank {
+  font: inherit; color: var(--ink); background: var(--accent-soft); border: 0; border-bottom: 2px solid var(--accent);
+  border-radius: 6px 6px 0 0; padding: 4px 8px; width: 11em; max-width: 100%;
+}
+.hint { color: var(--muted); }
+.mark { display: inline-block; margin-left: 6px; font-weight: 700; }
+li.right .mark { color: var(--ok); }
+li.wrong .mark { color: var(--bad); }
+li.right .blank, li.right .opts button[aria-pressed="true"] { background: var(--ok-soft); border-color: var(--ok); }
+li.wrong .blank, li.wrong .opts button[aria-pressed="true"] { background: var(--bad-soft); border-color: var(--bad); }
+.answer { margin: 6px 0 0; color: var(--ok); font-weight: 700; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; align-items: center; }
+.actions .primary { background: var(--accent); color: var(--paper); font-weight: 700; }
+.result { font-size: 20px; font-weight: 700; margin: 0; }
+[hidden] { display: none !important; }
+@media (max-width: 520px) { .opts { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<!-- back-to-topics (school-save) --><style>@media print{.back-to-topics{display:none}}</style><a href="index.html" class="back-to-topics" style="display:inline-block;margin:12px 16px 0;font:600 18px/1.2 system-ui,sans-serif;color:#fff;background:#1f5fbf;padding:10px 16px;border-radius:10px;text-decoration:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">← Back to topics</a>
+
+<div class="wrap">
+  <header>
+    <h1>Phrasal Verbs</h1>
+    <p>A verb + a small word (up, out, off …) that together have a new meaning. Some can split around the object. Some cannot.</p>
+  </header>
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <div class="layout">
+    <main class="card" id="main"></main>
+    <aside class="card notes">
+      <details id="notesBox" open>
+        <summary>Grammar Notes</summary>
+        <h3>1. Separable phrasal verbs</h3>
+        <p>A noun can go after the small word or in the middle.</p>
+        <p>A pronoun (it, them, him, her, me, us, you) <b>must</b> go in the middle.</p>
+        <p class="ex">Try on the shoes. = Try the shoes on.<br>Try them on. (not: Try on them.)</p>
+        <h3>2. Inseparable phrasal verbs</h3>
+        <p>The object always goes after the small word, noun or pronoun.</p>
+        <p class="ex">We went over the plan. We went over it.<br>(not: We went the plan over.)</p>
+        <h3>3. Our separable verbs</h3>
+        <p>bring back, call up, clean up, cross out, do over, drop off, figure out, fill out, get up, give back, hand in, hang up, hook up, leave on, look up, pick up, pick out, put off, put away, take back, take down, take off, take out, think over, throw away, try on, turn down, turn off, turn on, use up, wake up, write down</p>
+        <h3>4. Our inseparable verbs</h3>
+        <p>call on, get over, go over, hear from, look after, look for, look through, run into</p>
+      </details>
+    </aside>
+  </div>
+</div>
+<script type="application/json" id="items">
+{
+  "exercises": [
+    {
+      "id": "A",
+      "title": "Exercise A. Meaning",
+      "dir": "Choose the phrasal verb that fits.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "We're done with the board game. Let's ____.",
+          "options": [
+            "put it off",
+            "put it away",
+            "pick it out"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "I don't know the bus schedule. I'll ____ online.",
+          "options": [
+            "look after it",
+            "hand it in",
+            "look it up"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "The baby is crying again. She ____ every two hours at night.",
+          "options": [
+            "wakes up",
+            "writes down",
+            "takes off"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "The directions to the party are confusing. Can you help me ____ which bus to take?",
+          "options": [
+            "figure out",
+            "cross out",
+            "put off"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "It started to rain, so the referee ____ the game until tomorrow.",
+          "options": [
+            "took out",
+            "put off",
+            "called up"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "Nurses ____ patients day and night.",
+          "options": [
+            "look for",
+            "get over",
+            "look after"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "This shirt is too small. I'm going to ____ to the store.",
+          "options": [
+            "take it off",
+            "take it out",
+            "take it back"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "Please ____ the radio. I can't hear you.",
+          "options": [
+            "turn down",
+            "turn on",
+            "hook up"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Have you ____ the company about the job yet?",
+          "options": [
+            "called on",
+            "heard from",
+            "run into"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "We ____ a lot of traffic on the way to the beach.",
+          "options": [
+            "ran into",
+            "went over",
+            "called on"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "We ____ all the printer paper. Can you buy more?",
+          "options": [
+            "went over",
+            "handed in",
+            "used up"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "My son was scared of dogs, but he ____ it when we got a puppy.",
+          "options": [
+            "got up",
+            "got over",
+            "gave back"
+          ],
+          "correct": 1
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "title": "Exercise B. Where Does the Pronoun Go?",
+      "dir": "Choose the correct answer.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "Your toys are on the stairs. Please ____.",
+          "options": [
+            "pick them up",
+            "pick up them",
+            "them pick up"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "That's my umbrella. Please ____ tomorrow.",
+          "options": [
+            "give back it",
+            "it give back",
+            "give it back"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "These old magazines are taking up space. Let's ____.",
+          "options": [
+            "throw away them",
+            "throw them away",
+            "them throw away"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "I need your phone number. Let me ____.",
+          "options": [
+            "write down it",
+            "write it down",
+            "it write down"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "My son needs a ride to school. Can you ____?",
+          "options": [
+            "drop off him",
+            "him drop off",
+            "drop him off"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "The job offer is good, but I want to ____ before I say yes.",
+          "options": [
+            "think it over",
+            "think over it",
+            "it think over"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Where are my glasses? I'm ____.",
+          "options": [
+            "looking them for",
+            "looking for them",
+            "them looking for"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "My brother lives far away, but I ____ every week.",
+          "options": [
+            "hear from him",
+            "hear him from",
+            "him hear from"
+          ],
+          "correct": 0
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "title": "Exercise C. Which Sentence Is Correct?",
+      "dir": "Choose the correct sentence.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "____",
+          "options": [
+            "He put his tools away.",
+            "He put away them."
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "____",
+          "options": [
+            "Can you hook up it?",
+            "Can you hook up the printer?"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "____",
+          "options": [
+            "Let's look these old letters through.",
+            "Let's look through these old letters."
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "____",
+          "options": [
+            "Please take the old sign down.",
+            "Please take down it."
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "____",
+          "options": [
+            "Please turn on it.",
+            "Please turn it on."
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "____",
+          "options": [
+            "She got over the flu quickly.",
+            "She got the flu over quickly."
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "____",
+          "options": [
+            "We heard from them yesterday.",
+            "We heard them from yesterday."
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "____",
+          "options": [
+            "I filled out it.",
+            "I filled out the form."
+          ],
+          "correct": 1
+        }
+      ]
+    },
+    {
+      "id": "D",
+      "title": "Exercise D. Type the Missing Word",
+      "dir": "Type the missing word (up, down, out, off, on, in, back, over, away, for, after, through, into, from).",
+      "type": "type",
+      "items": [
+        {
+          "before": "Please hand",
+          "hint": "give to the teacher",
+          "after": "your essays on Friday.",
+          "accept": [
+            "in"
+          ]
+        },
+        {
+          "before": "Can you pick",
+          "hint": "choose",
+          "after": "a nice card for my mom?",
+          "accept": [
+            "out"
+          ]
+        },
+        {
+          "before": "Leave the oven",
+          "hint": "do not turn it off",
+          "after": ". The bread needs ten more minutes.",
+          "accept": [
+            "on"
+          ]
+        },
+        {
+          "before": "I'll take",
+          "hint": "remove from the wall",
+          "after": "the old pictures before we paint.",
+          "accept": [
+            "down"
+          ]
+        },
+        {
+          "before": "That restaurant should bring",
+          "hint": "sell again",
+          "after": "its old pizza recipe.",
+          "accept": [
+            "back"
+          ]
+        },
+        {
+          "before": "My essay had a lot of mistakes, so the teacher asked me to do it",
+          "hint": "do again",
+          "after": ".",
+          "accept": [
+            "over"
+          ]
+        },
+        {
+          "before": "Can you take",
+          "hint": "carry outside",
+          "after": "the trash tonight?",
+          "accept": [
+            "out"
+          ]
+        },
+        {
+          "before": "We need to clean",
+          "hint": "make neat",
+          "after": "the garage this weekend.",
+          "accept": [
+            "up",
+            "out"
+          ]
+        },
+        {
+          "before": "Let me look",
+          "hint": "read quickly",
+          "after": "your report before you send it.",
+          "accept": [
+            "through",
+            "over"
+          ]
+        },
+        {
+          "before": "Please hang",
+          "hint": "put on a hook",
+          "after": "your coat by the door.",
+          "accept": [
+            "up"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E",
+      "title": "Exercise E. Fix the Mistake",
+      "dir": "The CAPITALIZED words are in the wrong order. Type them in the correct order.",
+      "type": "type",
+      "items": [
+        {
+          "before": "The kids are asleep. Please don't WAKE UP THEM.",
+          "hint": "fix",
+          "after": "",
+          "accept": [
+            "wake them up"
+          ]
+        },
+        {
+          "before": "I don't know his address. I'll CALL UP HIM and ask.",
+          "hint": "fix",
+          "after": "",
+          "accept": [
+            "call him up"
+          ]
+        },
+        {
+          "before": "My mom is sick. I need to LOOK HER AFTER.",
+          "hint": "fix",
+          "after": "",
+          "accept": [
+            "look after her"
+          ]
+        },
+        {
+          "before": "The milk? I USED UP IT this morning.",
+          "hint": "fix",
+          "after": "",
+          "accept": [
+            "used it up"
+          ]
+        },
+        {
+          "before": "That answer is wrong. CROSS OUT IT.",
+          "hint": "fix",
+          "after": "",
+          "accept": [
+            "Cross it out"
+          ]
+        },
+        {
+          "before": "I RAN HIM INTO at the bank yesterday.",
+          "hint": "fix",
+          "after": "",
+          "accept": [
+            "ran into him"
+          ]
+        },
+        {
+          "before": "Your shoes are muddy. Please TAKE OFF THEM.",
+          "hint": "fix",
+          "after": "",
+          "accept": [
+            "take them off"
+          ]
+        },
+        {
+          "before": "The test is tomorrow, so I'm GOING MY NOTES OVER tonight.",
+          "hint": "fix",
+          "after": "",
+          "accept": [
+            "going over my notes"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F",
+      "title": "Exercise F. Quiz",
+      "dir": "Choose the correct answer.",
+      "type": "mc",
+      "items": [
+        {
+          "stem": "Please ____ the light when you leave.",
+          "options": [
+            "turn on",
+            "turn down",
+            "turn off"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "I can't find my glasses. Can you help me ____ them?",
+          "options": [
+            "look for",
+            "look after",
+            "look up"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "The teacher ____ me, but I didn't know the answer.",
+          "options": [
+            "called up",
+            "called on",
+            "called for"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "I need to ____ my new speaker to the TV.",
+          "options": [
+            "hook up",
+            "hook on",
+            "hook in"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "My grandfather ____ at 5 a.m. every morning to walk the dog.",
+          "options": [
+            "gets over",
+            "gets off",
+            "gets up"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "The kids are hot. Let's ____ their sweaters.",
+          "options": [
+            "take back",
+            "take off",
+            "take down"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "Can you ____ these words in your notebook?",
+          "options": [
+            "write over",
+            "write down",
+            "write on"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "The coach will ____ the new rules with the team.",
+          "options": [
+            "go for",
+            "go out",
+            "go over"
+          ],
+          "correct": 2
+        },
+        {
+          "stem": "The store will ____ your old phone and give you $50.",
+          "options": [
+            "take back",
+            "take off",
+            "take down"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "Please ____ your winter clothes until next year.",
+          "options": [
+            "put away",
+            "put off",
+            "put on"
+          ],
+          "correct": 0
+        },
+        {
+          "stem": "I need to ____ some bread on the way home.",
+          "options": [
+            "pick out",
+            "pick up",
+            "put up"
+          ],
+          "correct": 1
+        },
+        {
+          "stem": "It's dark in here. Can you ____ the lamp?",
+          "options": [
+            "turn off",
+            "turn down",
+            "turn on"
+          ],
+          "correct": 2
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script>
+// Items live in the JSON block above (school_practice_page_ccode.py reads the same block for school-check and the audit pack).
+// Checking is done here in the browser; nothing is sent anywhere.
+const EXERCISES = JSON.parse(document.getElementById("items").textContent).exercises;
+
+// Forgiving match: ignore capitals, extra spaces, curly apostrophes, end punctuation, and contraction vs. full form.
+const CONTRACTIONS = { "doesn't": "does not", "don't": "do not", "isn't": "is not", "aren't": "are not", "i'm": "i am" };
+function norm(s) {
+  let t = s.toLowerCase().replace(/[‘’ʼ`]/g, "'").replace(/\s+/g, " ").trim().replace(/[.!?,]+$/, "").trim();
+  return t.split(" ").map(w => CONTRACTIONS[w] || w).join(" ");
+}
+const isRight = (typed, accept) => accept.some(a => norm(a) === norm(typed));
+
+const state = {};          // id -> { answers: [], checked: bool, shown: bool }
+EXERCISES.forEach(ex => state[ex.id] = { answers: ex.items.map(() => ex.type === "mc" ? null : ""), checked: false, shown: false });
+let current = "A";
+
+const tabs = document.getElementById("tabs");
+const main = document.getElementById("main");
+
+function score(ex) {
+  const st = state[ex.id];
+  return ex.items.filter((it, i) => ex.type === "mc" ? st.answers[i] === it.correct : isRight(st.answers[i], it.accept)).length;
+}
+
+function renderTabs() {
+  tabs.innerHTML = "";
+  EXERCISES.forEach(ex => {
+    const b = document.createElement("button");
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", String(ex.id === current));
+    b.textContent = "Exercise " + ex.id;
+    if (state[ex.id].checked) {
+      const s = document.createElement("span");
+      s.className = "score";
+      s.textContent = score(ex) + "/" + ex.items.length;
+      b.append(s);
+    }
+    b.addEventListener("click", () => { current = ex.id; render(); });
+    tabs.append(b);
+  });
+}
+
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+function renderExercise() {
+  const ex = EXERCISES.find(e => e.id === current);
+  const st = state[ex.id];
+  main.innerHTML = "";
+  const sec = el("section");
+  sec.append(el("h2", null, ex.title), el("p", "dir", ex.dir));
+  const ol = el("ol", "items");
+  ex.items.forEach((it, i) => {
+    const li = el("li");
+    const ok = ex.type === "mc" ? st.answers[i] === it.correct : isRight(st.answers[i], it.accept);
+    if (st.checked) li.classList.add(ok ? "right" : "wrong");
+    const line = el("div");
+    line.append(el("span", "num", (i + 1) + "."));
+    if (ex.type === "mc") {
+      line.append(document.createTextNode(it.stem));
+      li.append(line);
+      const opts = el("div", "opts");
+      it.options.forEach((o, k) => {
+        const b = el("button", null, String.fromCharCode(97 + k) + ". " + o);
+        b.type = "button";
+        b.setAttribute("aria-pressed", String(st.answers[i] === k));
+        b.addEventListener("click", () => { st.answers[i] = k; st.checked = false; st.shown = false; render(); });
+        opts.append(b);
+      });
+      li.append(opts);
+    } else {
+      line.append(document.createTextNode(it.before + " "));
+      const inp = el("input", "blank");
+      inp.type = "text";
+      inp.value = st.answers[i];
+      inp.setAttribute("aria-label", "Item " + (i + 1) + " answer, verb: " + it.hint);
+      inp.autocomplete = "off"; inp.spellcheck = false;
+      inp.setAttribute("autocapitalize", "none"); inp.setAttribute("autocorrect", "off");
+      inp.addEventListener("input", () => { st.answers[i] = inp.value; if (st.checked) { st.checked = false; st.shown = false; li.classList.remove("right", "wrong"); const m = li.querySelector(".mark"); if (m) m.remove(); const a = li.querySelector(".answer"); if (a) a.remove(); renderTabs(); } });
+      line.append(inp, document.createTextNode(" "), el("span", "hint", "(" + it.hint + ")"), document.createTextNode(" " + it.after));
+      li.append(line);
+    }
+    if (st.checked) line.append(el("span", "mark", ok ? "✓" : "✗"));
+    if (st.checked && st.shown && !ok) {
+      li.append(el("p", "answer", "Answer: " + (ex.type === "mc" ? it.options[it.correct] : it.accept.join(" / "))));
+    }
+    ol.append(li);
+  });
+  sec.append(ol);
+
+  const actions = el("div", "actions");
+  const check = el("button", "primary", "Check answers");
+  check.type = "button";
+  check.addEventListener("click", () => { st.checked = true; render(); });
+  actions.append(check);
+  if (st.checked) {
+    const n = score(ex);
+    actions.append(el("p", "result", n === ex.items.length ? "All " + n + " correct!" : "You got " + n + " of " + ex.items.length + " correct. Fix the ✗ items and check again."));
+    if (n < ex.items.length && !st.shown) {
+      const show = el("button", null, "Show answers");
+      show.type = "button";
+      show.addEventListener("click", () => { st.shown = true; render(); });
+      actions.append(show);
+    }
+  }
+  const reset = el("button", null, "Start over");
+  reset.type = "button";
+  reset.addEventListener("click", () => { st.answers = ex.items.map(() => ex.type === "mc" ? null : ""); st.checked = false; st.shown = false; render(); });
+  actions.append(reset);
+  sec.append(actions);
+  main.append(sec);
+}
+
+function render() { renderTabs(); renderExercise(); }
+if (window.matchMedia("(max-width: 899px)").matches) document.getElementById("notesBox").open = false;
+render();
+</script>
+</body>
+</html>
