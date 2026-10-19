@@ -1,0 +1,833 @@
+<!-- generator: _lib/school_deck_scaffold.py -->
+<!DOCTYPE html>
+<!--
+  ESL reveal.js DECK TEMPLATE — copy this file, rename to
+  YYYY-MM-DD_Title_Case_Topic_L<level>_ccode.html in the School Stuff root,
+  and fill the Edit.
+
+  LEVEL SWAP: this template ships L2 colors (green). For L4, change the
+  three lines in :root marked  /* L4: ... */  and swap theme to white
+  (already white). L2 accent 2E6B3A / light D9E9D3.  L4 accent 1F4E79 /
+  light D6E4F2.
+
+  All canonical contracts (invisible scrollbar, 80vh bottom spacer per
+  section, no font-size on .reveal, table.compare last-child border,
+  reveal init config) are baked in. Run the linter after editing:
+      node _lib/verify_html_deck.mjs <deck.html>            # rendered check
+      python3 _lib/verify_html_deck_static.py <deck.html>   # fast source lint
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Simple Past — Level 2</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/theme/white.css">
+<style>
+  :root { --accent: #2E6B3A; --accent-light: #D9E9D3; --gray: #555555;
+          /* L4: --accent: #1F4E79; --accent-light: #D6E4F2; */
+          --good: #15803D; --bad: #B91C1C; --muted: #777; }
+
+  /* TYPOGRAPHY CANON — never put font-size on .reveal itself */
+  .reveal { font-family: Arial, sans-serif; }
+  .reveal h1, .reveal h2, .reveal h3 { color: var(--accent); font-family: Arial, sans-serif; text-transform: none; letter-spacing: 0; }
+  .reveal h1 { font-size: 2.2em; }
+  .reveal h2 { font-size: 1.6em; }
+  .reveal h3 { font-size: 1.15em; }
+  .reveal h4 { font-size: 1.05em; }
+  .reveal p, .reveal li { font-size: 0.85em; line-height: 1.5; }
+
+  /* SCROLLABLE SLIDES WITH INVISIBLE SCROLLBAR */
+  .reveal .slides section {
+    overflow-y: auto !important;
+    max-height: 92vh !important;
+    text-align: left;
+    padding: 20px 40px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .reveal .slides section::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* Title slide */
+  .title-slide { text-align: center !important; }
+  .title-slide h1 { font-size: 2.6em; margin-bottom: 0.3em; }
+  .title-slide .subtitle { font-size: 1.2em; color: var(--gray); }
+
+  /* Pattern / example / note / tip */
+  .pattern-box {
+    background: var(--accent-light);
+    border-left: 6px solid var(--accent);
+    padding: 14px 20px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+  .pattern-box code {
+    background: white; padding: 2px 8px; border-radius: 3px;
+    color: var(--accent); font-weight: bold;
+  }
+  .example {
+    background: #FAFAFA; border: 1px solid #DDD;
+    padding: 10px 16px; margin: 8px 0; border-radius: 3px; font-size: 0.9em;
+  }
+  .example .key { color: var(--accent); font-weight: bold; }
+  .note { font-style: italic; color: var(--gray); font-size: 0.85em; margin-top: 10px; }
+  .check-tip {
+    background: #FFF8E1; border-left: 6px solid #F5A623;
+    padding: 12px 18px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+
+  /* Comparison tables — borders need !important (reveal theme strips them) */
+  table.compare {
+    border-collapse: collapse !important; margin: 14px 0;
+    font-size: 0.82em; width: 100%; border: 1px solid var(--accent) !important;
+  }
+  table.compare th, table.compare td {
+    border: 1px solid var(--accent) !important; padding: 8px 12px; text-align: left;
+  }
+  table.compare tr:last-child td { border-bottom: 1px solid var(--accent) !important; }
+  table.compare th { background: var(--accent); color: white; }
+  table.compare td:first-child { font-weight: bold; color: var(--accent); }
+
+  /* Click-to-reveal exercise (single-answer reveal) */
+  .exercise {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .exercise .question { font-size: 0.9em; margin: 0 0 10px 0; }
+  .exercise .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .exercise button.reveal-btn {
+    background: var(--accent); color: white; border: none; padding: 6px 14px;
+    border-radius: 4px; font-family: Arial; font-size: 0.8em; cursor: pointer;
+  }
+  .exercise button.reveal-btn:hover { filter: brightness(0.85); }
+  .exercise .answer {
+    display: none; margin-top: 10px; padding: 10px 14px;
+    background: var(--accent-light); border-left: 4px solid var(--accent); font-size: 0.9em;
+  }
+  .exercise .answer .key { color: var(--accent); font-weight: bold; }
+  .exercise .answer.shown { display: block; }
+
+  /* Clickable multiple choice */
+  .mc-q {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .mc-q .stem { font-size: 0.9em; margin: 0 0 10px 0; }
+  .mc-q .stem .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .mc { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .mc button.opt {
+    font-family: inherit; font-size: 0.8em; padding: 10px 12px;
+    border: 2px solid #d0d8e4; background: white; border-radius: 8px;
+    cursor: pointer; transition: all .15s; font-weight: 600;
+  }
+  .mc button.opt:hover { border-color: var(--accent); background: var(--accent-light); }
+  .mc button.opt.correct { background: #DCFCE7; border-color: var(--good); color: var(--good); }
+  .mc button.opt.wrong   { background: #FEE2E2; border-color: var(--bad);  color: var(--bad); }
+  .explain { margin-top: 10px; font-size: 0.78em; color: var(--muted); font-style: italic; min-height: 1.2em; }
+  .explain.good { color: var(--good); font-style: normal; }
+  .explain.bad  { color: var(--bad); }
+</style>
+</head>
+<body>
+<!-- back-to-topics (school-save) --><style>@media print{.back-to-topics{display:none}}</style><a href="index.html" class="back-to-topics" style="position:fixed;top:10px;left:10px;z-index:70;font:600 18px/1.2 system-ui,sans-serif;color:#fff;background:#1f5fbf;padding:10px 16px;border-radius:10px;text-decoration:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">← Back to topics</a>
+
+<div class="reveal">
+<div class="slides">
+
+<section class="title-slide">
+  <h1>The Simple Past</h1>
+  <p class="subtitle">time markers, regular verbs, irregular verbs, and be</p>
+  <p class="subtitle" style="margin-top: 1.5em;">Level 2 — Grammar Review</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>When Do We Use the Simple Past?</h2>
+  <p>Use the simple past for an action that <strong>started and finished</strong> in the past.</p>
+  <div class="pattern-box"><strong>Time markers</strong> tell when the action happened.</div>
+  <table class="compare">
+    <tr><th>Time marker</th><th>Example</th></tr>
+    <tr><td>yesterday</td><td>I <span class="key">rented</span> a car yesterday.</td></tr>
+    <tr><td>last</td><td>We <span class="key">ordered</span> Thai food last night.</td></tr>
+    <tr><td>ago</td><td>She <span class="key">mailed</span> the package two hours ago.</td></tr>
+    <tr><td>when</td><td>He <span class="key">folded</span> the laundry when he got home.</td></tr>
+    <tr><td>in / on / at</td><td>They <span class="key">planted</span> a tree in May.<br>We <span class="key">met</span> on Friday at noon.</td></tr>
+  </table>
+  <p class="note">in + year or month · on + day · at + clock time</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Exercise 1 — Time Markers</h2>
+  <p>Click a, b, c, or d. The correct button turns green; a wrong button turns red and the correct one is highlighted.</p>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> The new library downtown opened ____ 2023.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. on</button>
+      <button class="opt">b. ago</button>
+      <button class="opt">c. in</button>
+      <button class="opt">d. at</button>
+    </div>
+    <div class="explain" data-explain="Use in with a year: in 2023."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> Marta's shift started ____ 6:00 this morning.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. at</button>
+      <button class="opt">b. in</button>
+      <button class="opt">c. on</button>
+      <button class="opt">d. ago</button>
+    </div>
+    <div class="explain" data-explain="Use at with a clock time: at 6:00."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> Kenji burned his hand ____ he was cooking rice.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. ago</button>
+      <button class="opt">b. last</button>
+      <button class="opt">c. yesterday</button>
+      <button class="opt">d. when</button>
+    </div>
+    <div class="explain" data-explain="When joins two actions: he burned his hand + he was cooking."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> We celebrated my son's birthday ____ Saturday.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. in</button>
+      <button class="opt">b. on</button>
+      <button class="opt">c. at</button>
+      <button class="opt">d. ago</button>
+    </div>
+    <div class="explain" data-explain="Use on with a day: on Saturday."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> Grandma made a warm scarf for me ____ week.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. ago</button>
+      <button class="opt">b. last</button>
+      <button class="opt">c. in</button>
+      <button class="opt">d. on</button>
+    </div>
+    <div class="explain" data-explain="last + week: last week."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> Dev shaved off his beard ____ morning, so he looks different today.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. yesterday</button>
+      <button class="opt">b. last</button>
+      <button class="opt">c. ago</button>
+      <button class="opt">d. at</button>
+    </div>
+    <div class="explain" data-explain="yesterday + morning: yesterday morning. We do not say last morning."></div>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Regular Verbs: -ed Spelling</h2>
+  <table class="compare">
+    <tr><th>Rule</th><th>Examples</th></tr>
+    <tr><td>Most verbs: add <code>-ed</code></td><td>rent → rented</td></tr>
+    <tr><td>Ends in <code>-e</code>: add <code>-d</code></td><td>rinse → rinsed</td></tr>
+    <tr><td>Consonant + y: change y to i, add <code>-ed</code></td><td>bury → buried</td></tr>
+    <tr><td>Vowel + y: add <code>-ed</code></td><td>obey → obeyed</td></tr>
+    <tr><td>One syllable, consonant + vowel + consonant: double the last letter, add <code>-ed</code></td><td>nod → nodded</td></tr>
+  </table>
+  <div class="check-tip"><strong>Watch out:</strong> do not double w, x, or y (relax → relaxed). Two syllables: double only when the last part is stressed (adMIT → admitted, OPen → opened). Exceptions: pay → paid, say → said.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Exercise 2 — Regular Verbs</h2>
+  <p>Write the simple past of the verb in parentheses. Then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> Sami ____ the kitchen floor before his parents arrived. (mop)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">mopped</span> — consonant + vowel + consonant: double the p, add -ed.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> Oh no! The waiter ____ coffee on my new white shirt. (spill)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">spilled</span> — add -ed.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> Linh ____ to my text message in two minutes. (reply)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">replied</span> — consonant + y: change y to i, add -ed.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> On Sunday morning, my neighbors ____ their whole garage. (empty)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">emptied</span> — consonant + y: change y to i, add -ed.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> In April, the farmer ____ his apple trees for bugs. (spray)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">sprayed</span> — vowel + y: add -ed.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> When Felipe was fifteen, he ____ $200 for a new bike. (save)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">saved</span> — ends in -e: add -d.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">7.</span> Mateo ____ his suitcase at midnight before his early flight. (pack)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">packed</span> — add -ed.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">8.</span> Zara ____ her jacket because the wind was cold. (zip)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">zipped</span> — consonant + vowel + consonant: double the p, add -ed.</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Negatives and Questions: did</h2>
+  <div class="pattern-box"><strong>Negative:</strong> didn't (did not) + <strong>base verb</strong><br><strong>Question:</strong> Did + subject + <strong>base verb</strong>?<br><strong>Wh- question:</strong> Wh- word + did + subject + <strong>base verb</strong>?</div>
+  <div class="example">I <span class="key">didn't rent</span> a car.</div>
+  <div class="example"><span class="key">Did</span> you <span class="key">fold</span> the towels? — Yes, I did. / No, I didn't.</div>
+  <div class="example">Where <span class="key">did</span> they <span class="key">order</span> the pizza?</div>
+  <div class="check-tip"><strong>Watch out:</strong> after did and didn't, use the base verb. <s>I didn't rented.</s> → I didn't <strong>rent</strong>.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Exercise 3 — did and didn't</h2>
+  <p>Click a, b, c, or d. The correct button turns green; a wrong button turns red and the correct one is highlighted.</p>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> Abdul didn't ____ an umbrella, so he got wet on the way home.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. took</button>
+      <button class="opt">b. take</button>
+      <button class="opt">c. takes</button>
+      <button class="opt">d. taking</button>
+    </div>
+    <div class="explain" data-explain="After didn&#x27;t, use the base verb: take."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> ____ Kiko's husband iron his shirts this morning?</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. Were</button>
+      <button class="opt">b. Was</button>
+      <button class="opt">c. Are</button>
+      <button class="opt">d. Did</button>
+    </div>
+    <div class="explain" data-explain="Iron is not be: Did + subject + base verb."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> Why did Pedro ____ his old car?</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. sell</button>
+      <button class="opt">b. sold</button>
+      <button class="opt">c. sells</button>
+      <button class="opt">d. selling</button>
+    </div>
+    <div class="explain" data-explain="After did, use the base verb: sell."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> How many eggs did Luz ____ for the cake?</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. used</button>
+      <button class="opt">b. uses</button>
+      <button class="opt">c. use</button>
+      <button class="opt">d. using</button>
+    </div>
+    <div class="explain" data-explain="After did, use the base verb: use."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> Our team ____ score any goals. The other team was too strong.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. weren't</button>
+      <button class="opt">b. wasn't</button>
+      <button class="opt">c. don't</button>
+      <button class="opt">d. didn't</button>
+    </div>
+    <div class="explain" data-explain="The other team was strong = past; score is not be: didn&#x27;t + base verb."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> Where ____ Igor and Tran meet for the first time?</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. was</button>
+      <button class="opt">b. did</button>
+      <button class="opt">c. were</button>
+      <button class="opt">d. are</button>
+    </div>
+    <div class="explain" data-explain="Wh- word + did + subject + base verb."></div>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Irregular Verbs</h2>
+  <p>Irregular verbs do not use -ed. The word changes, or it stays the same. Learn each past form.</p>
+  <table class="compare">
+    <tr><th>Base</th><th>Past</th><th>Base</th><th>Past</th></tr>
+    <tr><td>know</td><td>knew</td><td>swim</td><td>swam</td></tr>
+    <tr><td>stand</td><td>stood</td><td>write</td><td>wrote</td></tr>
+    <tr><td>put</td><td>put</td><td>sleep</td><td>slept</td></tr>
+  </table>
+  <div class="example">I <span class="key">knew</span> the answer.</div>
+  <div class="example">We <span class="key">stood</span> near the window.</div>
+  <p class="note">Negatives and questions are the same as regular verbs: I didn't know. Did you write it?</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Exercise 4 — Irregular Verbs</h2>
+  <p>Write the simple past of the verb in parentheses. Then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> My daughter ____ two inches last year. (grow)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">grew</span> — irregular: grow → grew.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> Before the party, Ayesha ____ the gifts under her bed. (hide)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">hid</span> — irregular: hide → hid.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> During the softball game, Oscar ____ the ball over the fence. (hit)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">hit</span> — irregular, no change: hit → hit.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> Ruben ____ his back when he moved the heavy sofa. (hurt)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">hurt</span> — irregular, no change: hurt → hurt.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> Hana ____ a police officer after college. (become)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">became</span> — irregular: become → became.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> At the park, Yuki ____ a twenty-dollar bill on the grass. (find)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">found</span> — irregular: find → found.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">7.</span> The chef ____ the onions into small pieces. (cut)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">cut</span> — irregular, no change: cut → cut.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">8.</span> On her trip to Mongolia, Sun-hee ____ a horse every day. (ride)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">rode</span> — irregular: ride → rode.</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>The Verb Be: was / were</h2>
+  <table class="compare">
+    <tr><th>Subject</th><th>Positive</th><th>Negative</th></tr>
+    <tr><td>I / he / she / it / one thing</td><td>was</td><td>wasn't (was not)</td></tr>
+    <tr><td>you / we / they / two or more things</td><td>were</td><td>weren't (were not)</td></tr>
+  </table>
+  <div class="example">The parking lot <span class="key">was</span> full. The kittens <span class="key">were</span> tiny.</div>
+  <div class="example"><span class="key">Was</span> the hotel clean? — Yes, it was. · Where <span class="key">were</span> the keys?</div>
+  <div class="check-tip"><strong>Watch out:</strong> do not use did with be. <s>Did the hotel was clean?</s> → <strong>Was</strong> the hotel clean?</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Exercise 5 — was or were?</h2>
+  <p>Click a, b, c, or d. The correct button turns green; a wrong button turns red and the correct one is highlighted.</p>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> The chairs at the wedding ____ uncomfortable last Saturday.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. was</button>
+      <button class="opt">b. did</button>
+      <button class="opt">c. is</button>
+      <button class="opt">d. were</button>
+    </div>
+    <div class="explain" data-explain="The chairs = two or more things: were."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> Leila ____ at the hair salon for an hour on Sunday.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. was</button>
+      <button class="opt">b. were</button>
+      <button class="opt">c. did</button>
+      <button class="opt">d. does</button>
+    </div>
+    <div class="explain" data-explain="Leila = she: was."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> Last summer, ____ your kids at camp for two weeks?</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. Was</button>
+      <button class="opt">b. Did</button>
+      <button class="opt">c. Were</button>
+      <button class="opt">d. Does</button>
+    </div>
+    <div class="explain" data-explain="Your kids = they: Were + subject? No did with be."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> The bathroom ____ clean, so I cleaned it.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. weren't</button>
+      <button class="opt">b. didn't</button>
+      <button class="opt">c. isn't</button>
+      <button class="opt">d. wasn't</button>
+    </div>
+    <div class="explain" data-explain="The bathroom = one thing: wasn&#x27;t."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> The flowers in my garden ____ healthy last spring because there was no rain.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. wasn't</button>
+      <button class="opt">b. weren't</button>
+      <button class="opt">c. didn't</button>
+      <button class="opt">d. aren't</button>
+    </div>
+    <div class="explain" data-explain="The flowers = two or more things, last spring = past: weren&#x27;t."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> Where ____ you at 3:00 yesterday afternoon?</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. was</button>
+      <button class="opt">b. did</button>
+      <button class="opt">c. were</button>
+      <button class="opt">d. are</button>
+    </div>
+    <div class="explain" data-explain="You takes were. No did with be."></div>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Exercise 6 — Fix the Mistake</h2>
+  <p>Each sentence has one mistake. Correct the CAPITALIZED word. Then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> The students TIDYED the classroom after the art project.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">tidied</span> — Consonant + y: change y to i, add -ed.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> The children WASN'T afraid of the big dog.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">weren't</span> — The children = they: weren't.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> Did Noor CHOSE the red sweater or the blue one?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">choose</span> — After Did, use the base verb.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> Bruno PATED the baby on the back.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">patted</span> — Consonant + vowel + consonant: double the t.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> My little brother KEEPED my secret for a whole year.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">kept</span> — Keep is irregular: keep → kept.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> Arturo didn't SAID goodbye before he left.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">say</span> — After didn't, use the base verb.</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Exercise 7 — Mixed Practice</h2>
+  <p>Click a, b, c, or d. The correct button turns green; a wrong button turns red and the correct one is highlighted.</p>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> Yesterday, my grandmother ____ for three hours in her garden.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. worked</button>
+      <button class="opt">b. works</button>
+      <button class="opt">c. work</button>
+      <button class="opt">d. working</button>
+    </div>
+    <div class="explain" data-explain="Yesterday = past; work is regular: worked."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> ____ it cold in Denver when you visited?</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. Were</button>
+      <button class="opt">b. Did</button>
+      <button class="opt">c. Was</button>
+      <button class="opt">d. Is</button>
+    </div>
+    <div class="explain" data-explain="It takes was. No did with be."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> The roof repair ____ a lot of money last week.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. costed</button>
+      <button class="opt">b. cost</button>
+      <button class="opt">c. costs</button>
+      <button class="opt">d. costing</button>
+    </div>
+    <div class="explain" data-explain="Cost is irregular, no change: cost → cost."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> When ____ you get your first cell phone?</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. was</button>
+      <button class="opt">b. were</button>
+      <button class="opt">c. had</button>
+      <button class="opt">d. did</button>
+    </div>
+    <div class="explain" data-explain="Get is not be: Wh- word + did + subject + base verb."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> This morning, Ahmed ____ the door for an old man with heavy bags.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. holded</button>
+      <button class="opt">b. holds</button>
+      <button class="opt">c. held</button>
+      <button class="opt">d. hold</button>
+    </div>
+    <div class="explain" data-explain="Hold is irregular: hold → held."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> The students ____ quiet during the test yesterday.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. was</button>
+      <button class="opt">b. did</button>
+      <button class="opt">c. are</button>
+      <button class="opt">d. were</button>
+    </div>
+    <div class="explain" data-explain="The students = they: were."></div>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Summary — Main Takeaways</h2>
+  <table class="compare">
+    <tr><th></th><th>Regular verb</th><th>Irregular verb</th><th>Be</th></tr>
+    <tr><td>Positive</td><td>She rented a car.</td><td>She knew him.</td><td>She was tired. They were tired.</td></tr>
+    <tr><td>Negative</td><td>She didn't rent a car.</td><td>She didn't know him.</td><td>She wasn't tired. They weren't tired.</td></tr>
+    <tr><td>Question</td><td>Did she rent a car?</td><td>Did she know him?</td><td>Was she tired? Were they tired?</td></tr>
+  </table>
+  <p class="note">After did and didn't: base verb. With be: no did.</p>
+  <p style="text-align:center; margin-top:30px; font-size:0.95em; color:var(--accent);"><strong>End of Deck — Great work!</strong></p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    controls: true,
+    progress: true,
+    center: false,
+    transition: 'slide',
+    width: 1100,
+    height: 720,
+    margin: 0.04
+  });
+
+  // Clickable multiple-choice wiring (data-correct = 0-indexed button)
+  document.querySelectorAll('.mc').forEach(mc => {
+    const correct = parseInt(mc.dataset.correct, 10);
+    const buttons = mc.querySelectorAll('button.opt');
+    const explain = mc.nextElementSibling && mc.nextElementSibling.classList.contains('explain')
+      ? mc.nextElementSibling : null;
+    const explainText = explain ? explain.dataset.explain || '' : '';
+    buttons.forEach((b, i) => {
+      b.addEventListener('click', () => {
+        // `sel` marks the clicked button so its class always changes on every
+        // click — keeps verify_html_deck.mjs from false-failing when the correct
+        // answer isn't option (a). Do not remove.
+        buttons.forEach(x => x.classList.remove('correct', 'wrong', 'sel'));
+        b.classList.add('sel');
+        if (i === correct) {
+          b.classList.add('correct');
+          if (explain) {
+            explain.textContent = '✓ Correct. ' + explainText;
+            explain.classList.remove('bad'); explain.classList.add('good');
+          }
+        } else {
+          b.classList.add('wrong');
+          buttons[correct].classList.add('correct');
+          if (explain) {
+            const answerText = buttons[correct].textContent;
+            explain.innerHTML = '✗ The answer is <strong>' + answerText + '</strong>. ' + explainText;
+            explain.classList.remove('good'); explain.classList.add('bad');
+          }
+        }
+      });
+    });
+  });
+</script>
+<!-- PENCIL DRAW OVERLAY — iPad annotation layer (additive; safe to delete this whole block) -->
+<style>
+  #drawCanvas {
+    position: fixed; inset: 0; z-index: 50; pointer-events: none; touch-action: none;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  }
+  html.draw-armed, html.draw-armed body, html.draw-armed .reveal {
+    -webkit-user-select: none !important; user-select: none !important;
+    -webkit-touch-callout: none !important;
+  }
+  html.presentation-mode, html.presentation-mode body {
+    width: 100%; height: 100%; overflow: hidden !important; overscroll-behavior: none;
+  }
+  html.presentation-mode body { position: fixed; inset: 0; }
+  html.presentation-mode .reveal { width: 100vw !important; height: 100vh !important; height: 100dvh !important; }
+  html.presentation-mode .reveal .slides section { overscroll-behavior-y: contain; }
+  #drawToggle {
+    position: fixed; top: 10px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 20px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle.armed { opacity: 1; background: #fde9c8; border-color: #e8a013; }
+  #fsToggle {
+    position: fixed; top: 62px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 19px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle, #fsToggle { transition: opacity 0.3s; }
+  html.presentation-mode #drawToggle:not(.armed), html.presentation-mode #fsToggle { opacity: 0.15; }
+  #drawBar {
+    position: fixed; top: 10px; right: 62px; z-index: 60; display: flex; gap: 8px;
+    background: #fff; border: 1px solid #bbb; border-radius: 22px; padding: 6px 10px;
+    align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  #drawBar button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ccc; background: #fff; cursor: pointer; font-size: 15px; padding: 0; }
+  #drawBar .swatch { border-width: 2px; }
+  #drawBar .swatch.on { outline: 3px solid #e8a013; }
+</style>
+<canvas id="drawCanvas"></canvas>
+<div id="drawBar" hidden>
+  <button class="swatch on" data-color="#d33333" style="background:#d33333"></button>
+  <button class="swatch" data-color="#2266cc" style="background:#2266cc"></button>
+  <button class="swatch" data-color="#1a1a1a" style="background:#1a1a1a"></button>
+  <button id="drawUndo" title="Undo">↩</button>
+  <button id="drawClear" title="Clear slide">✕</button>
+</div>
+<button id="drawToggle" title="Pencil mode (pen only; finger locked)" aria-pressed="false">✏️</button>
+<button id="fsToggle" title="Presentation mode" aria-label="Presentation mode" aria-pressed="false">⛶</button>
+<script>
+(() => {
+  const cv = document.getElementById('drawCanvas');
+  const ctx = cv.getContext('2d');
+  const bar = document.getElementById('drawBar');
+  const toggle = document.getElementById('drawToggle');
+  let armed = false, color = '#d33333', cur = null, drawPointerId = null;
+  const strokes = new Map(); // slide "h-v" -> stroke list; ink persists per slide
+  const key = () => { const i = Reveal.getIndices(); return i.h + '-' + (i.v || 0); };
+  const list = () => { const k = key(); if (!strokes.has(k)) strokes.set(k, []); return strokes.get(k); };
+
+  function size() {
+    const d = window.devicePixelRatio || 1;
+    cv.width = innerWidth * d; cv.height = innerHeight * d;
+    cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    render();
+  }
+  function seg(a, b, c, w) {
+    ctx.strokeStyle = c; ctx.lineWidth = Math.max(0.75, w * innerWidth);
+    ctx.beginPath(); ctx.moveTo(a.x * innerWidth, a.y * innerHeight);
+    ctx.lineTo(b.x * innerWidth, b.y * innerHeight); ctx.stroke();
+  }
+  function render() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const s of list())
+      for (let i = 1; i < s.pts.length; i++) seg(s.pts[i - 1], s.pts[i], s.color, s.pts[i].w);
+  }
+  const pt = (e) => ({ x: e.clientX / innerWidth, y: e.clientY / innerHeight,
+    w: (e.pointerType === 'pen' ? 1.5 + 4 * (e.pressure || 0.5) : 3) / innerWidth });
+
+  const cancel = (e) => { if (e.cancelable) e.preventDefault(); };
+  cv.addEventListener('pointerdown', (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerType === 'touch') {
+      cv.setPointerCapture(e.pointerId); // swallow the palm/finger for its full contact
+      return;
+    }
+    if ((e.pointerType !== 'pen' && e.pointerType !== 'mouse') || drawPointerId !== null) return;
+    drawPointerId = e.pointerId;
+    cur = { color, pts: [pt(e)] };
+    list().push(cur);
+    cv.setPointerCapture(e.pointerId);
+  }, { passive: false });
+  cv.addEventListener('pointermove', (e) => {
+    if (!armed) return;
+    if (e.pointerType === 'touch') { cancel(e); return; }
+    if (!cur || e.pointerId !== drawPointerId) return;
+    cancel(e);
+    const coalesced = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+    const events = coalesced && coalesced.length ? coalesced : [e];
+    for (const ev of events) {
+      const p = pt(ev);
+      seg(cur.pts[cur.pts.length - 1], p, cur.color, p.w);
+      cur.pts.push(p);
+    }
+  }, { passive: false });
+  const end = (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerId === drawPointerId) { cur = null; drawPointerId = null; }
+  };
+  cv.addEventListener('pointerup', end, { passive: false });
+  cv.addEventListener('pointercancel', end, { passive: false });
+  for (const eventName of ['touchstart', 'touchmove', 'touchend', 'touchcancel'])
+    cv.addEventListener(eventName, (e) => { if (armed) cancel(e); }, { passive: false });
+  document.addEventListener('selectstart', (e) => { if (armed) cancel(e); });
+
+  toggle.addEventListener('click', () => {
+    armed = !armed;
+    cv.style.pointerEvents = armed ? 'auto' : 'none'; // disarmed = taps/swipes reach the slides
+    bar.hidden = !armed;
+    toggle.classList.toggle('armed', armed);
+    toggle.setAttribute('aria-pressed', String(armed));
+    document.documentElement.classList.toggle('draw-armed', armed);
+    if (!armed) { cur = null; drawPointerId = null; }
+  });
+  bar.querySelectorAll('.swatch').forEach((b) => b.addEventListener('click', () => {
+    color = b.dataset.color;
+    bar.querySelectorAll('.swatch').forEach((x) => x.classList.toggle('on', x === b));
+  }));
+  document.getElementById('drawUndo').addEventListener('click', () => { list().pop(); render(); });
+  document.getElementById('drawClear').addEventListener('click', () => { strokes.set(key(), []); render(); });
+
+  Reveal.on('slidechanged', render);
+  addEventListener('resize', size);
+  size();
+
+  // Fixed presentation mode avoids iPadOS's native-fullscreen pull-down exit gesture.
+  const fsT = document.getElementById('fsToggle');
+  let presenting = false;
+  const toast = (message) => {
+    const t = document.createElement('div');
+    t.textContent = message;
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:10px;font:14px system-ui;z-index:99;max-width:46ch;text-align:center';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  };
+  fsT.addEventListener('click', () => {
+    presenting = !presenting;
+    document.documentElement.classList.toggle('presentation-mode', presenting);
+    fsT.textContent = presenting ? '\u2921' : '\u26f6';
+    fsT.setAttribute('aria-pressed', String(presenting));
+    fsT.title = presenting ? 'Exit presentation mode' : 'Presentation mode';
+    requestAnimationFrame(() => {
+      if (Reveal.layout) Reveal.layout();
+      size();
+    });
+    if (presenting) toast('Presentation mode on. For more space in Safari, tap AA, then Hide Toolbar.');
+  });
+})();
+</script>
+<!-- END PENCIL DRAW OVERLAY -->
+
+</body>
+</html>
