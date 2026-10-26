@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simple Past Jeopardy</title>
+<style>
+  :root {
+    --accent: #2E6B3A;
+    --accent-light: #D9E9D3;
+    --used: #B8C4BA;
+    --ink: #1A1A1A;
+    --bg: #F4F7F3;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; overflow-x: hidden; }
+  body { background: var(--bg); color: var(--ink); font-family: Arial, sans-serif; padding: 12px 16px 24px; }
+  header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; max-width: 1200px; margin: 0 auto 10px; }
+  h1 { color: var(--accent); font-size: clamp(20px, 3.2vw, 34px); margin: 0; }
+  .controls { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 15px; }
+  .controls button, .team button, .modal button { font-family: inherit; cursor: pointer; border-radius: 6px; border: 2px solid var(--accent); background: #fff; color: var(--accent); font-weight: bold; }
+  .controls button { padding: 6px 10px; font-size: 15px; }
+  .controls button.on { background: var(--accent); color: #fff; }
+
+  .board { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; max-width: 1200px; margin: 0 auto; }
+  .cat { background: var(--accent); color: #fff; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; padding: 10px 4px; min-height: 64px; font-size: clamp(11px, 1.8vw, 22px); border-radius: 6px; overflow-wrap: anywhere; }
+  .cell { background: var(--accent-light); color: var(--accent); border: 2px solid var(--accent); border-radius: 6px; font-size: clamp(16px, 3.4vw, 40px); font-weight: bold; min-height: clamp(54px, 11vh, 110px); cursor: pointer; font-family: inherit; }
+  .cell:hover { background: #fff; }
+  .cell.used { background: var(--used); border-color: var(--used); color: transparent; cursor: default; }
+  .final-row { max-width: 1200px; margin: 8px auto 0; }
+  .final-row button { width: 100%; padding: 12px; font-size: clamp(16px, 2.4vw, 26px); font-weight: bold; background: var(--accent); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-family: inherit; }
+  .final-row button.used { background: var(--used); }
+
+  .scores { display: flex; flex-wrap: wrap; gap: 8px; max-width: 1200px; margin: 12px auto 0; }
+  .team { flex: 1 1 140px; background: #fff; border: 2px solid var(--accent); border-radius: 8px; padding: 8px; text-align: center; }
+  .team .name { font-weight: bold; font-size: clamp(15px, 2vw, 22px); color: var(--accent); }
+  .team .pts { font-size: clamp(24px, 4vw, 44px); font-weight: bold; margin: 2px 0 6px; }
+  .team button { padding: 4px 10px; font-size: 15px; }
+
+  .modal { position: fixed; inset: 0; background: var(--accent); color: #fff; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 24px 16px; text-align: center; overflow-y: auto; }
+  .modal.open { display: flex; }
+  .modal .meta { font-size: clamp(15px, 2.2vw, 26px); opacity: .9; }
+  .modal .dir { font-size: clamp(14px, 1.9vw, 22px); font-style: italic; margin: 6px 0 18px; opacity: .9; }
+  .modal .clue { font-size: clamp(26px, 5.5vw, 68px); font-weight: bold; max-width: 1100px; line-height: 1.25; overflow-wrap: anywhere; }
+  .modal .answer { font-size: clamp(24px, 4.8vw, 60px); font-weight: bold; color: #FFE58A; margin-top: 22px; max-width: 1100px; visibility: hidden; overflow-wrap: anywhere; }
+  .modal .answer.shown { visibility: visible; }
+  .modal .actions { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .modal button { padding: 10px 16px; font-size: clamp(15px, 2vw, 22px); background: #fff; }
+  .modal .award { display: none; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 12px; }
+  .modal .award.shown { display: flex; }
+  .modal .award .grp { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,.15); border-radius: 8px; padding: 6px 10px; font-size: clamp(15px, 2vw, 22px); font-weight: bold; }
+  .modal .award button.minus { color: #9B1C1C; border-color: #9B1C1C; }
+</style>
+</head>
+<body>
+<!-- back-to-topics (school-save) --><style>@media print{.back-to-topics{display:none}}</style><a href="index.html" class="back-to-topics" style="display:inline-block;margin:12px 16px 0;font:600 18px/1.2 system-ui,sans-serif;color:#fff;background:#1f5fbf;padding:10px 16px;border-radius:10px;text-decoration:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">← Back to topics</a>
+
+
+<header>
+  <h1>Simple Past Jeopardy: Irregular Verbs</h1>
+  <div class="controls">
+    <span>Teams:</span>
+    <button data-teams="2">2</button>
+    <button data-teams="3">3</button>
+    <button data-teams="4">4</button>
+    <button data-teams="5">5</button>
+    <button data-teams="6">6</button>
+    <button id="reset">New game</button>
+  </div>
+</header>
+
+<div class="board" id="board"></div>
+<div class="final-row"><button id="final">Final Question</button></div>
+<div class="scores" id="scores"></div>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true">
+  <div class="meta" id="m-meta"></div>
+  <div class="dir" id="m-dir"></div>
+  <div class="clue" id="m-clue"></div>
+  <div class="answer" id="m-answer"></div>
+  <div class="actions">
+    <button id="m-show">Show answer</button>
+    <button id="m-back">Back to board</button>
+  </div>
+  <div class="award" id="m-award"></div>
+</div>
+
+<!-- Every clue and answer lives here, and nowhere else. -->
+<script type="application/json" id="jeopardy-data">
+{
+  "categories": [
+    {
+      "name": "Base → Past",
+      "dir": "Say the past form.",
+      "clues": [
+        {"clue": "eat", "answer": "ate"},
+        {"clue": "sit", "answer": "sat"},
+        {"clue": "sleep", "answer": "slept"},
+        {"clue": "throw", "answer": "threw"},
+        {"clue": "understand", "answer": "understood"}
+      ]
+    },
+    {
+      "name": "Past → Base",
+      "dir": "Say the base form.",
+      "clues": [
+        {"clue": "drank", "answer": "drink"},
+        {"clue": "wore", "answer": "wear"},
+        {"clue": "flew", "answer": "fly"},
+        {"clue": "held", "answer": "hold"},
+        {"clue": "left", "answer": "leave"}
+      ]
+    },
+    {
+      "name": "Fix It",
+      "dir": "Fix the CAPITALIZED word. Keep the sentence in the past.",
+      "clues": [
+        {"clue": "Two days ago, my brother RUNNED all the way home in the rain.", "answer": "ran"},
+        {"clue": "On Saturday, Maria SELLED her old sofa online.", "answer": "sold"},
+        {"clue": "When I was ten, I BREAKED my arm on the playground.", "answer": "broke"},
+        {"clue": "This morning, my grandpa didn't HEARD the doorbell.", "answer": "hear"},
+        {"clue": "Who WINNED the soccer game on Sunday?", "answer": "won"}
+      ]
+    },
+    {
+      "name": "Make It Negative",
+      "dir": "Say the sentence with didn't.",
+      "clues": [
+        {"clue": "We swam at the pool.", "answer": "We didn't swim at the pool."},
+        {"clue": "She told me the answer.", "answer": "She didn't tell me the answer."},
+        {"clue": "My parents met in Mexico.", "answer": "My parents didn't meet in Mexico."},
+        {"clue": "He paid for dinner.", "answer": "He didn't pay for dinner."},
+        {"clue": "Omar fell asleep in class.", "answer": "Omar didn't fall asleep in class."}
+      ]
+    },
+    {
+      "name": "Ask with Did",
+      "dir": "Make a question with Did.",
+      "clues": [
+        {"clue": "You found your phone.", "answer": "Did you find your phone?"},
+        {"clue": "She sent the package.", "answer": "Did she send the package?"},
+        {"clue": "They built a new school downtown.", "answer": "Did they build a new school downtown?"},
+        {"clue": "Your brother rode his bike to work.", "answer": "Did your brother ride his bike to work?"},
+        {"clue": "Ben forgot his lunch.", "answer": "Did Ben forget his lunch?"}
+      ]
+    }
+  ],
+  "final": {
+    "name": "Final Question",
+    "dir": "Write the past form. Then say it.",
+    "clue": "read",
+    "answer": "read (say it like \"red\")"
+  }
+}
+</script>
+
+<script>
+(function () {
+  var DATA = JSON.parse(document.getElementById('jeopardy-data').textContent);
+  var VALUES = [100, 200, 300, 400, 500];
+  var KEY = 'jeopardy-2026-10-26-irregular-past-l2';
+  var state = load() || fresh(2);
+  var current = null;
+
+  function fresh(n) {
+    return { teams: n, scores: new Array(n).fill(0), used: {}, finalUsed: false };
+  }
+  function load() {
+    try { var s = JSON.parse(localStorage.getItem(KEY)); return s && s.scores ? s : null; } catch (e) { return null; }
+  }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* storage blocked: game still works */ }
+  }
+
+  function drawBoard() {
+    var b = document.getElementById('board');
+    b.innerHTML = '';
+    DATA.categories.forEach(function (c) {
+      var h = document.createElement('div');
+      h.className = 'cat';
+      h.textContent = c.name;
+      b.appendChild(h);
+    });
+    VALUES.forEach(function (v, row) {
+      DATA.categories.forEach(function (c, col) {
+        var id = col + '-' + row;
+        var cell = document.createElement('button');
+        cell.className = 'cell' + (state.used[id] ? ' used' : '');
+        cell.textContent = v;
+        cell.setAttribute('aria-label', c.name + ' for ' + v);
+        cell.onclick = function () {
+          if (state.used[id]) return;
+          open({ id: id, value: v, cat: c.name, dir: c.dir, clue: c.clues[row].clue, answer: c.clues[row].answer });
+        };
+        b.appendChild(cell);
+      });
+    });
+    document.getElementById('final').className = state.finalUsed ? 'used' : '';
+  }
+
+  function drawScores() {
+    var s = document.getElementById('scores');
+    s.innerHTML = '';
+    state.scores.forEach(function (pts, i) {
+      var t = document.createElement('div');
+      t.className = 'team';
+      t.innerHTML = '<div class="name">Team ' + (i + 1) + '</div><div class="pts">' + pts + '</div>';
+      [['−100', -100], ['+100', 100]].forEach(function (p) {
+        var btn = document.createElement('button');
+        btn.textContent = p[0];
+        btn.onclick = function () { state.scores[i] += p[1]; save(); drawScores(); };
+        t.appendChild(btn);
+        t.appendChild(document.createTextNode(' '));
+      });
+      s.appendChild(t);
+    });
+    document.querySelectorAll('[data-teams]').forEach(function (b) {
+      b.classList.toggle('on', +b.dataset.teams === state.teams);
+    });
+  }
+
+  function open(q) {
+    current = q;
+    document.getElementById('m-meta').textContent = q.cat + (q.value ? ' · ' + q.value : '');
+    document.getElementById('m-dir').textContent = q.dir;
+    document.getElementById('m-clue').textContent = q.clue;
+    var a = document.getElementById('m-answer');
+    a.textContent = q.answer;
+    a.classList.remove('shown');
+    document.getElementById('m-show').style.display = '';
+    var aw = document.getElementById('m-award');
+    aw.innerHTML = '';
+    aw.classList.remove('shown');
+    if (q.value) {
+      state.scores.forEach(function (_, i) {
+        var grp = document.createElement('div');
+        grp.className = 'grp';
+        grp.appendChild(document.createTextNode('Team ' + (i + 1)));
+        [['+', 1, ''], ['−', -1, 'minus']].forEach(function (p) {
+          var btn = document.createElement('button');
+          btn.className = p[2];
+          btn.textContent = p[0] + q.value;
+          btn.setAttribute('aria-label', 'Team ' + (i + 1) + ' ' + p[0] + q.value);
+          btn.onclick = function () { state.scores[i] += p[1] * q.value; save(); drawScores(); btn.disabled = true; };
+          grp.appendChild(btn);
+        });
+        aw.appendChild(grp);
+      });
+    }
+    document.getElementById('modal').classList.add('open');
+  }
+
+  function show() {
+    document.getElementById('m-answer').classList.add('shown');
+    document.getElementById('m-show').style.display = 'none';
+    document.getElementById('m-award').classList.add('shown');
+  }
+
+  function close() {
+    if (!current) return;
+    if (current.id === 'final') state.finalUsed = true;
+    else state.used[current.id] = true;
+    current = null;
+    save();
+    document.getElementById('modal').classList.remove('open');
+    drawBoard();
+  }
+
+  document.getElementById('m-show').onclick = show;
+  document.getElementById('m-back').onclick = close;
+  document.getElementById('final').onclick = function () {
+    if (state.finalUsed) return;
+    var f = DATA.final;
+    open({ id: 'final', value: 500, cat: f.name, dir: f.dir + ' Every team can win 500.', clue: f.clue, answer: f.answer });
+  };
+  document.querySelectorAll('[data-teams]').forEach(function (b) {
+    b.onclick = function () {
+      var n = +b.dataset.teams;
+      while (state.scores.length < n) state.scores.push(0);
+      state.scores.length = n;
+      state.teams = n;
+      save();
+      drawScores();
+    };
+  });
+  document.getElementById('reset').onclick = function () {
+    state = fresh(state.teams);
+    save();
+    drawBoard();
+    drawScores();
+  };
+  document.addEventListener('keydown', function (e) {
+    if (!current) return;
+    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); show(); }
+    if (e.key === 'Escape') close();
+  });
+
+  drawBoard();
+  drawScores();
+})();
+</script>
+</body>
+</html>
