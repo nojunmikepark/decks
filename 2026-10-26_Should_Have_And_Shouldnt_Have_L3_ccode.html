@@ -1,0 +1,643 @@
+<!-- generator: _lib/school_deck_scaffold.py -->
+<!DOCTYPE html>
+<!--
+  ESL reveal.js DECK TEMPLATE — copy this file, rename to
+  YYYY-MM-DD_Title_Case_Topic_L<level>_ccode.html in the School Stuff root,
+  and fill the Edit.
+
+  LEVEL SWAP: this template ships L2 colors (green). For L4, change the
+  three lines in :root marked  /* L4: ... */  and swap theme to white
+  (already white). L2 accent 2E6B3A / light D9E9D3.  L4 accent 1F4E79 /
+  light D6E4F2.
+
+  All canonical contracts (invisible scrollbar, 80vh bottom spacer per
+  section, no font-size on .reveal, table.compare last-child border,
+  reveal init config) are baked in. Run the linter after editing:
+      node _lib/verify_html_deck.mjs <deck.html>            # rendered check
+      python3 _lib/verify_html_deck_static.py <deck.html>   # fast source lint
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Should Have And Shouldnt Have — Level 3</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/theme/white.css">
+<style>
+  :root { --accent: #1F6B6B; --accent-light: #D6E8E8; --gray: #555555;
+          /* L4: --accent: #1F4E79; --accent-light: #D6E4F2; */
+          --good: #15803D; --bad: #B91C1C; --muted: #777; }
+
+  /* TYPOGRAPHY CANON — never put font-size on .reveal itself */
+  .reveal { font-family: Arial, sans-serif; }
+  .reveal h1, .reveal h2, .reveal h3 { color: var(--accent); font-family: Arial, sans-serif; text-transform: none; letter-spacing: 0; }
+  .reveal h1 { font-size: 2.2em; }
+  .reveal h2 { font-size: 1.6em; }
+  .reveal h3 { font-size: 1.15em; }
+  .reveal h4 { font-size: 1.05em; }
+  .reveal p, .reveal li { font-size: 0.85em; line-height: 1.5; }
+
+  /* SCROLLABLE SLIDES WITH INVISIBLE SCROLLBAR */
+  .reveal .slides section {
+    overflow-y: auto !important;
+    max-height: 92vh !important;
+    text-align: left;
+    padding: 20px 40px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .reveal .slides section::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* Title slide */
+  .title-slide { text-align: center !important; }
+  .title-slide h1 { font-size: 2.6em; margin-bottom: 0.3em; }
+  .title-slide .subtitle { font-size: 1.2em; color: var(--gray); }
+
+  /* Pattern / example / note / tip */
+  .pattern-box {
+    background: var(--accent-light);
+    border-left: 6px solid var(--accent);
+    padding: 14px 20px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+  .pattern-box code {
+    background: white; padding: 2px 8px; border-radius: 3px;
+    color: var(--accent); font-weight: bold;
+  }
+  .example {
+    background: #FAFAFA; border: 1px solid #DDD;
+    padding: 10px 16px; margin: 8px 0; border-radius: 3px; font-size: 0.9em;
+  }
+  .example .key { color: var(--accent); font-weight: bold; }
+  .note { font-style: italic; color: var(--gray); font-size: 0.85em; margin-top: 10px; }
+  .check-tip {
+    background: #FFF8E1; border-left: 6px solid #F5A623;
+    padding: 12px 18px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+
+  /* Comparison tables — borders need !important (reveal theme strips them) */
+  table.compare {
+    border-collapse: collapse !important; margin: 14px 0;
+    font-size: 0.82em; width: 100%; border: 1px solid var(--accent) !important;
+  }
+  table.compare th, table.compare td {
+    border: 1px solid var(--accent) !important; padding: 8px 12px; text-align: left;
+  }
+  table.compare tr:last-child td { border-bottom: 1px solid var(--accent) !important; }
+  table.compare th { background: var(--accent); color: white; }
+  table.compare td:first-child { font-weight: bold; color: var(--accent); }
+
+  /* Click-to-reveal exercise (single-answer reveal) */
+  .exercise {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .exercise .question { font-size: 0.9em; margin: 0 0 10px 0; }
+  .exercise .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .exercise button.reveal-btn {
+    background: var(--accent); color: white; border: none; padding: 6px 14px;
+    border-radius: 4px; font-family: Arial; font-size: 0.8em; cursor: pointer;
+  }
+  .exercise button.reveal-btn:hover { filter: brightness(0.85); }
+  .exercise .answer {
+    display: none; margin-top: 10px; padding: 10px 14px;
+    background: var(--accent-light); border-left: 4px solid var(--accent); font-size: 0.9em;
+  }
+  .exercise .answer .key { color: var(--accent); font-weight: bold; }
+  .exercise .answer.shown { display: block; }
+
+  /* Clickable multiple choice */
+  .mc-q {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .mc-q .stem { font-size: 0.9em; margin: 0 0 10px 0; }
+  .mc-q .stem .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .mc { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .mc button.opt {
+    font-family: inherit; font-size: 0.8em; padding: 10px 12px;
+    border: 2px solid #d0d8e4; background: white; border-radius: 8px;
+    cursor: pointer; transition: all .15s; font-weight: 600;
+  }
+  .mc button.opt:hover { border-color: var(--accent); background: var(--accent-light); }
+  .mc button.opt.correct { background: #DCFCE7; border-color: var(--good); color: var(--good); }
+  .mc button.opt.wrong   { background: #FEE2E2; border-color: var(--bad);  color: var(--bad); }
+  .explain { margin-top: 10px; font-size: 0.78em; color: var(--muted); font-style: italic; min-height: 1.2em; }
+  .explain.good { color: var(--good); font-style: normal; }
+  .explain.bad  { color: var(--bad); }
+</style>
+</head>
+<body>
+<!-- back-to-topics (school-save) --><style>@media print{.back-to-topics{display:none}}</style><a href="index.html" class="back-to-topics" style="position:fixed;top:10px;left:10px;z-index:70;font:600 18px/1.2 system-ui,sans-serif;color:#fff;background:#1f5fbf;padding:10px 16px;border-radius:10px;text-decoration:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">← Back to topics</a>
+
+<div class="reveal">
+<div class="slides">
+
+<section class="title-slide">
+  <h1>Should Have and Shouldn’t Have</h1>
+  <p class="subtitle">regret and criticism about the past</p>
+  <p class="subtitle" style="margin-top: 1.5em;">Level 3 — Grammar Review</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Now or Past?</h2>
+  <p>You already know <strong>should</strong> for advice. To talk about the past, add <strong>have</strong> + the past participle.</p>
+  <table class="compare">
+    <tr><th>Time</th><th>Form</th><th>Example</th></tr>
+    <tr><td>now / future</td><td>should + base verb</td><td>It’s cold. You should wear a jacket.</td></tr>
+    <tr><td>past</td><td>should have + past participle</td><td>It was cold yesterday. You should have worn a jacket.</td></tr>
+  </table>
+  <p class="note">Yesterday is over. We can’t change it, so should have talks about a past mistake.</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>should have = a Good Idea That Didn’t Happen</h2>
+  <div class="pattern-box"><strong>should have</strong> + past participle = it was a good idea, but it <strong>did not</strong> happen.</div>
+  <div class="example">I failed my road test. I <span class="key">should have practiced</span> more.</div>
+  <div class="example">Our cat ran outside. Someone <span class="key">should have closed</span> the door.</div>
+  <div class="check-tip"><strong>Watch out:</strong> use the past participle, not the simple past. <s>should have drove</s> → should have <strong>driven</strong></div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>shouldn’t have = a Bad Idea That Happened</h2>
+  <div class="pattern-box"><strong>shouldn’t have</strong> + past participle = it was a bad idea, but it <strong>did</strong> happen.</div>
+  <div class="example">I <span class="key">shouldn’t have yelled</span> at my brother. Now he won’t talk to me.</div>
+  <div class="example">They <span class="key">shouldn’t have painted</span> the bedroom black. It’s so dark.</div>
+  <div class="check-tip"><strong>Watch out:</strong> always <strong>have</strong>, never has. <s>She shouldn’t has</s> → She <strong>shouldn’t have</strong></div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Regret or Criticism?</h2>
+  <table class="compare">
+    <tr><th>Who?</th><th>Meaning</th><th>Example</th></tr>
+    <tr><td>I / we</td><td>regret: I feel bad about my choice</td><td>I should have called you.</td></tr>
+    <tr><td>you / he / she / they</td><td>criticism: their choice was wrong</td><td>You should have invited me! · He shouldn’t have lied.</td></tr>
+  </table>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Saying It</h2>
+  <table class="compare">
+    <tr><th>We write</th><th>We say</th></tr>
+    <tr><td>should have</td><td>should’ve (“SHOOD-uv”)</td></tr>
+    <tr><td>shouldn’t have</td><td>“SHOOD-nt-uv”</td></tr>
+  </table>
+  <p class="note">“Should’ve” sounds like “should of,” but we never write <s>should of</s>.</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Some Irregular Past Participles</h2>
+  <table class="compare">
+    <tr><th>Base verb</th><th>Simple past</th><th>Past participle</th></tr>
+    <tr><td>wear</td><td>wore</td><td>worn</td></tr>
+    <tr><td>drive</td><td>drove</td><td>driven</td></tr>
+    <tr><td>write</td><td>wrote</td><td>written</td></tr>
+    <tr><td>break</td><td>broke</td><td>broken</td></tr>
+    <tr><td>fall</td><td>fell</td><td>fallen</td></tr>
+    <tr><td>know</td><td>knew</td><td>known</td></tr>
+  </table>
+  <p class="note">After should have / shouldn’t have, use the third column.</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Exercise 1 — Choose the Correct Form</h2>
+  <p>Click a, b, c, or d. The correct button turns green; a wrong button turns red and the correct one is highlighted.</p>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> Gabriel’s cake was raw in the middle. He ____ it longer.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. should have bake</button>
+      <button class="opt">b. should have baked</button>
+      <button class="opt">c. should baked</button>
+      <button class="opt">d. should has baked</button>
+    </div>
+    <div class="explain" data-explain="should have + past participle: baked."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> My sister lost her gold ring at the beach. She ____ it at home.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. should have kept</button>
+      <button class="opt">b. should have keep</button>
+      <button class="opt">c. should has kept</button>
+      <button class="opt">d. should of kept</button>
+    </div>
+    <div class="explain" data-explain="keep → kept. Write have, never of."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> We missed the first song of the concert. We ____ there on time.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. should have was</button>
+      <button class="opt">b. should have be</button>
+      <button class="opt">c. should has been</button>
+      <button class="opt">d. should have been</button>
+    </div>
+    <div class="explain" data-explain="The past participle of be is been."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> The soup tastes terrible. I ____ so much salt.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. shouldn’t added</button>
+      <button class="opt">b. shouldn’t have add</button>
+      <button class="opt">c. shouldn’t have added</button>
+      <button class="opt">d. shouldn’t has added</button>
+    </div>
+    <div class="explain" data-explain="shouldn’t have + past participle: added."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> Isabel ran out of gas on the highway. She ____ at the last gas station.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. should have stopped</button>
+      <button class="opt">b. should stopped</button>
+      <button class="opt">c. should has stopped</button>
+      <button class="opt">d. should have stop</button>
+    </div>
+    <div class="explain" data-explain="stop → stopped (double the p)."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> I can’t fall asleep tonight. I ____ a long nap at 6:00 p.m.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. shouldn’t have took</button>
+      <button class="opt">b. shouldn’t has taken</button>
+      <button class="opt">c. shouldn’t have taken</button>
+      <button class="opt">d. shouldn’t taken</button>
+    </div>
+    <div class="explain" data-explain="take → took → taken. Use the past participle."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">7.</span> The kids were hungry the whole car ride. We ____ some snacks.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. should has packed</button>
+      <button class="opt">b. should packed</button>
+      <button class="opt">c. should have pack</button>
+      <button class="opt">d. should have packed</button>
+    </div>
+    <div class="explain" data-explain="should have + past participle: packed."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">8.</span> Mei’s phone bill was $300 after her trip. She ____ a better phone plan.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. should have chose</button>
+      <button class="opt">b. should have chosen</button>
+      <button class="opt">c. should has chosen</button>
+      <button class="opt">d. should choosed</button>
+    </div>
+    <div class="explain" data-explain="choose → chose → chosen."></div>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Exercise 2 — should have or shouldn’t have?</h2>
+  <p>Say should have or shouldn’t have + the past participle of the verb. Then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> Our picnic got rained out. We ____ the weather report. (watch)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">should have watched</span> (or should’ve watched) — a good idea that didn’t happen.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> Pablo burned his hand on the stove. He ____ the pan without oven mitts. (grab)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">shouldn’t have grabbed</span> — a bad idea that happened.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> My suitcase was too heavy at the airport, so I paid an extra $100. I ____ it with so many shoes. (fill)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">shouldn’t have filled</span> — a bad idea that happened.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> The baby woke up crying. You ____ the door so loudly. (slam)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">shouldn’t have slammed</span> — criticism: a bad idea that happened.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> Tomás’s car broke down on a long road trip. He ____ it to a mechanic before the trip. (bring)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">should have brought</span> (or should’ve brought) — a good idea that didn’t happen.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> Everyone at the party wore costumes except me. I ____ the invitation more carefully. (read)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">should have read</span> (or should’ve read) — a good idea that didn’t happen. read → read → read.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">7.</span> Grace’s coworkers are upset. She ____ their lunch from the office fridge. (eat)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">shouldn’t have eaten</span> — criticism: a bad idea that happened.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">8.</span> Our team lost the game by one point. The coach ____ his best player in the first half. (use)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">should have used</span> (or should’ve used) — criticism: a good idea that didn’t happen.</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Exercise 3 — Now or Past?</h2>
+  <p>Say should + base verb (now / future) or should have + past participle (past). Then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> Your sister’s wedding is on Saturday. You ____ your speech in front of a mirror. (should / rehearse)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">should rehearse</span> — the wedding is in the future: should + base verb.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> Kwame’s new apartment is very noisy at night. He ____ it at night before he signed the lease. (should / visit)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">should have visited</span> (or should’ve visited) — he signed the lease in the past.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> Last winter, our pipes froze and broke. We ____ the heat on while we were away. (should / leave)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">should have left</span> (or should’ve left) — last winter is past. leave → left → left.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> Your library books are due next Tuesday. You ____ them back this weekend. (should / take)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">should take</span> — this weekend is in the future: should + base verb.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> Imani’s package went to her old address last month. She ____ her address on the website before she ordered it. (should / change)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">should have changed</span> (or should’ve changed) — she ordered it in the past, before the package went out.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> Your hands are shaking right now. You ____ down for a few minutes. (should / sit)</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">should sit</span> — advice for right now: should + base verb.</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Exercise 4 — Fix the Mistake</h2>
+  <p>Each sentence has one mistake in the CAPITALIZED word. Say the correct word. Then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> Ahmed should have SAW the price before he ordered the lobster.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">seen</span> — see → saw → seen. Use the past participle.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> The kids shouldn’t have OPEN their presents before Grandma arrived.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">opened</span> — should have + past participle: opened.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> I should HAD ordered the chicken. This fish is terrible.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">have</span> — should + have, never had.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> You should OF asked me for a ride!</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">have</span> — We say “should’ve,” but we write should have.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> Sofia shouldn’t have THREW away the receipt. Now she can’t return the dress.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">thrown</span> — throw → threw → thrown.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> We should have BEGAN the project last week. It’s due tomorrow.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">begun</span> — begin → began → begun.</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<section>
+  <h2>Summary — Main Takeaways</h2>
+  <table class="compare">
+    <tr><th>Form</th><th>Meaning</th><th>Example</th></tr>
+    <tr><td>should + base verb</td><td>advice for now or the future</td><td>You should bring water on the hike tomorrow.</td></tr>
+    <tr><td>should have + past participle</td><td>past: a good idea that didn’t happen</td><td>I should have written down her number.</td></tr>
+    <tr><td>shouldn’t have + past participle</td><td>past: a bad idea that happened</td><td>He shouldn’t have driven in the snow.</td></tr>
+  </table>
+  <p class="note">I / we = regret. You / he / she / they = criticism. Always have, never has or of.</p>
+  <p style="text-align:center; margin-top:30px; font-size:0.95em; color:var(--accent);"><strong>End of Deck — Great work!</strong></p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    controls: true,
+    progress: true,
+    center: false,
+    transition: 'slide',
+    width: 1100,
+    height: 720,
+    margin: 0.04
+  });
+
+  // Clickable multiple-choice wiring (data-correct = 0-indexed button)
+  document.querySelectorAll('.mc').forEach(mc => {
+    const correct = parseInt(mc.dataset.correct, 10);
+    const buttons = mc.querySelectorAll('button.opt');
+    const explain = mc.nextElementSibling && mc.nextElementSibling.classList.contains('explain')
+      ? mc.nextElementSibling : null;
+    const explainText = explain ? explain.dataset.explain || '' : '';
+    buttons.forEach((b, i) => {
+      b.addEventListener('click', () => {
+        // `sel` marks the clicked button so its class always changes on every
+        // click — keeps verify_html_deck.mjs from false-failing when the correct
+        // answer isn't option (a). Do not remove.
+        buttons.forEach(x => x.classList.remove('correct', 'wrong', 'sel'));
+        b.classList.add('sel');
+        if (i === correct) {
+          b.classList.add('correct');
+          if (explain) {
+            explain.textContent = '✓ Correct. ' + explainText;
+            explain.classList.remove('bad'); explain.classList.add('good');
+          }
+        } else {
+          b.classList.add('wrong');
+          buttons[correct].classList.add('correct');
+          if (explain) {
+            const answerText = buttons[correct].textContent;
+            explain.innerHTML = '✗ The answer is <strong>' + answerText + '</strong>. ' + explainText;
+            explain.classList.remove('good'); explain.classList.add('bad');
+          }
+        }
+      });
+    });
+  });
+</script>
+<!-- PENCIL DRAW OVERLAY — iPad annotation layer (additive; safe to delete this whole block) -->
+<style>
+  #drawCanvas {
+    position: fixed; inset: 0; z-index: 50; pointer-events: none; touch-action: none;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  }
+  html.draw-armed, html.draw-armed body, html.draw-armed .reveal {
+    -webkit-user-select: none !important; user-select: none !important;
+    -webkit-touch-callout: none !important;
+  }
+  html.presentation-mode, html.presentation-mode body {
+    width: 100%; height: 100%; overflow: hidden !important; overscroll-behavior: none;
+  }
+  html.presentation-mode body { position: fixed; inset: 0; }
+  html.presentation-mode .reveal { width: 100vw !important; height: 100vh !important; height: 100dvh !important; }
+  html.presentation-mode .reveal .slides section { overscroll-behavior-y: contain; }
+  #drawToggle {
+    position: fixed; top: 10px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 20px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle.armed { opacity: 1; background: #fde9c8; border-color: #e8a013; }
+  #fsToggle {
+    position: fixed; top: 62px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 19px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle, #fsToggle { transition: opacity 0.3s; }
+  html.presentation-mode #drawToggle:not(.armed), html.presentation-mode #fsToggle { opacity: 0.15; }
+  #drawBar {
+    position: fixed; top: 10px; right: 62px; z-index: 60; display: flex; gap: 8px;
+    background: #fff; border: 1px solid #bbb; border-radius: 22px; padding: 6px 10px;
+    align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  #drawBar button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ccc; background: #fff; cursor: pointer; font-size: 15px; padding: 0; }
+  #drawBar .swatch { border-width: 2px; }
+  #drawBar .swatch.on { outline: 3px solid #e8a013; }
+</style>
+<canvas id="drawCanvas"></canvas>
+<div id="drawBar" hidden>
+  <button class="swatch on" data-color="#d33333" style="background:#d33333"></button>
+  <button class="swatch" data-color="#2266cc" style="background:#2266cc"></button>
+  <button class="swatch" data-color="#1a1a1a" style="background:#1a1a1a"></button>
+  <button id="drawUndo" title="Undo">↩</button>
+  <button id="drawClear" title="Clear slide">✕</button>
+</div>
+<button id="drawToggle" title="Pencil mode (pen only; finger locked)" aria-pressed="false">✏️</button>
+<button id="fsToggle" title="Presentation mode" aria-label="Presentation mode" aria-pressed="false">⛶</button>
+<script>
+(() => {
+  const cv = document.getElementById('drawCanvas');
+  const ctx = cv.getContext('2d');
+  const bar = document.getElementById('drawBar');
+  const toggle = document.getElementById('drawToggle');
+  let armed = false, color = '#d33333', cur = null, drawPointerId = null;
+  const strokes = new Map(); // slide "h-v" -> stroke list; ink persists per slide
+  const key = () => { const i = Reveal.getIndices(); return i.h + '-' + (i.v || 0); };
+  const list = () => { const k = key(); if (!strokes.has(k)) strokes.set(k, []); return strokes.get(k); };
+
+  function size() {
+    const d = window.devicePixelRatio || 1;
+    cv.width = innerWidth * d; cv.height = innerHeight * d;
+    cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    render();
+  }
+  function seg(a, b, c, w) {
+    ctx.strokeStyle = c; ctx.lineWidth = Math.max(0.75, w * innerWidth);
+    ctx.beginPath(); ctx.moveTo(a.x * innerWidth, a.y * innerHeight);
+    ctx.lineTo(b.x * innerWidth, b.y * innerHeight); ctx.stroke();
+  }
+  function render() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const s of list())
+      for (let i = 1; i < s.pts.length; i++) seg(s.pts[i - 1], s.pts[i], s.color, s.pts[i].w);
+  }
+  const pt = (e) => ({ x: e.clientX / innerWidth, y: e.clientY / innerHeight,
+    w: (e.pointerType === 'pen' ? 1.5 + 4 * (e.pressure || 0.5) : 3) / innerWidth });
+
+  const cancel = (e) => { if (e.cancelable) e.preventDefault(); };
+  cv.addEventListener('pointerdown', (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerType === 'touch') {
+      cv.setPointerCapture(e.pointerId); // swallow the palm/finger for its full contact
+      return;
+    }
+    if ((e.pointerType !== 'pen' && e.pointerType !== 'mouse') || drawPointerId !== null) return;
+    drawPointerId = e.pointerId;
+    cur = { color, pts: [pt(e)] };
+    list().push(cur);
+    cv.setPointerCapture(e.pointerId);
+  }, { passive: false });
+  cv.addEventListener('pointermove', (e) => {
+    if (!armed) return;
+    if (e.pointerType === 'touch') { cancel(e); return; }
+    if (!cur || e.pointerId !== drawPointerId) return;
+    cancel(e);
+    const coalesced = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+    const events = coalesced && coalesced.length ? coalesced : [e];
+    for (const ev of events) {
+      const p = pt(ev);
+      seg(cur.pts[cur.pts.length - 1], p, cur.color, p.w);
+      cur.pts.push(p);
+    }
+  }, { passive: false });
+  const end = (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerId === drawPointerId) { cur = null; drawPointerId = null; }
+  };
+  cv.addEventListener('pointerup', end, { passive: false });
+  cv.addEventListener('pointercancel', end, { passive: false });
+  for (const eventName of ['touchstart', 'touchmove', 'touchend', 'touchcancel'])
+    cv.addEventListener(eventName, (e) => { if (armed) cancel(e); }, { passive: false });
+  document.addEventListener('selectstart', (e) => { if (armed) cancel(e); });
+
+  toggle.addEventListener('click', () => {
+    armed = !armed;
+    cv.style.pointerEvents = armed ? 'auto' : 'none'; // disarmed = taps/swipes reach the slides
+    bar.hidden = !armed;
+    toggle.classList.toggle('armed', armed);
+    toggle.setAttribute('aria-pressed', String(armed));
+    document.documentElement.classList.toggle('draw-armed', armed);
+    if (!armed) { cur = null; drawPointerId = null; }
+  });
+  bar.querySelectorAll('.swatch').forEach((b) => b.addEventListener('click', () => {
+    color = b.dataset.color;
+    bar.querySelectorAll('.swatch').forEach((x) => x.classList.toggle('on', x === b));
+  }));
+  document.getElementById('drawUndo').addEventListener('click', () => { list().pop(); render(); });
+  document.getElementById('drawClear').addEventListener('click', () => { strokes.set(key(), []); render(); });
+
+  Reveal.on('slidechanged', render);
+  addEventListener('resize', size);
+  size();
+
+  // Fixed presentation mode avoids iPadOS's native-fullscreen pull-down exit gesture.
+  const fsT = document.getElementById('fsToggle');
+  let presenting = false;
+  const toast = (message) => {
+    const t = document.createElement('div');
+    t.textContent = message;
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:10px;font:14px system-ui;z-index:99;max-width:46ch;text-align:center';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  };
+  fsT.addEventListener('click', () => {
+    presenting = !presenting;
+    document.documentElement.classList.toggle('presentation-mode', presenting);
+    fsT.textContent = presenting ? '\u2921' : '\u26f6';
+    fsT.setAttribute('aria-pressed', String(presenting));
+    fsT.title = presenting ? 'Exit presentation mode' : 'Presentation mode';
+    requestAnimationFrame(() => {
+      if (Reveal.layout) Reveal.layout();
+      size();
+    });
+    if (presenting) toast('Presentation mode on. For more space in Safari, tap AA, then Hide Toolbar.');
+  });
+})();
+</script>
+<!-- END PENCIL DRAW OVERLAY -->
+
+</body>
+</html>
