@@ -1,0 +1,778 @@
+<!-- generator: _lib/school_deck_scaffold.py -->
+<!DOCTYPE html>
+<!--
+  ESL reveal.js DECK TEMPLATE — copy this file, rename to
+  YYYY-MM-DD_Title_Case_Topic_L<level>_ccode.html in the School Stuff root,
+  and fill the Edit.
+
+  LEVEL SWAP: this template ships L2 colors (green). For L4, change the
+  three lines in :root marked  /* L4: ... */  and swap theme to white
+  (already white). L2 accent 2E6B3A / light D9E9D3.  L4 accent 1F4E79 /
+  light D6E4F2.
+
+  All canonical contracts (invisible scrollbar, 80vh bottom spacer per
+  section, no font-size on .reveal, table.compare last-child border,
+  reveal init config) are baked in. Run the linter after editing:
+      node _lib/verify_html_deck.mjs <deck.html>            # rendered check
+      python3 _lib/verify_html_deck_static.py <deck.html>   # fast source lint
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Past and Future Continuous</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/theme/white.css">
+<style>
+  :root { --accent: #1F6B6B; --accent-light: #D6E8E8; --gray: #555555;
+          /* L4: --accent: #1F4E79; --accent-light: #D6E4F2; */
+          --good: #15803D; --bad: #B91C1C; --muted: #777; }
+
+  /* TYPOGRAPHY CANON — never put font-size on .reveal itself */
+  .reveal { font-family: Arial, sans-serif; }
+  .reveal h1, .reveal h2, .reveal h3 { color: var(--accent); font-family: Arial, sans-serif; text-transform: none; letter-spacing: 0; }
+  .reveal h1 { font-size: 2.2em; }
+  .reveal h2 { font-size: 1.6em; }
+  .reveal h3 { font-size: 1.15em; }
+  .reveal h4 { font-size: 1.05em; }
+  .reveal p, .reveal li { font-size: 0.85em; line-height: 1.5; }
+
+  /* SCROLLABLE SLIDES WITH INVISIBLE SCROLLBAR */
+  .reveal .slides section {
+    overflow-y: auto !important;
+    max-height: 92vh !important;
+    text-align: left;
+    padding: 20px 40px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .reveal .slides section::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* Title slide */
+  /* Title text starts below the fixed pencil/fullscreen buttons (top right). */
+  .reveal .slides section.title-slide { text-align: center !important; padding-top: 110px; }
+  .title-slide h1 { font-size: 2.6em; margin-bottom: 0.3em; }
+  .title-slide .subtitle { font-size: 1.2em; color: var(--gray); }
+
+  /* Pattern / example / note / tip */
+  .pattern-box {
+    background: var(--accent-light);
+    border-left: 6px solid var(--accent);
+    padding: 14px 20px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+  .pattern-box code {
+    background: white; padding: 2px 8px; border-radius: 3px;
+    color: var(--accent); font-weight: bold;
+  }
+  .example {
+    background: #FAFAFA; border: 1px solid #DDD;
+    padding: 10px 16px; margin: 8px 0; border-radius: 3px; font-size: 0.9em;
+  }
+  .example .key { color: var(--accent); font-weight: bold; }
+  .note { font-style: italic; color: var(--gray); font-size: 0.85em; margin-top: 10px; }
+  .check-tip {
+    background: #FFF8E1; border-left: 6px solid #F5A623;
+    padding: 12px 18px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+
+  /* Comparison tables — borders need !important (reveal theme strips them) */
+  table.compare {
+    border-collapse: collapse !important; margin: 14px 0;
+    font-size: 0.82em; width: 100%; border: 1px solid var(--accent) !important;
+  }
+  table.compare th, table.compare td {
+    border: 1px solid var(--accent) !important; padding: 8px 12px; text-align: left;
+  }
+  table.compare tr:last-child td { border-bottom: 1px solid var(--accent) !important; }
+  table.compare th { background: var(--accent); color: white; }
+  table.compare td:first-child { font-weight: bold; color: var(--accent); }
+
+  /* Click-to-reveal exercise (single-answer reveal) */
+  .exercise {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .exercise .question { font-size: 0.9em; margin: 0 0 10px 0; }
+  .exercise .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .exercise button.reveal-btn {
+    background: var(--accent); color: white; border: none; padding: 6px 14px;
+    border-radius: 4px; font-family: Arial; font-size: 0.8em; cursor: pointer;
+  }
+  .exercise button.reveal-btn:hover { filter: brightness(0.85); }
+  .exercise .answer {
+    display: none; margin-top: 10px; padding: 10px 14px;
+    background: var(--accent-light); border-left: 4px solid var(--accent); font-size: 0.9em;
+  }
+  .exercise .answer .key { color: var(--accent); font-weight: bold; }
+  .exercise .answer.shown { display: block; }
+
+  /* Clickable multiple choice */
+  .mc-q {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .mc-q .stem { font-size: 0.9em; margin: 0 0 10px 0; }
+  .mc-q .stem .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .mc { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .mc button.opt {
+    font-family: inherit; font-size: 0.8em; padding: 10px 12px;
+    border: 2px solid #d0d8e4; background: white; border-radius: 8px;
+    cursor: pointer; transition: all .15s; font-weight: 600;
+  }
+  .mc button.opt:hover { border-color: var(--accent); background: var(--accent-light); }
+  .mc button.opt.correct { background: #DCFCE7; border-color: var(--good); color: var(--good); }
+  .mc button.opt.wrong   { background: #FEE2E2; border-color: var(--bad);  color: var(--bad); }
+  .explain { margin-top: 10px; font-size: 0.78em; color: var(--muted); font-style: italic; min-height: 1.2em; }
+  .explain.good { color: var(--good); font-style: normal; }
+  .explain.bad  { color: var(--bad); }
+</style>
+<style id="pf-theme">
+  /* Style copied from the 2026-10-26 Past Continuous deck — overrides colors and surfaces only. */
+  :root { --accent: #1F2A44; --accent-light: #F4E6C8; --ink: #1F2A44; --hot: #D6492C;
+          --hilite: #F7D774; --paper: #FBF6EC; --gray: #5A6070; --muted: #5A6070;
+          --good: #1E7A46; --bad: #C0392B; }
+  html, body, .reveal-viewport { background: var(--paper) !important; }
+  .reveal { color: var(--ink); font-family: "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif; }
+  .reveal h1, .reveal h2, .reveal h3 { color: var(--ink); font-family: Georgia, "Iowan Old Style", "Times New Roman", serif; font-weight: 700; }
+  .reveal h2 { border-bottom: 3px solid var(--ink); padding-bottom: 6px; display: inline-block; }
+  .reveal p.kicker { font-size: 0.55em; letter-spacing: 0.2em; text-transform: uppercase; color: var(--hot); font-weight: 700; margin: 0 0 4px 0; }
+  .reveal .progress span { background: var(--hot); }
+  .reveal .controls { color: var(--hot); }
+
+  .title-slide h1 { font-size: 2.6em; margin: 0.2em 0 0.1em; }
+  .title-slide .subtitle { color: var(--gray); font-style: italic; font-family: Georgia, serif; }
+  .stamp { display: inline-block; border: 3px solid var(--hot); color: var(--hot); padding: 4px 16px;
+           font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; transform: rotate(-3deg); font-size: 0.7em; margin-top: 18px; }
+
+  .pattern-box { background: transparent; border: none; border-top: 4px solid var(--ink); border-bottom: 1px solid var(--ink);
+                 border-radius: 0; padding: 14px 4px; }
+  .pattern-box code { background: var(--accent-light); color: var(--ink); border: 2px solid var(--ink); border-radius: 0; padding: 2px 10px; font-family: inherit; }
+  .example { background: none; border: none; border-radius: 0; padding: 6px 0 6px 1.6em; position: relative; }
+  .example::before { content: "\2014"; color: var(--hot); font-weight: 800; position: absolute; left: 0; }
+  .key, .example .key, .exercise .answer .key { color: inherit !important; font-weight: 800;
+       background: linear-gradient(transparent 58%, var(--hilite) 58%); padding: 0 2px; }
+  .check-tip { background: var(--hilite); border: 2px solid var(--ink); border-radius: 0; box-shadow: 5px 5px 0 var(--ink);
+               transform: rotate(-0.6deg); margin: 22px 8px; }
+  .note { color: var(--gray); }
+
+  table.compare th { background: var(--ink); color: var(--paper); font-family: Georgia, serif; }
+  table.compare td { background: #FFFDF8; }
+  table.compare td:first-child { color: var(--hot); }
+
+  .exercise, .mc-q { background: #FFFDF8; border: 2px solid var(--ink); border-radius: 0; box-shadow: 5px 5px 0 var(--ink); margin: 18px 6px 18px 0; }
+  .exercise .qnum, .mc-q .stem .qnum { display: inline-block; min-width: 1.6em; height: 1.6em; line-height: 1.6em; text-align: center;
+       background: var(--hot); color: #fff; border-radius: 50%; font-size: 0.85em; margin-right: 10px; }
+  .exercise button.reveal-btn { background: var(--ink); color: var(--paper); border-radius: 0; font-family: inherit; font-weight: 700; padding: 7px 16px; }
+  .exercise button.reveal-btn:hover { background: var(--hot); filter: none; }
+  .exercise .answer { background: var(--accent-light); border-left: none; border-top: 2px dashed var(--ink); }
+  .mc { grid-template-columns: 1fr 1fr; }
+  .mc button.opt { border: 2px solid var(--ink); border-radius: 0; background: #fff; color: var(--ink); text-align: left; }
+  .mc button.opt:hover { background: var(--hilite); border-color: var(--ink); }
+  .mc button.opt.correct { background: #D7F0DF; border-color: var(--good); color: var(--good); }
+  .mc button.opt.wrong   { background: #F9DCD7; border-color: var(--bad); color: var(--bad); }
+
+  .timeline { width: 100%; max-width: 960px; display: block; margin: 10px 0 6px; }
+  .timeline text { font-family: Georgia, serif; fill: var(--ink); }
+  .two-up { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+  .two-up > div { border-top: 4px solid var(--ink); padding-top: 6px; }
+</style>
+</head>
+<body>
+<!-- back-to-topics (school-save) --><style>@media print{.back-to-topics{display:none}}</style><a href="index.html" class="back-to-topics" style="position:fixed;top:10px;left:10px;z-index:70;font:600 18px/1.2 system-ui,sans-serif;color:#fff;background:#1f5fbf;padding:10px 16px;border-radius:10px;text-decoration:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">← Back to topics</a>
+
+<div class="reveal">
+<div class="slides">
+
+<!-- 1: TITLE -->
+<section class="title-slide">
+  <p class="kicker">Grammar · Level 3 · Verb Tenses</p>
+  <h1>Past Continuous &amp;<br>Future Continuous</h1>
+  <p class="subtitle">What were you doing? What will you be doing?</p>
+  <span class="stamp">was / were + -ing &nbsp;·&nbsp; will be + -ing</span>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 2: THE IDEA -->
+<section>
+  <p class="kicker">Part 1 · The idea</p>
+  <h2>In the Middle of an Action</h2>
+  <p>Both tenses show an action <strong>in progress</strong> at one time. It started before that time and kept going after it.</p>
+  <svg class="timeline" viewBox="0 0 960 190" role="img" aria-label="Timeline: was folding at 6:00 p.m. yesterday, now, will be decorating at 6:00 p.m. tomorrow">
+    <line x1="20" y1="120" x2="940" y2="120" stroke="#1F2A44" stroke-width="3"/>
+    <polygon points="940,120 926,112 926,128" fill="#1F2A44"/>
+    <line x1="480" y1="100" x2="480" y2="140" stroke="#1F2A44" stroke-width="4"/>
+    <text x="480" y="170" font-size="22" text-anchor="middle" font-weight="bold">now</text>
+    <rect x="80" y="98" width="300" height="44" fill="#F7D774" stroke="#1F2A44" stroke-width="2"/>
+    <text x="230" y="127" font-size="23" text-anchor="middle" font-weight="bold">was folding</text>
+    <line x1="230" y1="40" x2="230" y2="98" stroke="#D6492C" stroke-width="4"/>
+    <text x="230" y="32" font-size="21" text-anchor="middle" fill="#D6492C" font-weight="bold">6:00 p.m. yesterday</text>
+    <rect x="580" y="98" width="300" height="44" fill="#F7D774" stroke="#1F2A44" stroke-width="2"/>
+    <text x="730" y="127" font-size="23" text-anchor="middle" font-weight="bold">will be decorating</text>
+    <line x1="730" y1="40" x2="730" y2="98" stroke="#D6492C" stroke-width="4"/>
+    <text x="730" y="32" font-size="21" text-anchor="middle" fill="#D6492C" font-weight="bold">6:00 p.m. tomorrow</text>
+  </svg>
+  <div class="example">At 6:00 p.m. yesterday, Grace <span class="key">was folding</span> laundry.</div>
+  <div class="example">At 6:00 p.m. tomorrow, Grace <span class="key">will be decorating</span> the hall for her son's party.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 3: PAST FORM -->
+<section>
+  <p class="kicker">Part 2 · The past</p>
+  <h2>was / were + verb-ing</h2>
+  <table class="compare">
+    <tr><th>Subject</th><th>Yes (+)</th><th>No (−)</th><th>Question (?)</th></tr>
+    <tr><td>I</td><td>I was sneezing.</td><td>I wasn't sneezing.</td><td>Was I sneezing?</td></tr>
+    <tr><td>he / she / it</td><td>She was sneezing.</td><td>She wasn't sneezing.</td><td>Was she sneezing?</td></tr>
+    <tr><td>you / we / they</td><td>They were sneezing.</td><td>They weren't sneezing.</td><td>Were they sneezing?</td></tr>
+  </table>
+  <div class="pattern-box">Time words: <code>at 7:00 last night</code> &nbsp; <code>this time yesterday</code> &nbsp; <code>when</code> &nbsp; <code>while</code></div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 4: LONG + SHORT -->
+<section>
+  <p class="kicker">Part 2 · Two actions</p>
+  <h2>Long Action + Short Action</h2>
+  <p>The <strong>long</strong> action uses the past continuous. The <strong>short</strong> action uses the simple past.</p>
+  <svg class="timeline" viewBox="0 0 960 170" role="img" aria-label="Timeline: a long action in progress, and a short action in the middle of it">
+    <line x1="20" y1="110" x2="940" y2="110" stroke="#1F2A44" stroke-width="3"/>
+    <polygon points="940,110 926,102 926,118" fill="#1F2A44"/>
+    <rect x="180" y="88" width="460" height="44" fill="#F7D774" stroke="#1F2A44" stroke-width="2"/>
+    <text x="300" y="117" font-size="22" text-anchor="middle" font-weight="bold">was rinsing (long)</text>
+    <polygon points="470,20 448,62 466,62 452,96 494,48 474,48 488,20" fill="#D6492C"/>
+    <text x="500" y="44" font-size="22" fill="#D6492C" font-weight="bold">turned cold (short)</text>
+    <text x="20" y="150" font-size="22">past</text>
+    <text x="880" y="150" font-size="22">now</text>
+  </svg>
+  <div class="example">Nate <span class="key">was rinsing</span> the dishes when the water <span class="key">turned</span> cold.</div>
+  <div class="example">While the band <span class="key">was tuning</span> its guitars, the crowd <span class="key">arrived</span>.</div>
+  <div class="check-tip"><strong>Tip:</strong> <em>While</em> goes with the long action. <em>When</em> usually goes with the short action. <em>When</em> can also join two past continuous actions that were happening at the same time: <em>When we were hanging the lights, the kids were wrapping presents.</em></div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 5: FUTURE FORM -->
+<section>
+  <p class="kicker">Part 3 · The future</p>
+  <h2>will be + verb-ing</h2>
+  <table class="compare">
+    <tr><th>Subject</th><th>Yes (+)</th><th>No (−)</th><th>Question (?)</th></tr>
+    <tr><td>all subjects</td><td>She'll be snoring.</td><td>She won't be snoring.</td><td>Will she be snoring?</td></tr>
+  </table>
+  <p>Good news: <em>will be</em> is the same for <strong>every</strong> subject. No was / were choice!</p>
+  <div class="pattern-box">Time words: <code>at 7:00 tomorrow</code> &nbsp; <code>this time next week</code> &nbsp; <code>in two hours</code> &nbsp; <code>tonight at 9:00</code></div>
+  <div class="example">At 10:00 tonight, the city <span class="key">will be setting off</span> fireworks.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 5b: FUTURE + CONNECTORS -->
+<section>
+  <p class="kicker">Part 3 · Two parts in the future</p>
+  <h2>Future Continuous + when / while / and</h2>
+  <table class="compare">
+    <tr><th>Connector</th><th>Other part</th><th>Example</th></tr>
+    <tr><td>when</td><td>simple present</td><td>When your taxi <span class="key">pulls up</span>, <span class="key">I'll be locking</span> the door.</td></tr>
+    <tr><td>while</td><td>simple present or present continuous</td><td>While Dad <span class="key">grills</span> (or <span class="key">is grilling</span>), <span class="key">we'll be setting</span> the table.</td></tr>
+    <tr><td>and / but / so</td><td>future continuous</td><td>On Sunday, Omar <span class="key">will be fixing</span> the roof, and his wife <span class="key">will be planting</span> flowers.</td></tr>
+  </table>
+  <div class="check-tip"><strong>Watch out:</strong> no <em>will</em> after <em>when</em> or <em>while</em>. Say "When your taxi pulls up," not "When your taxi will pull up."</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 6: PRACTICE 1 -->
+<section>
+  <p class="kicker">Practice 1</p>
+  <h2>Past or Future?</h2>
+  <p>Look at the time words. Click a, b, c, or d.</p>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> At 11:00 tomorrow morning, our class ____ a chocolate factory.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. was touring</button>
+      <button class="opt">b. will be touring</button>
+      <button class="opt">c. were touring</button>
+      <button class="opt">d. will touring</button>
+    </div>
+    <div class="explain" data-explain="&quot;Tomorrow&quot; = future: will be touring."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> This time last summer, my cousins ____ Canada by train.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. will be crossing</button>
+      <button class="opt">b. was crossing</button>
+      <button class="opt">c. were crossing</button>
+      <button class="opt">d. are crossing</button>
+    </div>
+    <div class="explain" data-explain="&quot;Last summer&quot; = past. My cousins = they: were crossing."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> When the earthquake started yesterday, I ____ a pot of soup.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. was stirring</button>
+      <button class="opt">b. will be stirring</button>
+      <button class="opt">c. were stirring</button>
+      <button class="opt">d. am stirring</button>
+    </div>
+    <div class="explain" data-explain="Long action in the past. I + was: was stirring."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> Tomorrow at sunrise, the fishermen ____ their boats out to sea.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. were rowing</button>
+      <button class="opt">b. will rowing</button>
+      <button class="opt">c. was rowing</button>
+      <button class="opt">d. will be rowing</button>
+    </div>
+    <div class="explain" data-explain="&quot;Tomorrow&quot; = future: will be + verb-ing."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> In two hours, the doctors ____ on my uncle&#x27;s knee.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. were operating</button>
+      <button class="opt">b. will be operating</button>
+      <button class="opt">c. was operating</button>
+      <button class="opt">d. are operate</button>
+    </div>
+    <div class="explain" data-explain="&quot;In two hours&quot; = future: will be operating."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> At 2:00 a.m. last night, the wind ____ so hard that the windows shook.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. were blowing</button>
+      <button class="opt">b. will be blowing</button>
+      <button class="opt">c. was blowing</button>
+      <button class="opt">d. is blowing</button>
+    </div>
+    <div class="explain" data-explain="&quot;Last night&quot; = past. The wind = it: was blowing."></div>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 7: PRACTICE 2 -->
+<section>
+  <p class="kicker">Practice 2</p>
+  <h2>Find and Fix</h2>
+  <p>Each sentence has one mistake in CAPITAL letters. Say the correct sentence, then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> The students WAS laughing at the teacher&#x27;s joke.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">The students <span class="key">were</span> laughing at the teacher's joke. — The students = they: were.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> This time tomorrow, we will be CAMP by the lake.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">This time tomorrow, we will be <span class="key">camping</span> by the lake. — will be + verb-ing.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> While Hana was CHATING with a friend, she lost her ring.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">While Hana was <span class="key">chatting</span> with a friend, she lost her ring. — chat: consonant + vowel + consonant, so double the t.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> WERE Kevin exercising when you called?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer"><span class="key">Was</span> Kevin exercising when you called? — Kevin = he: Was ... ?</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> My boss won&#x27;t be ATTEND the meeting tomorrow.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">My boss won't be <span class="key">attending</span> the meeting tomorrow. — won&#x27;t be + verb-ing.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> When I got home yesterday, my roommate WILL BE sewing a button on his coat.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">When I got home yesterday, my roommate <span class="key">was</span> sewing a button on his coat. — &quot;Yesterday&quot; = past: was + verb-ing.</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 8: PRACTICE 3 -->
+<section>
+  <p class="kicker">Practice 3</p>
+  <h2>Mixed Practice</h2>
+  <p>Click a, b, c, or d.</p>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> ____ you be using your ladder this weekend? I need to clean my gutters.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. Were</button>
+      <button class="opt">b. Will</button>
+      <button class="opt">c. Are</button>
+      <button class="opt">d. Was</button>
+    </div>
+    <div class="explain" data-explain="Future question: Will + you + be + verb-ing?"></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> Kim was frying eggs when she ____ her finger on the pan.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. burned</button>
+      <button class="opt">b. was burning</button>
+      <button class="opt">c. will burn</button>
+      <button class="opt">d. burns</button>
+    </div>
+    <div class="explain" data-explain="Short action = simple past: burned."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> This time next spring, we ____ our new house.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. were building</button>
+      <button class="opt">b. will built</button>
+      <button class="opt">c. was building</button>
+      <button class="opt">d. will be building</button>
+    </div>
+    <div class="explain" data-explain="&quot;Next spring&quot; = future: will be building."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> While I ____ the windows, I found an old letter behind the curtain.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. will be cleaning</button>
+      <button class="opt">b. were cleaning</button>
+      <button class="opt">c. was cleaning</button>
+      <button class="opt">d. am cleaning</button>
+    </div>
+    <div class="explain" data-explain="Long action in the past. I + was: was cleaning."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> &quot;What were you doing at 8:00 last night?&quot; &quot;I ____ for my driving test.&quot;</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. was studying</button>
+      <button class="opt">b. will be studying</button>
+      <button class="opt">c. am studying</button>
+      <button class="opt">d. were studying</button>
+    </div>
+    <div class="explain" data-explain="A was / were question gets a was / were answer. I + was."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> Sorry, I ____ to your party tomorrow night. I&#x27;ll be at work.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. wasn&#x27;t coming</button>
+      <button class="opt">b. won&#x27;t be coming</button>
+      <button class="opt">c. won&#x27;t coming</button>
+      <button class="opt">d. weren&#x27;t coming</button>
+    </div>
+    <div class="explain" data-explain="&quot;Tomorrow night&quot; = future: won&#x27;t be + verb-ing."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">7.</span> The fans ____ loudly when the singer walked onto the stage.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. was cheering</button>
+      <button class="opt">b. will be cheering</button>
+      <button class="opt">c. are cheering</button>
+      <button class="opt">d. were cheering</button>
+    </div>
+    <div class="explain" data-explain="Long action in the past. The fans = they: were cheering."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">8.</span> Tonight at 8:00, I ____ my grandmother&#x27;s soup recipe for the first time.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. was trying</button>
+      <button class="opt">b. will trying</button>
+      <button class="opt">c. will be trying</button>
+      <button class="opt">d. were trying</button>
+    </div>
+    <div class="explain" data-explain="&quot;Tonight at 8:00&quot; = future: will be trying."></div>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 8b: PRACTICE 4 -->
+<section>
+  <p class="kicker">Practice 4</p>
+  <h2>Two Parts in the Future</h2>
+  <p>Click a, b, c, or d.</p>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> When the plumber ____ tomorrow, I&#x27;ll be working from home.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. comes</button>
+      <button class="opt">b. will come</button>
+      <button class="opt">c. will be coming</button>
+      <button class="opt">d. came</button>
+    </div>
+    <div class="explain" data-explain="No will after when. Use the simple present: comes."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> While the kids ____ at camp next week, we&#x27;ll be redecorating their bedroom.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. will be staying</button>
+      <button class="opt">b. will stay</button>
+      <button class="opt">c. are staying</button>
+      <button class="opt">d. stayed</button>
+    </div>
+    <div class="explain" data-explain="No will after while. The present continuous (are staying) or simple present (stay) is correct."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> Next Friday, I&#x27;ll be driving to Denver, and my wife ____ her yoga class as usual.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. taught</button>
+      <button class="opt">b. will be teaching</button>
+      <button class="opt">c. was teaching</button>
+      <button class="opt">d. teach</button>
+    </div>
+    <div class="explain" data-explain="With and, both parts can use the future continuous: will be teaching."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> I&#x27;ll be studying in my room when you ____ home tonight, so please be quiet.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. will get</button>
+      <button class="opt">b. will be getting</button>
+      <button class="opt">c. got</button>
+      <button class="opt">d. get</button>
+    </div>
+    <div class="explain" data-explain="No will after when. Use the simple present: get."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> When the race starts on Sunday, the photographers ____ at the finish line.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. was waiting</button>
+      <button class="opt">b. waited</button>
+      <button class="opt">c. will be waiting</button>
+      <button class="opt">d. will waiting</button>
+    </div>
+    <div class="explain" data-explain="The other part (no when) uses the future continuous: will be waiting."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> Tomorrow afternoon, my son will be practicing soccer, but my daughter ____ at the animal shelter.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. will be volunteering</button>
+      <button class="opt">b. volunteered</button>
+      <button class="opt">c. is volunteer</button>
+      <button class="opt">d. was volunteering</button>
+    </div>
+    <div class="explain" data-explain="With but, both parts can use the future continuous: will be volunteering."></div>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 9: SUMMARY -->
+<section>
+  <p class="kicker">Review</p>
+  <h2>Two Continuous Tenses</h2>
+  <table class="compare">
+    <tr><th></th><th>Past continuous</th><th>Future continuous</th></tr>
+    <tr><td>Use</td><td>in progress at a past time</td><td>in progress at a future time</td></tr>
+    <tr><td>Form</td><td>was / were + verb-ing</td><td>will be + verb-ing</td></tr>
+    <tr><td>Negative</td><td>wasn't / weren't + verb-ing</td><td>won't be + verb-ing</td></tr>
+    <tr><td>Example</td><td>At noon yesterday, I <span class="key">was mailing</span> a package.</td><td>At noon tomorrow, I <span class="key">will be mailing</span> a package.</td></tr>
+  </table>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    controls: true,
+    progress: true,
+    center: false,
+    transition: 'slide',
+    width: 1100,
+    height: 720,
+    margin: 0.04
+  });
+
+  // Clickable multiple-choice wiring (data-correct = 0-indexed button)
+  document.querySelectorAll('.mc').forEach(mc => {
+    const correct = parseInt(mc.dataset.correct, 10);
+    const buttons = mc.querySelectorAll('button.opt');
+    const explain = mc.nextElementSibling && mc.nextElementSibling.classList.contains('explain')
+      ? mc.nextElementSibling : null;
+    const explainText = explain ? explain.dataset.explain || '' : '';
+    buttons.forEach((b, i) => {
+      b.addEventListener('click', () => {
+        // `sel` marks the clicked button so its class always changes on every
+        // click — keeps verify_html_deck.mjs from false-failing when the correct
+        // answer isn't option (a). Do not remove.
+        buttons.forEach(x => x.classList.remove('correct', 'wrong', 'sel'));
+        b.classList.add('sel');
+        if (i === correct) {
+          b.classList.add('correct');
+          if (explain) {
+            explain.textContent = '✓ Correct. ' + explainText;
+            explain.classList.remove('bad'); explain.classList.add('good');
+          }
+        } else {
+          b.classList.add('wrong');
+          buttons[correct].classList.add('correct');
+          if (explain) {
+            const answerText = buttons[correct].textContent;
+            explain.innerHTML = '✗ The answer is <strong>' + answerText + '</strong>. ' + explainText;
+            explain.classList.remove('good'); explain.classList.add('bad');
+          }
+        }
+      });
+    });
+  });
+</script>
+<!-- PENCIL DRAW OVERLAY — iPad annotation layer (additive; safe to delete this whole block) -->
+<style>
+  #drawCanvas {
+    position: fixed; inset: 0; z-index: 50; pointer-events: none; touch-action: none;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  }
+  html.draw-armed, html.draw-armed body, html.draw-armed .reveal {
+    -webkit-user-select: none !important; user-select: none !important;
+    -webkit-touch-callout: none !important;
+  }
+  html.presentation-mode, html.presentation-mode body {
+    width: 100%; height: 100%; overflow: hidden !important; overscroll-behavior: none;
+  }
+  html.presentation-mode body { position: fixed; inset: 0; }
+  html.presentation-mode .reveal { width: 100vw !important; height: 100vh !important; height: 100dvh !important; }
+  html.presentation-mode .reveal .slides section { overscroll-behavior-y: contain; }
+  #drawToggle {
+    position: fixed; top: 10px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 20px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle.armed { opacity: 1; background: #fde9c8; border-color: #e8a013; }
+  #fsToggle {
+    position: fixed; top: 62px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 19px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle, #fsToggle { transition: opacity 0.3s; }
+  html.presentation-mode #drawToggle:not(.armed), html.presentation-mode #fsToggle { opacity: 0.15; }
+  #drawBar {
+    position: fixed; top: 10px; right: 62px; z-index: 60; display: flex; gap: 8px;
+    background: #fff; border: 1px solid #bbb; border-radius: 22px; padding: 6px 10px;
+    align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  /* [hidden] must win over display:flex, or the color bar never hides when the pencil is off. */
+  #drawBar[hidden] { display: none; }
+  #drawBar button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ccc; background: #fff; cursor: pointer; font-size: 15px; padding: 0; }
+  #drawBar .swatch { border-width: 2px; }
+  #drawBar .swatch.on { outline: 3px solid #e8a013; }
+</style>
+<canvas id="drawCanvas"></canvas>
+<div id="drawBar" hidden>
+  <button class="swatch on" data-color="#d33333" style="background:#d33333"></button>
+  <button class="swatch" data-color="#2266cc" style="background:#2266cc"></button>
+  <button class="swatch" data-color="#1a1a1a" style="background:#1a1a1a"></button>
+  <button id="drawUndo" title="Undo">↩</button>
+  <button id="drawClear" title="Clear slide">✕</button>
+</div>
+<button id="drawToggle" title="Pencil mode (pen only; finger locked)" aria-pressed="false">✏️</button>
+<button id="fsToggle" title="Presentation mode" aria-label="Presentation mode" aria-pressed="false">⛶</button>
+<script>
+(() => {
+  const cv = document.getElementById('drawCanvas');
+  const ctx = cv.getContext('2d');
+  const bar = document.getElementById('drawBar');
+  const toggle = document.getElementById('drawToggle');
+  let armed = false, color = '#d33333', cur = null, drawPointerId = null;
+  const strokes = new Map(); // slide "h-v" -> stroke list; ink persists per slide
+  const key = () => { const i = Reveal.getIndices(); return i.h + '-' + (i.v || 0); };
+  const list = () => { const k = key(); if (!strokes.has(k)) strokes.set(k, []); return strokes.get(k); };
+
+  function size() {
+    const d = window.devicePixelRatio || 1;
+    cv.width = innerWidth * d; cv.height = innerHeight * d;
+    cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    render();
+  }
+  function seg(a, b, c, w) {
+    ctx.strokeStyle = c; ctx.lineWidth = Math.max(0.75, w * innerWidth);
+    ctx.beginPath(); ctx.moveTo(a.x * innerWidth, a.y * innerHeight);
+    ctx.lineTo(b.x * innerWidth, b.y * innerHeight); ctx.stroke();
+  }
+  function render() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const s of list())
+      for (let i = 1; i < s.pts.length; i++) seg(s.pts[i - 1], s.pts[i], s.color, s.pts[i].w);
+  }
+  const pt = (e) => ({ x: e.clientX / innerWidth, y: e.clientY / innerHeight,
+    w: (e.pointerType === 'pen' ? 1.5 + 4 * (e.pressure || 0.5) : 3) / innerWidth });
+
+  const cancel = (e) => { if (e.cancelable) e.preventDefault(); };
+  cv.addEventListener('pointerdown', (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerType === 'touch') {
+      cv.setPointerCapture(e.pointerId); // swallow the palm/finger for its full contact
+      return;
+    }
+    if ((e.pointerType !== 'pen' && e.pointerType !== 'mouse') || drawPointerId !== null) return;
+    drawPointerId = e.pointerId;
+    cur = { color, pts: [pt(e)] };
+    list().push(cur);
+    cv.setPointerCapture(e.pointerId);
+  }, { passive: false });
+  cv.addEventListener('pointermove', (e) => {
+    if (!armed) return;
+    if (e.pointerType === 'touch') { cancel(e); return; }
+    if (!cur || e.pointerId !== drawPointerId) return;
+    cancel(e);
+    const coalesced = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+    const events = coalesced && coalesced.length ? coalesced : [e];
+    for (const ev of events) {
+      const p = pt(ev);
+      seg(cur.pts[cur.pts.length - 1], p, cur.color, p.w);
+      cur.pts.push(p);
+    }
+  }, { passive: false });
+  const end = (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerId === drawPointerId) { cur = null; drawPointerId = null; }
+  };
+  cv.addEventListener('pointerup', end, { passive: false });
+  cv.addEventListener('pointercancel', end, { passive: false });
+  for (const eventName of ['touchstart', 'touchmove', 'touchend', 'touchcancel'])
+    cv.addEventListener(eventName, (e) => { if (armed) cancel(e); }, { passive: false });
+  document.addEventListener('selectstart', (e) => { if (armed) cancel(e); });
+
+  toggle.addEventListener('click', () => {
+    armed = !armed;
+    cv.style.pointerEvents = armed ? 'auto' : 'none'; // disarmed = taps/swipes reach the slides
+    bar.hidden = !armed;
+    toggle.classList.toggle('armed', armed);
+    toggle.setAttribute('aria-pressed', String(armed));
+    document.documentElement.classList.toggle('draw-armed', armed);
+    if (!armed) { cur = null; drawPointerId = null; }
+  });
+  bar.querySelectorAll('.swatch').forEach((b) => b.addEventListener('click', () => {
+    color = b.dataset.color;
+    bar.querySelectorAll('.swatch').forEach((x) => x.classList.toggle('on', x === b));
+  }));
+  document.getElementById('drawUndo').addEventListener('click', () => { list().pop(); render(); });
+  document.getElementById('drawClear').addEventListener('click', () => { strokes.set(key(), []); render(); });
+
+  Reveal.on('slidechanged', render);
+  addEventListener('resize', size);
+  size();
+
+  // Fixed presentation mode avoids iPadOS's native-fullscreen pull-down exit gesture.
+  const fsT = document.getElementById('fsToggle');
+  let presenting = false;
+  const toast = (message) => {
+    const t = document.createElement('div');
+    t.textContent = message;
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:10px;font:14px system-ui;z-index:99;max-width:46ch;text-align:center';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  };
+  fsT.addEventListener('click', () => {
+    presenting = !presenting;
+    document.documentElement.classList.toggle('presentation-mode', presenting);
+    fsT.textContent = presenting ? '\u2921' : '\u26f6';
+    fsT.setAttribute('aria-pressed', String(presenting));
+    fsT.title = presenting ? 'Exit presentation mode' : 'Presentation mode';
+    requestAnimationFrame(() => {
+      if (Reveal.layout) Reveal.layout();
+      size();
+    });
+    if (presenting) toast('Presentation mode on. For more space in Safari, tap AA, then Hide Toolbar.');
+  });
+})();
+</script>
+<!-- END PENCIL DRAW OVERLAY -->
+
+</body>
+</html>
