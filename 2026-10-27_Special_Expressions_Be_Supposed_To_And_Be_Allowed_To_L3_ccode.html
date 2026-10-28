@@ -1,0 +1,699 @@
+<!-- generator: _lib/school_deck_scaffold.py -->
+<!DOCTYPE html>
+<!--
+  ESL reveal.js DECK TEMPLATE — copy this file, rename to
+  YYYY-MM-DD_Title_Case_Topic_L<level>_ccode.html in the School Stuff root,
+  and fill the Edit.
+
+  LEVEL SWAP: this template ships L2 colors (green). For L4, change the
+  three lines in :root marked  /* L4: ... */  and swap theme to white
+  (already white). L2 accent 2E6B3A / light D9E9D3.  L4 accent 1F4E79 /
+  light D6E4F2.
+
+  All canonical contracts (invisible scrollbar, 80vh bottom spacer per
+  section, no font-size on .reveal, table.compare last-child border,
+  reveal init config) are baked in. Run the linter after editing:
+      node _lib/verify_html_deck.mjs <deck.html>            # rendered check
+      python3 _lib/verify_html_deck_static.py <deck.html>   # fast source lint
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Supposed To and Allowed To</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/theme/white.css">
+<style>
+  :root { --accent: #1F6B6B; --accent-light: #D6E8E8; --gray: #555555;
+          /* L4: --accent: #1F4E79; --accent-light: #D6E4F2; */
+          --good: #15803D; --bad: #B91C1C; --muted: #777; }
+
+  /* TYPOGRAPHY CANON — never put font-size on .reveal itself */
+  .reveal { font-family: Arial, sans-serif; }
+  .reveal h1, .reveal h2, .reveal h3 { color: var(--accent); font-family: Arial, sans-serif; text-transform: none; letter-spacing: 0; }
+  .reveal h1 { font-size: 2.2em; }
+  .reveal h2 { font-size: 1.6em; }
+  .reveal h3 { font-size: 1.15em; }
+  .reveal h4 { font-size: 1.05em; }
+  .reveal p, .reveal li { font-size: 0.85em; line-height: 1.5; }
+
+  /* SCROLLABLE SLIDES WITH INVISIBLE SCROLLBAR */
+  .reveal .slides section {
+    overflow-y: auto !important;
+    max-height: 92vh !important;
+    text-align: left;
+    padding: 20px 40px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .reveal .slides section::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* Title slide */
+  .title-slide { text-align: center !important; }
+  .title-slide h1 { font-size: 2.6em; margin-bottom: 0.3em; }
+  .title-slide .subtitle { font-size: 1.2em; color: var(--gray); }
+
+  /* Pattern / example / note / tip */
+  .pattern-box {
+    background: var(--accent-light);
+    border-left: 6px solid var(--accent);
+    padding: 14px 20px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+  .pattern-box code {
+    background: white; padding: 2px 8px; border-radius: 3px;
+    color: var(--accent); font-weight: bold;
+  }
+  .example {
+    background: #FAFAFA; border: 1px solid #DDD;
+    padding: 10px 16px; margin: 8px 0; border-radius: 3px; font-size: 0.9em;
+  }
+  .example .key { color: var(--accent); font-weight: bold; }
+  .note { font-style: italic; color: var(--gray); font-size: 0.85em; margin-top: 10px; }
+  .check-tip {
+    background: #FFF8E1; border-left: 6px solid #F5A623;
+    padding: 12px 18px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+
+  /* Comparison tables — borders need !important (reveal theme strips them) */
+  table.compare {
+    border-collapse: collapse !important; margin: 14px 0;
+    font-size: 0.82em; width: 100%; border: 1px solid var(--accent) !important;
+  }
+  table.compare th, table.compare td {
+    border: 1px solid var(--accent) !important; padding: 8px 12px; text-align: left;
+  }
+  table.compare tr:last-child td { border-bottom: 1px solid var(--accent) !important; }
+  table.compare th { background: var(--accent); color: white; }
+  table.compare td:first-child { font-weight: bold; color: var(--accent); }
+
+  /* Click-to-reveal exercise (single-answer reveal) */
+  .exercise {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .exercise .question { font-size: 0.9em; margin: 0 0 10px 0; }
+  .exercise .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .exercise button.reveal-btn {
+    background: var(--accent); color: white; border: none; padding: 6px 14px;
+    border-radius: 4px; font-family: Arial; font-size: 0.8em; cursor: pointer;
+  }
+  .exercise button.reveal-btn:hover { filter: brightness(0.85); }
+  .exercise .answer {
+    display: none; margin-top: 10px; padding: 10px 14px;
+    background: var(--accent-light); border-left: 4px solid var(--accent); font-size: 0.9em;
+  }
+  .exercise .answer .key { color: var(--accent); font-weight: bold; }
+  .exercise .answer.shown { display: block; }
+
+  /* Clickable multiple choice */
+  .mc-q {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .mc-q .stem { font-size: 0.9em; margin: 0 0 10px 0; }
+  .mc-q .stem .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .mc { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .mc button.opt {
+    font-family: inherit; font-size: 0.8em; padding: 10px 12px;
+    border: 2px solid #d0d8e4; background: white; border-radius: 8px;
+    cursor: pointer; transition: all .15s; font-weight: 600;
+  }
+  .mc button.opt:hover { border-color: var(--accent); background: var(--accent-light); }
+  .mc button.opt.correct { background: #DCFCE7; border-color: var(--good); color: var(--good); }
+  .mc button.opt.wrong   { background: #FEE2E2; border-color: var(--bad);  color: var(--bad); }
+  .explain { margin-top: 10px; font-size: 0.78em; color: var(--muted); font-style: italic; min-height: 1.2em; }
+  .explain.good { color: var(--good); font-style: normal; }
+  .explain.bad  { color: var(--bad); }
+</style>
+<style id="sa-theme">
+  /* Style copied from the 2026-10-26 Past Continuous deck — overrides colors and surfaces only. */
+  :root { --accent: #1F2A44; --accent-light: #F4E6C8; --ink: #1F2A44; --hot: #D6492C;
+          --hilite: #F7D774; --paper: #FBF6EC; --gray: #5A6070; --muted: #5A6070;
+          --good: #1E7A46; --bad: #C0392B; }
+  html, body, .reveal-viewport { background: var(--paper) !important; }
+  .reveal { color: var(--ink); font-family: "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif; }
+  .reveal h1, .reveal h2, .reveal h3 { color: var(--ink); font-family: Georgia, "Iowan Old Style", "Times New Roman", serif; font-weight: 700; }
+  .reveal h2 { border-bottom: 3px solid var(--ink); padding-bottom: 6px; display: inline-block; }
+  .reveal p.kicker { font-size: 0.55em; letter-spacing: 0.2em; text-transform: uppercase; color: var(--hot); font-weight: 700; margin: 0 0 4px 0; }
+  .reveal .progress span { background: var(--hot); }
+  .reveal .controls { color: var(--hot); }
+
+  .title-slide h1 { font-size: 2.6em; margin: 0.2em 0 0.1em; }
+  .title-slide .subtitle { color: var(--gray); font-style: italic; font-family: Georgia, serif; }
+  .stamp { display: inline-block; border: 3px solid var(--hot); color: var(--hot); padding: 4px 16px;
+           font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; transform: rotate(-3deg); font-size: 0.7em; margin-top: 18px; }
+
+  .pattern-box { background: transparent; border: none; border-top: 4px solid var(--ink); border-bottom: 1px solid var(--ink);
+                 border-radius: 0; padding: 14px 4px; }
+  .pattern-box code { background: var(--accent-light); color: var(--ink); border: 2px solid var(--ink); border-radius: 0; padding: 2px 10px; font-family: inherit; }
+  .example { background: none; border: none; border-radius: 0; padding: 6px 0 6px 1.6em; position: relative; }
+  .example::before { content: "\2014"; color: var(--hot); font-weight: 800; position: absolute; left: 0; }
+  .key, .example .key, .exercise .answer .key { color: inherit !important; font-weight: 800;
+       background: linear-gradient(transparent 58%, var(--hilite) 58%); padding: 0 2px; }
+  .check-tip { background: var(--hilite); border: 2px solid var(--ink); border-radius: 0; box-shadow: 5px 5px 0 var(--ink);
+               transform: rotate(-0.6deg); margin: 22px 8px; }
+  .note { color: var(--gray); }
+
+  table.compare th { background: var(--ink); color: var(--paper); font-family: Georgia, serif; }
+  table.compare td { background: #FFFDF8; }
+  table.compare td:first-child { color: var(--hot); }
+
+  .exercise, .mc-q { background: #FFFDF8; border: 2px solid var(--ink); border-radius: 0; box-shadow: 5px 5px 0 var(--ink); margin: 18px 6px 18px 0; }
+  .exercise .qnum, .mc-q .stem .qnum { display: inline-block; min-width: 1.6em; height: 1.6em; line-height: 1.6em; text-align: center;
+       background: var(--hot); color: #fff; border-radius: 50%; font-size: 0.85em; margin-right: 10px; }
+  .exercise button.reveal-btn { background: var(--ink); color: var(--paper); border-radius: 0; font-family: inherit; font-weight: 700; padding: 7px 16px; }
+  .exercise button.reveal-btn:hover { background: var(--hot); filter: none; }
+  .exercise .answer { background: var(--accent-light); border-left: none; border-top: 2px dashed var(--ink); }
+  .mc { grid-template-columns: 1fr 1fr; }
+  .mc button.opt { border: 2px solid var(--ink); border-radius: 0; background: #fff; color: var(--ink); text-align: left; }
+  .mc button.opt:hover { background: var(--hilite); border-color: var(--ink); }
+  .mc button.opt.correct { background: #D7F0DF; border-color: var(--good); color: var(--good); }
+  .mc button.opt.wrong   { background: #F9DCD7; border-color: var(--bad); color: var(--bad); }
+
+  .timeline { width: 100%; max-width: 960px; display: block; margin: 10px 0 6px; }
+  .timeline text { font-family: Georgia, serif; fill: var(--ink); }
+  .two-up { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+  .two-up > div { border-top: 4px solid var(--ink); padding-top: 6px; }
+</style>
+<style id="sa-extra">
+  .yesno { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 10px; }
+  .yesno > div { border: 2px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); background: #FFFDF8; padding: 10px 16px; }
+  .yesno .tag { display: inline-block; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.7em; padding: 2px 10px; color: #fff; }
+  .yesno .yes .tag { background: var(--good); }
+  .yesno .no .tag { background: var(--bad); }
+</style>
+</head>
+<body>
+<!-- back-to-topics (school-save) --><style>@media print{.back-to-topics{display:none}}</style><a href="index.html" class="back-to-topics" style="position:fixed;top:10px;left:10px;z-index:70;font:600 18px/1.2 system-ui,sans-serif;color:#fff;background:#1f5fbf;padding:10px 16px;border-radius:10px;text-decoration:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">← Back to topics</a>
+
+<div class="reveal">
+<div class="slides">
+
+<!-- 1: TITLE -->
+<section class="title-slide">
+  <p class="kicker">Grammar · Level 3 · Special Expressions</p>
+  <h1>Supposed To &amp; Allowed To</h1>
+  <p class="subtitle">Rules, plans, permission, and "I suppose"</p>
+  <span class="stamp">be + supposed / allowed + to + verb</span>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 2: SUPPOSED TO = EXPECTED -->
+<section>
+  <p class="kicker">Part 1 · The idea</p>
+  <h2>be supposed to</h2>
+  <p>Use <strong>be supposed to</strong> for what people <strong>expect</strong>: a rule, a duty, or a plan.</p>
+  <div class="example">Drivers <span class="key">are supposed to</span> stop at a red light. <em>(a rule)</em></div>
+  <div class="example">I <span class="key">am supposed to</span> pick up my nephew at 3:00. <em>(a plan)</em></div>
+  <div class="example">Amir <span class="key">is supposed to</span> lock the office this week. <em>(a duty)</em></div>
+  <p class="note">It means "should, because someone says so."</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 3: FORM -->
+<section>
+  <p class="kicker">Part 1 · The form</p>
+  <h2>am / is / are + supposed to + verb</h2>
+  <table class="compare">
+    <tr><th>Subject</th><th>Yes (+)</th><th>No (−)</th><th>Question (?)</th></tr>
+    <tr><td>I</td><td>I'm supposed to help.</td><td>I'm not supposed to help.</td><td>Am I supposed to help?</td></tr>
+    <tr><td>he / she / it</td><td>He's supposed to help.</td><td>He isn't supposed to help.</td><td>Is he supposed to help?</td></tr>
+    <tr><td>you / we / they</td><td>They're supposed to help.</td><td>They aren't supposed to help.</td><td>Are they supposed to help?</td></tr>
+  </table>
+  <div class="check-tip"><strong>Watch out:</strong> say "suppos<strong>ed</strong>" with -d, and use the base verb after <em>to</em>.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 4: WAS / WERE SUPPOSED TO -->
+<section>
+  <p class="kicker">Part 2 · The past</p>
+  <h2>was / were supposed to</h2>
+  <p>In the past, it often means: <strong>that was the plan, but it did not happen.</strong></p>
+  <svg class="timeline" viewBox="0 0 960 170" role="img" aria-label="The plan said 6:00. The pizza really came at 7:15.">
+    <rect x="40" y="30" width="400" height="110" fill="#F7D774" stroke="#1F2A44" stroke-width="2"/>
+    <text x="240" y="70" font-size="24" text-anchor="middle" font-weight="bold">THE PLAN</text>
+    <text x="240" y="112" font-size="26" text-anchor="middle">pizza at 6:00</text>
+    <line x1="460" y1="85" x2="500" y2="85" stroke="#1F2A44" stroke-width="3"/>
+    <polygon points="510,85 496,77 496,93" fill="#1F2A44"/>
+    <rect x="520" y="30" width="400" height="110" fill="#FFFDF8" stroke="#D6492C" stroke-width="3"/>
+    <text x="720" y="70" font-size="24" text-anchor="middle" font-weight="bold" fill="#D6492C">WHAT HAPPENED</text>
+    <text x="720" y="112" font-size="26" text-anchor="middle">pizza at 7:15</text>
+  </svg>
+  <div class="example">The pizza <span class="key">was supposed to</span> arrive at 6:00, but it came at 7:15.</div>
+  <div class="example">We <span class="key">were supposed to</span> go hiking, but it rained all day.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 5: I SUPPOSE -->
+<section>
+  <p class="kicker">Part 3 · A different meaning</p>
+  <h2>I suppose (so)</h2>
+  <p>No <em>be</em>, no <em>-ed</em>. <strong>I suppose</strong> = I think so, probably. I am not very sure.</p>
+  <div class="example">"Is this milk still good?" "I <span class="key">suppose</span> so. It smells OK."</div>
+  <p>It can also mean <strong>yes, but I am not happy about it.</strong></p>
+  <div class="example">"Can I borrow your umbrella?" "I <span class="key">suppose</span> so. Just bring it back!"</div>
+  <p class="note">I suppose so. = probably yes &nbsp;·&nbsp; I suppose not. = probably no</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 6: ALLOWED TO -->
+<section>
+  <p class="kicker">Part 4 · Permission</p>
+  <h2>be allowed to</h2>
+  <p>Use <strong>be allowed to</strong> when you have <strong>permission</strong>. A rule or a person says yes.</p>
+  <div class="yesno">
+    <div class="yes"><span class="tag">Yes</span><p>Shoppers <span class="key">are allowed to</span> return items for 30 days.</p></div>
+    <div class="no"><span class="tag">No</span><p>You <span class="key">aren't allowed to</span> text while you drive.</p></div>
+  </div>
+  <div class="pattern-box">Past: <code>was / were allowed to</code> &nbsp; Question: <code>Am I allowed to ...?</code></div>
+  <div class="check-tip"><strong>Compare:</strong> <em>allowed to</em> = you CAN (permission). <em>supposed to</em> = you SHOULD (people expect it).</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 7: PRACTICE 1 -->
+<section>
+  <p class="kicker">Practice 1</p>
+  <h2>am, is, are, was, or were?</h2>
+  <p>Click a, b, c, or d.</p>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> Right now, my kids ____ supposed to be in bed, but I can hear them laughing.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. was</button>
+      <button class="opt">b. is</button>
+      <button class="opt">c. were</button>
+      <button class="opt">d. are</button>
+    </div>
+    <div class="explain" data-explain="My kids = they. Now: they are supposed to."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> Last night, Pedro ____ supposed to bring the drinks, but he forgot.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. were</button>
+      <button class="opt">b. was</button>
+      <button class="opt">c. is</button>
+      <button class="opt">d. are</button>
+    </div>
+    <div class="explain" data-explain="Pedro = he. Past plan that did not happen: was supposed to."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> I ____ not allowed to listen to music at my new job, so the days feel very long.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. am</button>
+      <button class="opt">b. is</button>
+      <button class="opt">c. was</button>
+      <button class="opt">d. are</button>
+    </div>
+    <div class="explain" data-explain="I + am. A rule at my job now: I am not allowed to."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> In high school, we ____ allowed to eat lunch outside on sunny days.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. was</button>
+      <button class="opt">b. are</button>
+      <button class="opt">c. were</button>
+      <button class="opt">d. is</button>
+    </div>
+    <div class="explain" data-explain="We + were. &quot;In high school&quot; = past."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> ____ Grandma allowed to have visitors at the hospital now?</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. Is</button>
+      <button class="opt">b. Was</button>
+      <button class="opt">c. Were</button>
+      <button class="opt">d. Are</button>
+    </div>
+    <div class="explain" data-explain="Grandma = she. Now: Is she allowed to ...?"></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> My sisters ____ supposed to clean the kitchen yesterday. Look at all these dirty dishes!</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. are</button>
+      <button class="opt">b. is</button>
+      <button class="opt">c. were</button>
+      <button class="opt">d. was</button>
+    </div>
+    <div class="explain" data-explain="My sisters = they. Past plan that did not happen: were supposed to."></div>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 8: PRACTICE 2 -->
+<section>
+  <p class="kicker">Practice 2</p>
+  <h2>Find and Fix</h2>
+  <p>Each sentence has one mistake in CAPITAL letters. Say the correct sentence, then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> My cousin is supposed to VISITS us tonight.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">My cousin is supposed to <span class="key">visit</span> us tonight. — After to, use the base verb.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> Are we ALLOWING to use a dictionary on the quiz?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Are we <span class="key">allowed</span> to use a dictionary on the quiz? — be allowed to: allowed, with -ed.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> The bus driver SUPPOSED to wait for us, but he left.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">The bus driver <span class="key">was supposed</span> to wait for us, but he left. — Do not forget be: was supposed to.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> Customers aren&#x27;t allowed to TASTING the fruit at this market.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Customers aren't allowed to <span class="key">taste</span> the fruit at this market. — After to, use the base verb.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> &quot;Are you going to finish that pie?&quot; &quot;I SUPPOSING so.&quot;</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">"Are you going to finish that pie?" "I <span class="key">suppose</span> so." — I suppose so = I think so.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> We were SUPPOSE to meet at the gym at noon, but I overslept.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">We were <span class="key">supposed</span> to meet at the gym at noon, but I overslept. — supposed to: spell it with -d.</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 9: PRACTICE 3 -->
+<section>
+  <p class="kicker">Practice 3</p>
+  <h2>Mixed Practice</h2>
+  <p>Click a, b, c, or d.</p>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> My brother ____ help me paint the fence, but he stayed in bed all day.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. is allowed to</button>
+      <button class="opt">b. were supposed to</button>
+      <button class="opt">c. was supposed to</button>
+      <button class="opt">d. supposed to</button>
+    </div>
+    <div class="explain" data-explain="The plan did not happen. My brother = he: was supposed to."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> Good news! The new rule says employees ____ work from home on Wednesdays.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. are allowed to</button>
+      <button class="opt">b. is allowed to</button>
+      <button class="opt">c. allowed to</button>
+      <button class="opt">d. are allow to</button>
+    </div>
+    <div class="explain" data-explain="The rule says yes. Employees = they: are allowed to."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> &quot;____ to bring a gift to the baby shower?&quot; &quot;Yes, but it can be small.&quot;</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. Are we supposing</button>
+      <button class="opt">b. Do we supposed</button>
+      <button class="opt">c. Are we suppose</button>
+      <button class="opt">d. Are we supposed</button>
+    </div>
+    <div class="explain" data-explain="Question: Are + we + supposed to ...?"></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> &quot;Can you drive me to the airport at 5:00 a.m.?&quot; &quot;Well, I ____ so. But you owe me breakfast!&quot;</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. am supposed</button>
+      <button class="opt">b. suppose</button>
+      <button class="opt">c. allowed</button>
+      <button class="opt">d. am allowed to</button>
+    </div>
+    <div class="explain" data-explain="I suppose so = yes, but I am not very happy about it."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> Children under five ____ go on the big water slide. It is too fast for them.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. not allowed to</button>
+      <button class="opt">b. isn&#x27;t allowed to</button>
+      <button class="opt">c. aren&#x27;t allowed to</button>
+      <button class="opt">d. aren&#x27;t allow to</button>
+    </div>
+    <div class="explain" data-explain="The rule says no. Children = they: aren&#x27;t allowed to."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> My boss ____ give me a raise last month, but he changed his mind.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. was supposed to</button>
+      <button class="opt">b. supposed</button>
+      <button class="opt">c. is supposed to</button>
+      <button class="opt">d. were supposed to</button>
+    </div>
+    <div class="explain" data-explain="The plan did not happen. My boss = he: was supposed to."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">7.</span> Passengers ____ use their phones while the plane takes off.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. isn&#x27;t supposed to</button>
+      <button class="opt">b. aren&#x27;t supposed to</button>
+      <button class="opt">c. not supposed to</button>
+      <button class="opt">d. aren&#x27;t supposing to</button>
+    </div>
+    <div class="explain" data-explain="Passengers = they: aren&#x27;t supposed to."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">8.</span> Last year, kids ____ skateboard in the parking lot, but now there is a new rule.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. are allowed to</button>
+      <button class="opt">b. was allowed to</button>
+      <button class="opt">c. allowed to</button>
+      <button class="opt">d. were allowed to</button>
+    </div>
+    <div class="explain" data-explain="Kids = they. &quot;Last year&quot; = past: were allowed to."></div>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 10: SUMMARY -->
+<section>
+  <p class="kicker">Review</p>
+  <h2>Three Expressions</h2>
+  <table class="compare">
+    <tr><th>Expression</th><th>Meaning</th><th>Example</th></tr>
+    <tr><td>be supposed to</td><td>a rule, duty, or plan</td><td>She's <span class="key">supposed to</span> set the table tonight.</td></tr>
+    <tr><td>was / were supposed to</td><td>a past plan; often, it did not happen</td><td>He <span class="key">was supposed to</span> drive us, but his car broke down.</td></tr>
+    <tr><td>be allowed to</td><td>permission: yes or no</td><td>We're <span class="key">allowed to</span> leave early today.</td></tr>
+    <tr><td>I suppose so</td><td>I think so; probably</td><td>"Is he home?" "I <span class="key">suppose</span> so."</td></tr>
+  </table>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    controls: true,
+    progress: true,
+    center: false,
+    transition: 'slide',
+    width: 1100,
+    height: 720,
+    margin: 0.04
+  });
+
+  // Clickable multiple-choice wiring (data-correct = 0-indexed button)
+  document.querySelectorAll('.mc').forEach(mc => {
+    const correct = parseInt(mc.dataset.correct, 10);
+    const buttons = mc.querySelectorAll('button.opt');
+    const explain = mc.nextElementSibling && mc.nextElementSibling.classList.contains('explain')
+      ? mc.nextElementSibling : null;
+    const explainText = explain ? explain.dataset.explain || '' : '';
+    buttons.forEach((b, i) => {
+      b.addEventListener('click', () => {
+        // `sel` marks the clicked button so its class always changes on every
+        // click — keeps verify_html_deck.mjs from false-failing when the correct
+        // answer isn't option (a). Do not remove.
+        buttons.forEach(x => x.classList.remove('correct', 'wrong', 'sel'));
+        b.classList.add('sel');
+        if (i === correct) {
+          b.classList.add('correct');
+          if (explain) {
+            explain.textContent = '✓ Correct. ' + explainText;
+            explain.classList.remove('bad'); explain.classList.add('good');
+          }
+        } else {
+          b.classList.add('wrong');
+          buttons[correct].classList.add('correct');
+          if (explain) {
+            const answerText = buttons[correct].textContent;
+            explain.innerHTML = '✗ The answer is <strong>' + answerText + '</strong>. ' + explainText;
+            explain.classList.remove('good'); explain.classList.add('bad');
+          }
+        }
+      });
+    });
+  });
+</script>
+<!-- PENCIL DRAW OVERLAY — iPad annotation layer (additive; safe to delete this whole block) -->
+<style>
+  #drawCanvas {
+    position: fixed; inset: 0; z-index: 50; pointer-events: none; touch-action: none;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  }
+  html.draw-armed, html.draw-armed body, html.draw-armed .reveal {
+    -webkit-user-select: none !important; user-select: none !important;
+    -webkit-touch-callout: none !important;
+  }
+  html.presentation-mode, html.presentation-mode body {
+    width: 100%; height: 100%; overflow: hidden !important; overscroll-behavior: none;
+  }
+  html.presentation-mode body { position: fixed; inset: 0; }
+  html.presentation-mode .reveal { width: 100vw !important; height: 100vh !important; height: 100dvh !important; }
+  html.presentation-mode .reveal .slides section { overscroll-behavior-y: contain; }
+  #drawToggle {
+    position: fixed; top: 10px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 20px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle.armed { opacity: 1; background: #fde9c8; border-color: #e8a013; }
+  #fsToggle {
+    position: fixed; top: 62px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 19px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle, #fsToggle { transition: opacity 0.3s; }
+  html.presentation-mode #drawToggle:not(.armed), html.presentation-mode #fsToggle { opacity: 0.15; }
+  #drawBar {
+    position: fixed; top: 10px; right: 62px; z-index: 60; display: flex; gap: 8px;
+    background: #fff; border: 1px solid #bbb; border-radius: 22px; padding: 6px 10px;
+    align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  #drawBar button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ccc; background: #fff; cursor: pointer; font-size: 15px; padding: 0; }
+  #drawBar .swatch { border-width: 2px; }
+  #drawBar .swatch.on { outline: 3px solid #e8a013; }
+</style>
+<canvas id="drawCanvas"></canvas>
+<div id="drawBar" hidden>
+  <button class="swatch on" data-color="#d33333" style="background:#d33333"></button>
+  <button class="swatch" data-color="#2266cc" style="background:#2266cc"></button>
+  <button class="swatch" data-color="#1a1a1a" style="background:#1a1a1a"></button>
+  <button id="drawUndo" title="Undo">↩</button>
+  <button id="drawClear" title="Clear slide">✕</button>
+</div>
+<button id="drawToggle" title="Pencil mode (pen only; finger locked)" aria-pressed="false">✏️</button>
+<button id="fsToggle" title="Presentation mode" aria-label="Presentation mode" aria-pressed="false">⛶</button>
+<script>
+(() => {
+  const cv = document.getElementById('drawCanvas');
+  const ctx = cv.getContext('2d');
+  const bar = document.getElementById('drawBar');
+  const toggle = document.getElementById('drawToggle');
+  let armed = false, color = '#d33333', cur = null, drawPointerId = null;
+  const strokes = new Map(); // slide "h-v" -> stroke list; ink persists per slide
+  const key = () => { const i = Reveal.getIndices(); return i.h + '-' + (i.v || 0); };
+  const list = () => { const k = key(); if (!strokes.has(k)) strokes.set(k, []); return strokes.get(k); };
+
+  function size() {
+    const d = window.devicePixelRatio || 1;
+    cv.width = innerWidth * d; cv.height = innerHeight * d;
+    cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    render();
+  }
+  function seg(a, b, c, w) {
+    ctx.strokeStyle = c; ctx.lineWidth = Math.max(0.75, w * innerWidth);
+    ctx.beginPath(); ctx.moveTo(a.x * innerWidth, a.y * innerHeight);
+    ctx.lineTo(b.x * innerWidth, b.y * innerHeight); ctx.stroke();
+  }
+  function render() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const s of list())
+      for (let i = 1; i < s.pts.length; i++) seg(s.pts[i - 1], s.pts[i], s.color, s.pts[i].w);
+  }
+  const pt = (e) => ({ x: e.clientX / innerWidth, y: e.clientY / innerHeight,
+    w: (e.pointerType === 'pen' ? 1.5 + 4 * (e.pressure || 0.5) : 3) / innerWidth });
+
+  const cancel = (e) => { if (e.cancelable) e.preventDefault(); };
+  cv.addEventListener('pointerdown', (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerType === 'touch') {
+      cv.setPointerCapture(e.pointerId); // swallow the palm/finger for its full contact
+      return;
+    }
+    if ((e.pointerType !== 'pen' && e.pointerType !== 'mouse') || drawPointerId !== null) return;
+    drawPointerId = e.pointerId;
+    cur = { color, pts: [pt(e)] };
+    list().push(cur);
+    cv.setPointerCapture(e.pointerId);
+  }, { passive: false });
+  cv.addEventListener('pointermove', (e) => {
+    if (!armed) return;
+    if (e.pointerType === 'touch') { cancel(e); return; }
+    if (!cur || e.pointerId !== drawPointerId) return;
+    cancel(e);
+    const coalesced = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+    const events = coalesced && coalesced.length ? coalesced : [e];
+    for (const ev of events) {
+      const p = pt(ev);
+      seg(cur.pts[cur.pts.length - 1], p, cur.color, p.w);
+      cur.pts.push(p);
+    }
+  }, { passive: false });
+  const end = (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerId === drawPointerId) { cur = null; drawPointerId = null; }
+  };
+  cv.addEventListener('pointerup', end, { passive: false });
+  cv.addEventListener('pointercancel', end, { passive: false });
+  for (const eventName of ['touchstart', 'touchmove', 'touchend', 'touchcancel'])
+    cv.addEventListener(eventName, (e) => { if (armed) cancel(e); }, { passive: false });
+  document.addEventListener('selectstart', (e) => { if (armed) cancel(e); });
+
+  toggle.addEventListener('click', () => {
+    armed = !armed;
+    cv.style.pointerEvents = armed ? 'auto' : 'none'; // disarmed = taps/swipes reach the slides
+    bar.hidden = !armed;
+    toggle.classList.toggle('armed', armed);
+    toggle.setAttribute('aria-pressed', String(armed));
+    document.documentElement.classList.toggle('draw-armed', armed);
+    if (!armed) { cur = null; drawPointerId = null; }
+  });
+  bar.querySelectorAll('.swatch').forEach((b) => b.addEventListener('click', () => {
+    color = b.dataset.color;
+    bar.querySelectorAll('.swatch').forEach((x) => x.classList.toggle('on', x === b));
+  }));
+  document.getElementById('drawUndo').addEventListener('click', () => { list().pop(); render(); });
+  document.getElementById('drawClear').addEventListener('click', () => { strokes.set(key(), []); render(); });
+
+  Reveal.on('slidechanged', render);
+  addEventListener('resize', size);
+  size();
+
+  // Fixed presentation mode avoids iPadOS's native-fullscreen pull-down exit gesture.
+  const fsT = document.getElementById('fsToggle');
+  let presenting = false;
+  const toast = (message) => {
+    const t = document.createElement('div');
+    t.textContent = message;
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:10px;font:14px system-ui;z-index:99;max-width:46ch;text-align:center';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  };
+  fsT.addEventListener('click', () => {
+    presenting = !presenting;
+    document.documentElement.classList.toggle('presentation-mode', presenting);
+    fsT.textContent = presenting ? '\u2921' : '\u26f6';
+    fsT.setAttribute('aria-pressed', String(presenting));
+    fsT.title = presenting ? 'Exit presentation mode' : 'Presentation mode';
+    requestAnimationFrame(() => {
+      if (Reveal.layout) Reveal.layout();
+      size();
+    });
+    if (presenting) toast('Presentation mode on. For more space in Safari, tap AA, then Hide Toolbar.');
+  });
+})();
+</script>
+<!-- END PENCIL DRAW OVERLAY -->
+
+</body>
+</html>
