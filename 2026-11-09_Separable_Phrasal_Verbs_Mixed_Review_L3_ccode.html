@@ -1,0 +1,835 @@
+<!-- generator: _lib/school_deck_scaffold.py -->
+<!DOCTYPE html>
+<!--
+  ESL reveal.js DECK TEMPLATE — copy this file, rename to
+  YYYY-MM-DD_Title_Case_Topic_L<level>_ccode.html in the School Stuff root,
+  and fill the Edit.
+
+  LEVEL SWAP: this template ships L2 colors (green). For L4, change the
+  three lines in :root marked  /* L4: ... */  and swap theme to white
+  (already white). L2 accent 2E6B3A / light D9E9D3.  L4 accent 1F4E79 /
+  light D6E4F2.
+
+  All canonical contracts (invisible scrollbar, 80vh bottom spacer per
+  section, no font-size on .reveal, table.compare last-child border,
+  reveal init config) are baked in. Run the linter after editing:
+      node _lib/verify_html_deck.mjs <deck.html>            # rendered check
+      python3 _lib/verify_html_deck_static.py <deck.html>   # fast source lint
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Separable Phrasal Verbs Review</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/theme/white.css">
+<style>
+  :root { --accent: #1F6B6B; --accent-light: #D6E8E8; --gray: #555555;
+          /* L4: --accent: #1F4E79; --accent-light: #D6E4F2; */
+          --good: #15803D; --bad: #B91C1C; --muted: #777; }
+
+  /* TYPOGRAPHY CANON — never put font-size on .reveal itself */
+  .reveal { font-family: Arial, sans-serif; }
+  .reveal h1, .reveal h2, .reveal h3 { color: var(--accent); font-family: Arial, sans-serif; text-transform: none; letter-spacing: 0; }
+  .reveal h1 { font-size: 2.2em; }
+  .reveal h2 { font-size: 1.6em; }
+  .reveal h3 { font-size: 1.15em; }
+  .reveal h4 { font-size: 1.05em; }
+  .reveal p, .reveal li { font-size: 0.85em; line-height: 1.5; }
+
+  /* SCROLLABLE SLIDES WITH INVISIBLE SCROLLBAR */
+  .reveal .slides section {
+    overflow-y: auto !important;
+    max-height: 92vh !important;
+    text-align: left;
+    padding: 20px 40px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .reveal .slides section::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* Title slide */
+  /* Title text starts below the fixed pencil/fullscreen buttons (top right). */
+  .reveal .slides section.title-slide { text-align: center !important; padding-top: 110px; }
+  .title-slide h1 { font-size: 2.6em; margin-bottom: 0.3em; }
+  .title-slide .subtitle { font-size: 1.2em; color: var(--gray); }
+
+  /* Pattern / example / note / tip */
+  .pattern-box {
+    background: var(--accent-light);
+    border-left: 6px solid var(--accent);
+    padding: 14px 20px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+  .pattern-box code {
+    background: white; padding: 2px 8px; border-radius: 3px;
+    color: var(--accent); font-weight: bold;
+  }
+  .example {
+    background: #FAFAFA; border: 1px solid #DDD;
+    padding: 10px 16px; margin: 8px 0; border-radius: 3px; font-size: 0.9em;
+  }
+  .example .key { color: var(--accent); font-weight: bold; }
+  .note { font-style: italic; color: var(--gray); font-size: 0.85em; margin-top: 10px; }
+  .check-tip {
+    background: #FFF8E1; border-left: 6px solid #F5A623;
+    padding: 12px 18px; margin: 14px 0; border-radius: 4px; font-size: 0.9em;
+  }
+
+  /* Comparison tables — borders need !important (reveal theme strips them) */
+  table.compare {
+    border-collapse: collapse !important; margin: 14px 0;
+    font-size: 0.82em; width: 100%; border: 1px solid var(--accent) !important;
+  }
+  table.compare th, table.compare td {
+    border: 1px solid var(--accent) !important; padding: 8px 12px; text-align: left;
+  }
+  table.compare tr:last-child td { border-bottom: 1px solid var(--accent) !important; }
+  table.compare th { background: var(--accent); color: white; }
+  table.compare td:first-child { font-weight: bold; color: var(--accent); }
+
+  /* Click-to-reveal exercise (single-answer reveal) */
+  .exercise {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .exercise .question { font-size: 0.9em; margin: 0 0 10px 0; }
+  .exercise .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .exercise button.reveal-btn {
+    background: var(--accent); color: white; border: none; padding: 6px 14px;
+    border-radius: 4px; font-family: Arial; font-size: 0.8em; cursor: pointer;
+  }
+  .exercise button.reveal-btn:hover { filter: brightness(0.85); }
+  .exercise .answer {
+    display: none; margin-top: 10px; padding: 10px 14px;
+    background: var(--accent-light); border-left: 4px solid var(--accent); font-size: 0.9em;
+  }
+  .exercise .answer .key { color: var(--accent); font-weight: bold; }
+  .exercise .answer.shown { display: block; }
+
+  /* Clickable multiple choice */
+  .mc-q {
+    background: #FFF; border: 2px solid var(--accent-light);
+    border-radius: 6px; padding: 14px 18px; margin: 12px 0;
+  }
+  .mc-q .stem { font-size: 0.9em; margin: 0 0 10px 0; }
+  .mc-q .stem .qnum { font-weight: bold; color: var(--accent); margin-right: 6px; }
+  .mc { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .mc button.opt {
+    font-family: inherit; font-size: 0.8em; padding: 10px 12px;
+    border: 2px solid #d0d8e4; background: white; border-radius: 8px;
+    cursor: pointer; transition: all .15s; font-weight: 600;
+  }
+  .mc button.opt:hover { border-color: var(--accent); background: var(--accent-light); }
+  .mc button.opt.correct { background: #DCFCE7; border-color: var(--good); color: var(--good); }
+  .mc button.opt.wrong   { background: #FEE2E2; border-color: var(--bad);  color: var(--bad); }
+  .explain { margin-top: 10px; font-size: 0.78em; color: var(--muted); font-style: italic; min-height: 1.2em; }
+  .explain.good { color: var(--good); font-style: normal; }
+  .explain.bad  { color: var(--bad); }
+</style>
+<style id="pv-theme">
+  /* Style copied from the 2026-10-26 Past Continuous deck — overrides colors and surfaces only. */
+  :root { --accent: #1F2A44; --accent-light: #F4E6C8; --ink: #1F2A44; --hot: #D6492C;
+          --hilite: #F7D774; --paper: #FBF6EC; --gray: #5A6070; --muted: #5A6070;
+          --good: #1E7A46; --bad: #C0392B; }
+  html, body, .reveal-viewport { background: var(--paper) !important; }
+  .reveal { color: var(--ink); font-family: "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif; }
+  .reveal h1, .reveal h2, .reveal h3 { color: var(--ink); font-family: Georgia, "Iowan Old Style", "Times New Roman", serif; font-weight: 700; }
+  .reveal h2 { border-bottom: 3px solid var(--ink); padding-bottom: 6px; display: inline-block; }
+  .reveal p.kicker { font-size: 0.55em; letter-spacing: 0.2em; text-transform: uppercase; color: var(--hot); font-weight: 700; margin: 0 0 4px 0; }
+  .reveal .progress span { background: var(--hot); }
+  .reveal .controls { color: var(--hot); }
+
+  .title-slide h1 { font-size: 2.6em; margin: 0.2em 0 0.1em; }
+  .title-slide .subtitle { color: var(--gray); font-style: italic; font-family: Georgia, serif; }
+  .stamp { display: inline-block; border: 3px solid var(--hot); color: var(--hot); padding: 4px 16px;
+           font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; transform: rotate(-3deg); font-size: 0.7em; margin-top: 18px; }
+
+  .pattern-box { background: transparent; border: none; border-top: 4px solid var(--ink); border-bottom: 1px solid var(--ink);
+                 border-radius: 0; padding: 14px 4px; }
+  .pattern-box code { background: var(--accent-light); color: var(--ink); border: 2px solid var(--ink); border-radius: 0; padding: 2px 10px; font-family: inherit; }
+  .example { background: none; border: none; border-radius: 0; padding: 6px 0 6px 1.6em; position: relative; }
+  .example::before { content: "\2014"; color: var(--hot); font-weight: 800; position: absolute; left: 0; }
+  .key, .example .key, .exercise .answer .key { color: inherit !important; font-weight: 800;
+       background: linear-gradient(transparent 58%, var(--hilite) 58%); padding: 0 2px; }
+  .check-tip { background: var(--hilite); border: 2px solid var(--ink); border-radius: 0; box-shadow: 5px 5px 0 var(--ink);
+               transform: rotate(-0.6deg); margin: 22px 8px; }
+  .note { color: var(--gray); }
+
+  table.compare th { background: var(--ink); color: var(--paper); font-family: Georgia, serif; }
+  table.compare td { background: #FFFDF8; }
+  table.compare td:first-child { color: var(--hot); }
+
+  .exercise, .mc-q { background: #FFFDF8; border: 2px solid var(--ink); border-radius: 0; box-shadow: 5px 5px 0 var(--ink); margin: 18px 6px 18px 0; }
+  .exercise .qnum, .mc-q .stem .qnum { display: inline-block; min-width: 1.6em; height: 1.6em; line-height: 1.6em; text-align: center;
+       background: var(--hot); color: #fff; border-radius: 50%; font-size: 0.85em; margin-right: 10px; }
+  .exercise button.reveal-btn { background: var(--ink); color: var(--paper); border-radius: 0; font-family: inherit; font-weight: 700; padding: 7px 16px; }
+  .exercise button.reveal-btn:hover { background: var(--hot); filter: none; }
+  .exercise .answer { background: var(--accent-light); border-left: none; border-top: 2px dashed var(--ink); }
+  .mc { grid-template-columns: 1fr 1fr; }
+  .mc button.opt { border: 2px solid var(--ink); border-radius: 0; background: #fff; color: var(--ink); text-align: left; }
+  .mc button.opt:hover { background: var(--hilite); border-color: var(--ink); }
+  .mc button.opt.correct { background: #D7F0DF; border-color: var(--good); color: var(--good); }
+  .mc button.opt.wrong   { background: #F9DCD7; border-color: var(--bad); color: var(--bad); }
+
+  .timeline { width: 100%; max-width: 960px; display: block; margin: 10px 0 6px; }
+  .timeline text { font-family: Georgia, serif; fill: var(--ink); }
+  .two-up { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+  .two-up > div { border-top: 4px solid var(--ink); padding-top: 6px; }
+</style>
+<style id="pv-extra">
+  .yesno { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 10px; }
+  .yesno > div { border: 2px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); background: #FFFDF8; padding: 8px 16px; }
+  .yesno p { margin: 6px 0 0; }
+  .yesno .tag { display: inline-block; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.7em; padding: 2px 10px; color: #fff; }
+  .yesno .yes .tag { background: var(--good); }
+  .yesno .no .tag { background: var(--bad); }
+
+  /* Fit pass (Mike 2026-10-27: "fits on the page better"): every slide fits 1100x720 with no scroll. */
+  .reveal h2 { font-size: 1.35em; margin-bottom: 0.3em; }
+  /* Mike 2026-10-27: title text starts below the pencil toolbar (top right). */
+  .reveal .slides section.title-slide { padding-top: 110px; }
+  /* The color bar hides while the pencil is off ([hidden] lost to display:flex; template fixed 2026-10-27). */
+  #drawBar[hidden] { display: none; }
+  .reveal section > p { margin: 0.3em 0; }
+  .example { padding: 3px 0 3px 1.6em; margin: 4px 0; }
+  .check-tip { margin: 14px 8px; padding: 8px 14px; }
+  .pattern-box { font-size: 0.8em; padding: 8px 4px; margin: 10px 0; }
+  table.compare { font-size: 0.72em; margin: 8px 0; }
+  table.compare th, table.compare td { padding: 6px 10px; }
+  .mc-q, .exercise { padding: 6px 12px; margin: 8px 6px 12px 0; }
+  .mc-q .stem, .exercise .question { font-size: 0.75em; margin: 0 0 4px 0; line-height: 1.3; }
+  .mc { gap: 5px; margin-top: 2px; }
+  .four-up .mc { grid-template-columns: repeat(4, 1fr); }
+  .mc button.opt { font-size: 0.65em; padding: 4px 10px; }
+  .explain { margin-top: 3px; font-size: 0.6em; min-height: 1em; }
+  .exercise button.reveal-btn { font-size: 0.65em; padding: 4px 12px; }
+  .exercise .answer { font-size: 0.7em; margin-top: 4px; padding: 4px 12px; line-height: 1.3; }
+</style>
+<style id="pv-fit">
+  .two-up .mc { grid-template-columns: repeat(2, 1fr); }
+  .bad-x { color: var(--bad); font-weight: 800; }
+  .good-x { color: var(--good); font-weight: 800; }
+</style>
+</head>
+<body>
+<!-- back-to-topics (school-save) --><style>@media print{.back-to-topics{display:none}}</style><a href="index.html" class="back-to-topics" style="position:fixed;top:10px;left:10px;z-index:70;font:600 18px/1.2 system-ui,sans-serif;color:#fff;background:#1f5fbf;padding:10px 16px;border-radius:10px;text-decoration:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">← Back to topics</a>
+
+<div class="reveal">
+<div class="slides">
+
+<!-- 1: TITLE -->
+<section class="title-slide">
+  <p class="kicker">Grammar · Level 3 · Phrasal Verbs</p>
+  <h1>Separable Phrasal Verbs</h1>
+  <p class="subtitle">Mixed review: 12 verbs</p>
+  <span class="stamp">turn it off · NOT turn off it</span>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 2: THE IDEA -->
+<section>
+  <p class="kicker">Part 1 · The idea</p>
+  <h2>A verb + a small word</h2>
+  <p>A phrasal verb is a verb + a small word (<em>up, out, off, back, down</em>). Together they have a new meaning.</p>
+  <p>Many phrasal verbs are <strong>separable</strong>: a noun can go <strong>at the end</strong> or <strong>in the middle</strong>.</p>
+  <div class="example">Please <span class="key">turn off</span> the lights.</div>
+  <div class="example">Please <span class="key">turn</span> the lights <span class="key">off</span>.</div>
+  <p class="note">Both sentences are correct. They mean the same thing.</p>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 3: PRONOUNS -->
+<section>
+  <p class="kicker">Part 2 · Pronouns</p>
+  <h2>A pronoun goes in the middle</h2>
+  <table class="compare">
+    <tr><th>Object</th><th>At the end</th><th>In the middle</th></tr>
+    <tr><td>a noun: the box</td><td><span class="good-x">✓</span> I threw away the box.</td><td><span class="good-x">✓</span> I threw the box away.</td></tr>
+    <tr><td>a pronoun: it</td><td><span class="bad-x">✗</span> I threw away it.</td><td><span class="good-x">✓</span> I threw it away.</td></tr>
+  </table>
+  <div class="check-tip"><strong>Watch out:</strong> with <em>me, you, him, her, it, us, them</em>, the pronoun MUST go in the middle.</div>
+  <div class="example">She put on her coat. → She <span class="key">put it on</span>.</div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 4: THE 12 VERBS -->
+<section>
+  <p class="kicker">Part 3 · Our 12 verbs</p>
+  <h2>The 12 Verbs</h2>
+  <table class="compare">
+    <tr><th>Verb</th><th>Meaning</th><th>Verb</th><th>Meaning</th></tr>
+    <tr><td><strong>call up</strong></td><td>telephone</td><td><strong>look up</strong></td><td>find in a book or online</td></tr>
+    <tr><td><strong>cross out</strong></td><td>draw a line through writing</td><td><strong>pick out</strong></td><td>choose</td></tr>
+    <tr><td><strong>drop off</strong></td><td>take to a place and leave there</td><td><strong>put off</strong></td><td>move to a later time</td></tr>
+    <tr><td><strong>fill out</strong></td><td>complete a form</td><td><strong>take out</strong></td><td>remove from inside</td></tr>
+    <tr><td><strong>give back</strong></td><td>return to a person</td><td><strong>turn down</strong></td><td>say no to</td></tr>
+    <tr><td><strong>hang up</strong></td><td>put on a hook or wall</td><td><strong>use up</strong></td><td>use all of it</td></tr>
+  </table>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- 5: VERB FORMS -->
+<section>
+  <p class="kicker">Part 4 · Verb forms</p>
+  <h2>Change the verb, not the small word</h2>
+  <p>Only the first word changes for tense. The small word stays the same.</p>
+  <div class="example">The alarm <span class="key">wakes</span> me <span class="key">up</span> at 6:00. <em>(now, every day)</em></div>
+  <div class="example">The alarm <span class="key">woke</span> me <span class="key">up</span> at 6:00. <em>(past)</em></div>
+  <div class="pattern-box">Some past forms are irregular: wake → <code>woke</code> &nbsp; throw → <code>threw</code></div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- Practice 1 · 1–2 -->
+<section>
+  <p class="kicker">Practice 1 · 1–2</p>
+  <h2>Choose the Verb</h2>
+  <p>Click a, b, c, or d.</p>
+  <div class="four-up">
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> The bus schedule changes in December. Let&#x27;s ____ the new times online.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. hang up</button>
+      <button class="opt">b. use up</button>
+      <button class="opt">c. look up</button>
+      <button class="opt">d. give back</button>
+    </div>
+    <div class="explain" data-explain="look up = try to find on the Internet."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> I borrowed my classmate&#x27;s calculator for the math test. After class, I will ____ the calculator.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. give back</button>
+      <button class="opt">b. turn down</button>
+      <button class="opt">c. pick out</button>
+      <button class="opt">d. cross out</button>
+    </div>
+    <div class="explain" data-explain="give back = return it to the person."></div>
+  </div>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- Practice 1 · 3–4 -->
+<section>
+  <p class="kicker">Practice 1 · 3–4</p>
+  <h2>Choose the Verb</h2>
+  <p>Click a, b, c, or d.</p>
+  <div class="four-up">
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> Our family reunion was planned for August, but many cousins couldn&#x27;t come, so we will ____ the reunion until next summer.</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. take out</button>
+      <button class="opt">b. turn down</button>
+      <button class="opt">c. fill out</button>
+      <button class="opt">d. put off</button>
+    </div>
+    <div class="explain" data-explain="put off = move to a later time."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> We bought a big calendar for the kitchen. Let&#x27;s ____ the calendar next to the fridge.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. look up</button>
+      <button class="opt">b. hang up</button>
+      <button class="opt">c. call up</button>
+      <button class="opt">d. use up</button>
+    </div>
+    <div class="explain" data-explain="hang up = put on a wall or a hook."></div>
+  </div>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- Practice 1 · 5–6 -->
+<section>
+  <p class="kicker">Practice 1 · 5–6</p>
+  <h2>Choose the Verb</h2>
+  <p>Click a, b, c, or d.</p>
+  <div class="four-up">
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> I moved last week, so I need to ____ a change-of-address card at the post office.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. fill out</button>
+      <button class="opt">b. hang up</button>
+      <button class="opt">c. put off</button>
+      <button class="opt">d. turn down</button>
+    </div>
+    <div class="explain" data-explain="fill out = complete a form."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> Before you wash your jeans, ____ the money from the pockets!</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. cross out</button>
+      <button class="opt">b. call up</button>
+      <button class="opt">c. drop off</button>
+      <button class="opt">d. take out</button>
+    </div>
+    <div class="explain" data-explain="take out = remove from inside something."></div>
+  </div>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- Practice 1 · 7–8 -->
+<section>
+  <p class="kicker">Practice 1 · 7–8</p>
+  <h2>Choose the Verb</h2>
+  <p>Click a, b, c, or d.</p>
+  <div class="four-up">
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">7.</span> My daughter needs new glasses. She will ____ the frames at the eye doctor on Tuesday.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. call up</button>
+      <button class="opt">b. hang up</button>
+      <button class="opt">c. pick out</button>
+      <button class="opt">d. give back</button>
+    </div>
+    <div class="explain" data-explain="pick out = choose."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">8.</span> I already bought the eggs, so I can ____ the word &quot;eggs&quot; on my shopping list.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. look up</button>
+      <button class="opt">b. cross out</button>
+      <button class="opt">c. fill out</button>
+      <button class="opt">d. put off</button>
+    </div>
+    <div class="explain" data-explain="cross out = draw a line through writing."></div>
+  </div>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- Practice 2 · 1–2 -->
+<section>
+  <p class="kicker">Practice 2 · 1–2</p>
+  <h2>Where Does the Pronoun Go?</h2>
+  <p>Click a, b, c, or d.</p>
+  <div class="two-up">
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">1.</span> My friend offered me her old couch, but it was too big for my apartment, so I ____.</p>
+    <div class="mc" data-correct="1">
+      <button class="opt">a. turned down it</button>
+      <button class="opt">b. turned it down</button>
+      <button class="opt">c. turned them down</button>
+      <button class="opt">d. turn down it</button>
+    </div>
+    <div class="explain" data-explain="Past: turned. The couch = it, in the middle: turned it down."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">2.</span> Who drank all the orange juice? Somebody ____!</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. used up it</button>
+      <button class="opt">b. use it up</button>
+      <button class="opt">c. used them up</button>
+      <button class="opt">d. used it up</button>
+    </div>
+    <div class="explain" data-explain="The juice = it. Past: used it up."></div>
+  </div>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- Practice 2 · 3–4 -->
+<section>
+  <p class="kicker">Practice 2 · 3–4</p>
+  <h2>Where Does the Pronoun Go?</h2>
+  <p>Click a, b, c, or d.</p>
+  <div class="two-up">
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">3.</span> These library books are due tomorrow. Can you ____ after school?</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. drop them off</button>
+      <button class="opt">b. drop off them</button>
+      <button class="opt">c. drop it off</button>
+      <button class="opt">d. dropped them off</button>
+    </div>
+    <div class="explain" data-explain="The books = them. After &quot;Can you&quot;, use the base verb: drop them off."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">4.</span> I can&#x27;t remember my doctor&#x27;s phone number. I&#x27;ll ____ on the clinic&#x27;s website.</p>
+    <div class="mc" data-correct="2">
+      <button class="opt">a. look up it</button>
+      <button class="opt">b. look it on</button>
+      <button class="opt">c. look it up</button>
+      <button class="opt">d. looked up it</button>
+    </div>
+    <div class="explain" data-explain="The number = it, in the middle: look it up."></div>
+  </div>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- Practice 2 · 5–6 -->
+<section>
+  <p class="kicker">Practice 2 · 5–6</p>
+  <h2>Where Does the Pronoun Go?</h2>
+  <p>Click a, b, c, or d.</p>
+  <div class="two-up">
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">5.</span> Ms. Ortiz wants to hear about our new apartment. Please ____ after dinner.</p>
+    <div class="mc" data-correct="0">
+      <button class="opt">a. call her up</button>
+      <button class="opt">b. call up her</button>
+      <button class="opt">c. call she up</button>
+      <button class="opt">d. call up she</button>
+    </div>
+    <div class="explain" data-explain="Ms. Ortiz = her (not she), in the middle: call her up."></div>
+  </div>
+  <div class="mc-q">
+    <p class="stem"><span class="qnum">6.</span> My new painting is finished! Where should I ____?</p>
+    <div class="mc" data-correct="3">
+      <button class="opt">a. hang up it</button>
+      <button class="opt">b. hang it on</button>
+      <button class="opt">c. hang them up</button>
+      <button class="opt">d. hang it up</button>
+    </div>
+    <div class="explain" data-explain="The painting = it, in the middle: hang it up."></div>
+  </div>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- Practice 3 · 1–2 -->
+<section>
+  <p class="kicker">Practice 3 · 1–2</p>
+  <h2>Answer with a Pronoun</h2>
+  <p>Say B's answer. Use the verb in parentheses and a pronoun (it, them, him, her). Then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> A: &quot;Did you choose the cake for the party?&quot; B: &quot;Yes, I ____ (pick out) yesterday.&quot;</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Yes, I <span class="key">picked it out</span> yesterday. — the cake = it. Past: picked.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> A: &quot;When is your driving test?&quot; B: &quot;It was today, but I was sick, so I ____ (put off) until next week.&quot;</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">I <span class="key">put it off</span> until next week. — the test = it. put → put (same in the past).</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- Practice 3 · 3–4 -->
+<section>
+  <p class="kicker">Practice 3 · 3–4</p>
+  <h2>Answer with a Pronoun</h2>
+  <p>Say B's answer. Use the verb in parentheses and a pronoun (it, them, him, her). Then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> A: &quot;Do you still have my umbrella?&quot; B: &quot;No, I ____ (give back) to you on Monday. Remember?&quot;</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">No, I <span class="key">gave it back</span> to you on Monday. — the umbrella = it. give → gave.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> A: &quot;Are the clean clothes still in the dryer?&quot; B: &quot;Yes. Can you ____ (take out) and fold them?&quot;</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Can you <span class="key">take them out</span> and fold them? — the clothes = them. After &quot;Can you&quot;, use the base verb.</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- Practice 3 · 5–6 -->
+<section>
+  <p class="kicker">Practice 3 · 5–6</p>
+  <h2>Answer with a Pronoun</h2>
+  <p>Say B's answer. Use the verb in parentheses and a pronoun (it, them, him, her). Then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> A: &quot;Do you need help with the job application?&quot; B: &quot;No, thanks. I ____ (fill out) last night.&quot;</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">I <span class="key">filled it out</span> last night. — the application = it. Past: filled.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> A: &quot;Are Ana and Lucas coming on the field trip?&quot; B: &quot;No, they&#x27;re sick, so I ____ (cross out) on the list an hour ago.&quot;</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">I <span class="key">crossed them out</span> on the list an hour ago. — Ana and Lucas = them. Past: crossed.</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- Practice 4 · 1–2 -->
+<section>
+  <p class="kicker">Practice 4 · 1–2</p>
+  <h2>Find and Fix</h2>
+  <p>Each sentence has one mistake in CAPITAL letters. Say the correct sentence, then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">1.</span> My bike was broken, so I DROPPED OFF IT at the repair shop.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">I <span class="key">dropped it off</span> at the repair shop. — A pronoun goes in the middle.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">2.</span> Did you CALL UP HIM yesterday about the broken heater?</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Did you <span class="key">call him up</span> yesterday about the broken heater? — A pronoun goes in the middle.</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- Practice 4 · 3–4 -->
+<section>
+  <p class="kicker">Practice 4 · 3–4</p>
+  <h2>Find and Fix</h2>
+  <p>Each sentence has one mistake in CAPITAL letters. Say the correct sentence, then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">3.</span> Last night, my roommate USE UP all the rice, so we had pasta.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Last night, my roommate <span class="key">used up</span> all the rice, so we had pasta. — &quot;Last night&quot; = past: used up.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">4.</span> I don&#x27;t know this street. Let&#x27;s LOOK UP IT on the map.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Let's <span class="key">look it up</span> on the map. — A pronoun goes in the middle.</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+<!-- Practice 4 · 5–6 -->
+<section>
+  <p class="kicker">Practice 4 · 5–6</p>
+  <h2>Find and Fix</h2>
+  <p>Each sentence has one mistake in CAPITAL letters. Say the correct sentence, then click to check.</p>
+  <div class="exercise">
+    <p class="question"><span class="qnum">5.</span> The hotel offered us a smaller room, but we TURNED IT UP.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">The hotel offered us a smaller room, but we <span class="key">turned it down</span>. — turn down = say no. Turn up is a different verb.</p>
+  </div>
+  <div class="exercise">
+    <p class="question"><span class="qnum">6.</span> Our new curtains look great. Mom HANGED them up this morning.</p>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.add('shown'); this.style.display='none'">Show Answer</button>
+    <p class="answer">Mom <span class="key">hung</span> them up this morning. — hang → hung. Only the verb changes; &quot;up&quot; stays the same.</p>
+  </div>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+
+<!-- SUMMARY -->
+<section>
+  <p class="kicker">Review</p>
+  <h2>Separable Phrasal Verbs</h2>
+  <table class="compare">
+    <tr><th>Rule</th><th>Example</th></tr>
+    <tr><td>noun at the end</td><td>Please turn off the TV.</td></tr>
+    <tr><td>noun in the middle</td><td>Please turn the TV off.</td></tr>
+    <tr><td>pronoun: ONLY in the middle</td><td>Please turn it off. <span class="bad-x">(NOT turn off it)</span></td></tr>
+    <tr><td>tense: change the verb only</td><td>He threw it away yesterday.</td></tr>
+  </table>
+  <div aria-hidden="true" style="height: 80vh;">&nbsp;</div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    controls: true,
+    progress: true,
+    center: false,
+    transition: 'slide',
+    width: 1100,
+    height: 720,
+    margin: 0.04
+  });
+
+  // Clickable multiple-choice wiring (data-correct = 0-indexed button)
+  document.querySelectorAll('.mc').forEach(mc => {
+    const correct = parseInt(mc.dataset.correct, 10);
+    const buttons = mc.querySelectorAll('button.opt');
+    const explain = mc.nextElementSibling && mc.nextElementSibling.classList.contains('explain')
+      ? mc.nextElementSibling : null;
+    const explainText = explain ? explain.dataset.explain || '' : '';
+    buttons.forEach((b, i) => {
+      b.addEventListener('click', () => {
+        // `sel` marks the clicked button so its class always changes on every
+        // click — keeps verify_html_deck.mjs from false-failing when the correct
+        // answer isn't option (a). Do not remove.
+        buttons.forEach(x => x.classList.remove('correct', 'wrong', 'sel'));
+        b.classList.add('sel');
+        if (i === correct) {
+          b.classList.add('correct');
+          if (explain) {
+            explain.textContent = '✓ Correct. ' + explainText;
+            explain.classList.remove('bad'); explain.classList.add('good');
+          }
+        } else {
+          b.classList.add('wrong');
+          buttons[correct].classList.add('correct');
+          if (explain) {
+            const answerText = buttons[correct].textContent;
+            explain.innerHTML = '✗ The answer is <strong>' + answerText + '</strong>. ' + explainText;
+            explain.classList.remove('good'); explain.classList.add('bad');
+          }
+        }
+      });
+    });
+  });
+</script>
+<!-- PENCIL DRAW OVERLAY — iPad annotation layer (additive; safe to delete this whole block) -->
+<style>
+  #drawCanvas {
+    position: fixed; inset: 0; z-index: 50; pointer-events: none; touch-action: none;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  }
+  html.draw-armed, html.draw-armed body, html.draw-armed .reveal {
+    -webkit-user-select: none !important; user-select: none !important;
+    -webkit-touch-callout: none !important;
+  }
+  html.presentation-mode, html.presentation-mode body {
+    width: 100%; height: 100%; overflow: hidden !important; overscroll-behavior: none;
+  }
+  html.presentation-mode body { position: fixed; inset: 0; }
+  html.presentation-mode .reveal { width: 100vw !important; height: 100vh !important; height: 100dvh !important; }
+  html.presentation-mode .reveal .slides section { overscroll-behavior-y: contain; }
+  #drawToggle {
+    position: fixed; top: 10px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 20px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle.armed { opacity: 1; background: #fde9c8; border-color: #e8a013; }
+  #fsToggle {
+    position: fixed; top: 62px; right: 10px; z-index: 60;
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid #bbb;
+    background: #fff; font-size: 19px; cursor: pointer; opacity: 0.55;
+  }
+  #drawToggle, #fsToggle { transition: opacity 0.3s; }
+  html.presentation-mode #drawToggle:not(.armed), html.presentation-mode #fsToggle { opacity: 0.15; }
+  #drawBar {
+    position: fixed; top: 10px; right: 62px; z-index: 60; display: flex; gap: 8px;
+    background: #fff; border: 1px solid #bbb; border-radius: 22px; padding: 6px 10px;
+    align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  /* [hidden] must win over display:flex, or the color bar never hides when the pencil is off. */
+  #drawBar[hidden] { display: none; }
+  #drawBar button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ccc; background: #fff; cursor: pointer; font-size: 15px; padding: 0; }
+  #drawBar .swatch { border-width: 2px; }
+  #drawBar .swatch.on { outline: 3px solid #e8a013; }
+</style>
+<canvas id="drawCanvas"></canvas>
+<div id="drawBar" hidden>
+  <button class="swatch on" data-color="#d33333" style="background:#d33333"></button>
+  <button class="swatch" data-color="#2266cc" style="background:#2266cc"></button>
+  <button class="swatch" data-color="#1a1a1a" style="background:#1a1a1a"></button>
+  <button id="drawUndo" title="Undo">↩</button>
+  <button id="drawClear" title="Clear slide">✕</button>
+</div>
+<button id="drawToggle" title="Pencil mode (pen only; finger locked)" aria-pressed="false">✏️</button>
+<button id="fsToggle" title="Presentation mode" aria-label="Presentation mode" aria-pressed="false">⛶</button>
+<script>
+(() => {
+  const cv = document.getElementById('drawCanvas');
+  const ctx = cv.getContext('2d');
+  const bar = document.getElementById('drawBar');
+  const toggle = document.getElementById('drawToggle');
+  let armed = false, color = '#d33333', cur = null, drawPointerId = null;
+  const strokes = new Map(); // slide "h-v" -> stroke list; ink persists per slide
+  const key = () => { const i = Reveal.getIndices(); return i.h + '-' + (i.v || 0); };
+  const list = () => { const k = key(); if (!strokes.has(k)) strokes.set(k, []); return strokes.get(k); };
+
+  function size() {
+    const d = window.devicePixelRatio || 1;
+    cv.width = innerWidth * d; cv.height = innerHeight * d;
+    cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    render();
+  }
+  function seg(a, b, c, w) {
+    ctx.strokeStyle = c; ctx.lineWidth = Math.max(0.75, w * innerWidth);
+    ctx.beginPath(); ctx.moveTo(a.x * innerWidth, a.y * innerHeight);
+    ctx.lineTo(b.x * innerWidth, b.y * innerHeight); ctx.stroke();
+  }
+  function render() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const s of list())
+      for (let i = 1; i < s.pts.length; i++) seg(s.pts[i - 1], s.pts[i], s.color, s.pts[i].w);
+  }
+  const pt = (e) => ({ x: e.clientX / innerWidth, y: e.clientY / innerHeight,
+    w: (e.pointerType === 'pen' ? 1.5 + 4 * (e.pressure || 0.5) : 3) / innerWidth });
+
+  const cancel = (e) => { if (e.cancelable) e.preventDefault(); };
+  cv.addEventListener('pointerdown', (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerType === 'touch') {
+      cv.setPointerCapture(e.pointerId); // swallow the palm/finger for its full contact
+      return;
+    }
+    if ((e.pointerType !== 'pen' && e.pointerType !== 'mouse') || drawPointerId !== null) return;
+    drawPointerId = e.pointerId;
+    cur = { color, pts: [pt(e)] };
+    list().push(cur);
+    cv.setPointerCapture(e.pointerId);
+  }, { passive: false });
+  cv.addEventListener('pointermove', (e) => {
+    if (!armed) return;
+    if (e.pointerType === 'touch') { cancel(e); return; }
+    if (!cur || e.pointerId !== drawPointerId) return;
+    cancel(e);
+    const coalesced = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+    const events = coalesced && coalesced.length ? coalesced : [e];
+    for (const ev of events) {
+      const p = pt(ev);
+      seg(cur.pts[cur.pts.length - 1], p, cur.color, p.w);
+      cur.pts.push(p);
+    }
+  }, { passive: false });
+  const end = (e) => {
+    if (!armed) return;
+    cancel(e);
+    if (e.pointerId === drawPointerId) { cur = null; drawPointerId = null; }
+  };
+  cv.addEventListener('pointerup', end, { passive: false });
+  cv.addEventListener('pointercancel', end, { passive: false });
+  for (const eventName of ['touchstart', 'touchmove', 'touchend', 'touchcancel'])
+    cv.addEventListener(eventName, (e) => { if (armed) cancel(e); }, { passive: false });
+  document.addEventListener('selectstart', (e) => { if (armed) cancel(e); });
+
+  toggle.addEventListener('click', () => {
+    armed = !armed;
+    cv.style.pointerEvents = armed ? 'auto' : 'none'; // disarmed = taps/swipes reach the slides
+    bar.hidden = !armed;
+    toggle.classList.toggle('armed', armed);
+    toggle.setAttribute('aria-pressed', String(armed));
+    document.documentElement.classList.toggle('draw-armed', armed);
+    if (!armed) { cur = null; drawPointerId = null; }
+  });
+  bar.querySelectorAll('.swatch').forEach((b) => b.addEventListener('click', () => {
+    color = b.dataset.color;
+    bar.querySelectorAll('.swatch').forEach((x) => x.classList.toggle('on', x === b));
+  }));
+  document.getElementById('drawUndo').addEventListener('click', () => { list().pop(); render(); });
+  document.getElementById('drawClear').addEventListener('click', () => { strokes.set(key(), []); render(); });
+
+  Reveal.on('slidechanged', render);
+  addEventListener('resize', size);
+  size();
+
+  // Fixed presentation mode avoids iPadOS's native-fullscreen pull-down exit gesture.
+  const fsT = document.getElementById('fsToggle');
+  let presenting = false;
+  const toast = (message) => {
+    const t = document.createElement('div');
+    t.textContent = message;
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:10px;font:14px system-ui;z-index:99;max-width:46ch;text-align:center';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  };
+  fsT.addEventListener('click', () => {
+    presenting = !presenting;
+    document.documentElement.classList.toggle('presentation-mode', presenting);
+    fsT.textContent = presenting ? '\u2921' : '\u26f6';
+    fsT.setAttribute('aria-pressed', String(presenting));
+    fsT.title = presenting ? 'Exit presentation mode' : 'Presentation mode';
+    requestAnimationFrame(() => {
+      if (Reveal.layout) Reveal.layout();
+      size();
+    });
+    if (presenting) toast('Presentation mode on. For more space in Safari, tap AA, then Hide Toolbar.');
+  });
+})();
+</script>
+<!-- END PENCIL DRAW OVERLAY -->
+
+</body>
+</html>
